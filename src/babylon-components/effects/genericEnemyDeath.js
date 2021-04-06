@@ -1,12 +1,12 @@
-import { enemyDeath } from "../../sounds/SFX";
-import { makeParticleSystem } from "./makeParticleSystem"
+import { enemyDeath } from '../../sounds/SFX';
+import { makeParticleSystem } from './makeParticleSystem';
 
 export const genericEnemyDeath = (emitter, assets) => {
-    const particleSystem = makeParticleSystem(assets, "deathParticles", emitter)
+    const particleSystem = makeParticleSystem(assets, 'deathParticles', emitter);
     particleSystem.start();
     enemyDeath.play();
 
     window.setTimeout(() => {
-        particleSystem.stop()
-    }, 20)
-}
+        particleSystem.stop();
+    }, 20);
+};

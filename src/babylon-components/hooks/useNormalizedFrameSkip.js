@@ -1,20 +1,23 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react';
 import { useBeforeRender, useEngine } from 'react-babylonjs';
 
 const mode = function mode(arr) {
-    return arr.reduce(function(current, item) {
-        var val = current.numMapping[item] = (current.numMapping[item] || 0) + 1;
-        if (val > current.greatestFreq) {
-            current.greatestFreq = val;
-            current.mode = item;
-        }
-        return current;
-    }, {mode: null, greatestFreq: -Infinity, numMapping: {}}).mode;
+    return arr.reduce(
+        function (current, item) {
+            var val = (current.numMapping[item] = (current.numMapping[item] || 0) + 1);
+            if (val > current.greatestFreq) {
+                current.greatestFreq = val;
+                current.mode = item;
+            }
+            return current;
+        },
+        { mode: null, greatestFreq: -Infinity, numMapping: {} }
+    ).mode;
 };
 
 export const useNormalizedFrameSkip = (frameSkipInit) => {
     const [frameSkip, setFrameSkip] = useState(frameSkipInit);
-    const fpsHistory = useMemo(() => [], [])
+    const fpsHistory = useMemo(() => [], []);
     const engine = useEngine();
 
     useBeforeRender(() => {
@@ -30,7 +33,7 @@ export const useNormalizedFrameSkip = (frameSkipInit) => {
         if (newFrameSkip !== frameSkip) {
             setFrameSkip(newFrameSkip);
         }
-    })
+    });
 
     return frameSkip;
-}
+};

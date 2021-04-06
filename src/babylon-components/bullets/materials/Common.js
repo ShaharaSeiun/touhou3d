@@ -1,4 +1,4 @@
-const glsl = x => x;
+const glsl = (x) => x;
 
 export const commonVertexShader = glsl`
     #include<instancesDeclaration>
@@ -54,7 +54,7 @@ export const commonVertexShader = glsl`
         vPositionW = vec3( world * totalPos ) ;
         vNormalW = vec3(world * vec4(rotation * normal, 0.0));
     }
-`
+`;
 
 export const commonItemVertexShader = glsl`
     #include<instancesDeclaration>
@@ -112,4 +112,4 @@ export const commonItemVertexShader = glsl`
         vPositionW = vec3( world * totalPos ) ;
         vNormalW = vec3(world * vec4(rotation * normal, 0.0));
     }
-`
+`;

@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import ls from "local-storage"
+import React, { useEffect } from 'react';
+import ls from 'local-storage';
 import { SETTINGS } from '../utils/Settings';
 
 export const GlobalsContext = React.createContext();
@@ -13,15 +13,14 @@ const defaults = {
     GRAZE: 0,
     POINT: 0,
     TIME: 0,
-}
+};
 
-export const globals =  ls('globals') ? Object.assign({}, defaults, JSON.parse(ls('globals'))) : defaults
+export const globals = ls('globals') ? Object.assign({}, defaults, JSON.parse(ls('globals'))) : defaults;
 
-export const GlobalsContainer = ({children}) => {
-
+export const GlobalsContainer = ({ children }) => {
     const setGlobal = (key, value) => {
-        globals[key] = value
-    }
+        globals[key] = value;
+    };
 
     const resetGlobals = () => {
         Object.assign(globals, defaults, JSON.parse(ls('globals')), {
@@ -31,22 +30,17 @@ export const GlobalsContainer = ({children}) => {
             GRAZE: 0,
             POINT: 0,
             TIME: 0,
-        })
-    }
+        });
+    };
 
     useEffect(() => {
         const interval = window.setInterval(() => {
-            ls('globals', JSON.stringify(globals))
-        }, 1000)
+            ls('globals', JSON.stringify(globals));
+        }, 1000);
         return () => {
-            window.clearInterval(interval)
-        }
+            window.clearInterval(interval);
+        };
+    }, []);
 
-    }, [])
-
-    return (   
-        <GlobalsContext.Provider value={{setGlobal, resetGlobals}}>
-            {children}
-        </GlobalsContext.Provider>
-    )
-}
+    return <GlobalsContext.Provider value={{ setGlobal, resetGlobals }}>{children}</GlobalsContext.Provider>;
+};

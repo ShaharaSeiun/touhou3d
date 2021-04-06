@@ -1,7 +1,7 @@
-import { ShaderMaterial } from "@babylonjs/core";
-import { v4 } from "uuid";
-import { glsl } from "../../BabylonUtils";
-import { commonVertexShader } from "./Common";
+import { ShaderMaterial } from '@babylonjs/core';
+import { v4 } from 'uuid';
+import { glsl } from '../../BabylonUtils';
+import { commonVertexShader } from './Common';
 
 export const fresnelVertexShader = commonVertexShader;
 export const fresnelFragmentShader = glsl`
@@ -20,15 +20,21 @@ export const fresnelFragmentShader = glsl`
 
         gl_FragColor = vec4(mix(color, toColor, fresnelTerm), 1.);
     }
-`
+`;
 
 export const makeFresnelMaterial = (scene) => {
-    const _material = new ShaderMaterial(v4() + "fresnel", scene, {
-        vertex: "fresnel", fragment: "fresnel"
-    }, {
-        attributes: ["position", "normal", "uv", "world0", "world1", "world2", "world3"],
-        uniforms: ["worldView", "worldViewProjection", "view", "projection", "direction", "cameraPosition"],
-    });
+    const _material = new ShaderMaterial(
+        v4() + 'fresnel',
+        scene,
+        {
+            vertex: 'fresnel',
+            fragment: 'fresnel',
+        },
+        {
+            attributes: ['position', 'normal', 'uv', 'world0', 'world1', 'world2', 'world3'],
+            uniforms: ['worldView', 'worldViewProjection', 'view', 'projection', 'direction', 'cameraPosition'],
+        }
+    );
 
     return _material;
-}
+};

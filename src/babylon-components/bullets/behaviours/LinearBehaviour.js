@@ -1,6 +1,6 @@
-import { glsl } from "../../BabylonUtils";
-import { collisionSnippet, mainHeaderSnippet, uniformSnippet } from "./Common";
-import { EnemyBulletBehaviour } from "./EnemyBulletBehaviour";
+import { glsl } from '../../BabylonUtils';
+import { collisionSnippet, mainHeaderSnippet, uniformSnippet } from './Common';
+import { EnemyBulletBehaviour } from './EnemyBulletBehaviour';
 
 export const linearBehaviourPositionPixelShader = glsl`
     ${uniformSnippet}
@@ -14,7 +14,7 @@ export const linearBehaviourPositionPixelShader = glsl`
         
         gl_FragColor = out_Position;
     }
-`
+`;
 
 export const linearBehaviourVelocityPixelShader = glsl`
     uniform float delta;
@@ -26,14 +26,14 @@ export const linearBehaviourVelocityPixelShader = glsl`
         vec2 uv = gl_FragCoord.xy / resolution;
         gl_FragColor = texture2D( velocitySampler, uv );
     }
-`
+`;
 
-class LinearBehaviour extends EnemyBulletBehaviour{
-    constructor(environmentCollision, radius, parent){
-        super("linearBehaviourPosition", "linearBehaviourVelocity", parent, environmentCollision, null, radius)
+class LinearBehaviour extends EnemyBulletBehaviour {
+    constructor(environmentCollision, radius, parent) {
+        super('linearBehaviourPosition', 'linearBehaviourVelocity', parent, environmentCollision, null, radius);
     }
 }
 
 export const makeLinearBehaviour = (environmentCollision, radius, parent) => {
     return new LinearBehaviour(environmentCollision, radius, parent);
-}
+};

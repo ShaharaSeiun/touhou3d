@@ -5,7 +5,6 @@ import { Game } from './pages/Game';
 import { Menu } from './pages/Menu';
 
 function App() {
-
     return (
         <GlobalsContainer>
             <ControlsContainer outsideOfRenderer>
@@ -15,7 +14,7 @@ function App() {
                             <Game />
                         </Route>
                         <Route path="/">
-                            <Menu/>
+                            <Menu />
                         </Route>
                     </Switch>
                 </Router>

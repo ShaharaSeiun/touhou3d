@@ -1,8 +1,8 @@
-import { __extends } from "tslib";
-import { Vector3, Vector2 } from "@babylonjs/core/Maths/math.vector";
+import { __extends } from 'tslib';
+import { Vector3, Vector2 } from '@babylonjs/core/Maths/math.vector';
 import { Color4, Color3 } from '@babylonjs/core/Maths/math.color';
-import { Texture } from "@babylonjs/core/Materials/Textures/texture";
-import { ProceduralTexture } from "@babylonjs/core/Materials/Textures/Procedurals/proceduralTexture";
+import { Texture } from '@babylonjs/core/Materials/Textures/texture';
+import { ProceduralTexture } from '@babylonjs/core/Materials/Textures/Procedurals/proceduralTexture';
 /**
  * Procedural texturing is a way to programmatically create a texture. There are 2 types of procedural textures: code-only, and code that references some classic 2D images, sometimes called 'refMaps' or 'sampler' images.
  * Custom Procedural textures are the easiest way to create your own procedural in your application.
@@ -16,20 +16,26 @@ export const allSyncs = {
 };
 
 const _readTexturePixels = function (engine, texture, width, height, faceIndex, level, buffer, isPlayerBullet) {
-    if (faceIndex === void 0) { faceIndex = -1; }
-    if (level === void 0) { level = 0; }
-    if (buffer === void 0) { buffer = null; }
+    if (faceIndex === void 0) {
+        faceIndex = -1;
+    }
+    if (level === void 0) {
+        level = 0;
+    }
+    if (buffer === void 0) {
+        buffer = null;
+    }
 
     const numPPB = readLatency;
 
     var gl = engine._gl;
     if (!gl) {
-        throw new Error("Engine does not have gl rendering context.");
+        throw new Error('Engine does not have gl rendering context.');
     }
     if (!engine._dummyFramebuffer) {
         var dummy = gl.createFramebuffer();
         if (!dummy) {
-            throw new Error("Unable to create dummy framebuffer");
+            throw new Error('Unable to create dummy framebuffer');
         }
         engine._dummyFramebuffer = dummy;
     }
@@ -38,7 +44,7 @@ const _readTexturePixels = function (engine, texture, width, height, faceIndex, 
         for (let i = 0; i < numPPB; i++) {
             const newPPB = gl.createBuffer();
             if (!newPPB) {
-                throw new Error("Unable to create PPB");
+                throw new Error('Unable to create PPB');
             }
             texture._PPBWheel.push(newPPB);
         }
@@ -48,17 +54,22 @@ const _readTexturePixels = function (engine, texture, width, height, faceIndex, 
     }
 
     //swap PIXEL_PACK_BUFFER
-    texture._activePPBIndex = (texture._activePPBIndex + 1) % texture._PPBWheel.length
+    texture._activePPBIndex = (texture._activePPBIndex + 1) % texture._PPBWheel.length;
     texture._activePPB = texture._PPBWheel[texture._activePPBIndex];
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, engine._dummyFramebuffer);
     if (faceIndex > -1) {
-        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_CUBE_MAP_POSITIVE_X + faceIndex, texture._webGLTexture, level);
-    }
-    else {
+        gl.framebufferTexture2D(
+            gl.FRAMEBUFFER,
+            gl.COLOR_ATTACHMENT0,
+            gl.TEXTURE_CUBE_MAP_POSITIVE_X + faceIndex,
+            texture._webGLTexture,
+            level
+        );
+    } else {
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture._webGLTexture, level);
     }
-    var readType = (texture.type !== undefined) ? engine._getWebGLTextureType(texture.type) : gl.UNSIGNED_BYTE;
+    var readType = texture.type !== undefined ? engine._getWebGLTextureType(texture.type) : gl.UNSIGNED_BYTE;
     switch (readType) {
         case gl.UNSIGNED_BYTE:
             if (!buffer) {
@@ -88,18 +99,18 @@ const _readTexturePixels = function (engine, texture, width, height, faceIndex, 
     let promiseResolve;
     let promiseReject;
 
-    const returnPromise = new Promise(function (resolve, reject){
+    const returnPromise = new Promise(function (resolve, reject) {
         promiseResolve = resolve;
         promiseReject = reject;
-    })
+    });
 
     allSyncs.syncs.push({
         sync,
         promiseResolve,
         promiseReject,
         buffer,
-        PPB: texture._activePPB
-    })
+        PPB: texture._activePPB,
+    });
 
     return returnPromise;
 };
@@ -175,7 +186,10 @@ var CustomCustomProceduralTexture = /** @class */ (function (_super) {
      */
     CustomCustomProceduralTexture.prototype.updateTextures = function () {
         for (var i = 0; i < this._config.sampler2Ds.length; i++) {
-            this.setTexture(this._config.sampler2Ds[i].sample2Dname, new Texture(this._texturePath + "/" + this._config.sampler2Ds[i].textureRelativeUrl, this.getScene()));
+            this.setTexture(
+                this._config.sampler2Ds[i].sample2Dname,
+                new Texture(this._texturePath + '/' + this._config.sampler2Ds[i].textureRelativeUrl, this.getScene())
+            );
         }
     };
     /**
@@ -186,32 +200,38 @@ var CustomCustomProceduralTexture = /** @class */ (function (_super) {
             for (var j = 0; j < this._config.uniforms.length; j++) {
                 var uniform = this._config.uniforms[j];
                 switch (uniform.type) {
-                    case "float":
+                    case 'float':
                         this.setFloat(uniform.name, uniform.value);
                         break;
-                    case "color3":
+                    case 'color3':
                         this.setColor3(uniform.name, new Color3(uniform.r, uniform.g, uniform.b));
                         break;
-                    case "color4":
+                    case 'color4':
                         this.setColor4(uniform.name, new Color4(uniform.r, uniform.g, uniform.b, uniform.a));
                         break;
-                    case "vector2":
+                    case 'vector2':
                         this.setVector2(uniform.name, new Vector2(uniform.x, uniform.y));
                         break;
-                    case "vector3":
+                    case 'vector3':
                         this.setVector3(uniform.name, new Vector3(uniform.x, uniform.y, uniform.z));
                         break;
                     default:
-                        throw new Error("Unsupported uniform type: " + uniform.type)
+                        throw new Error('Unsupported uniform type: ' + uniform.type);
                 }
             }
         }
-        this.setFloat("time", this._time);
+        this.setFloat('time', this._time);
     };
     CustomCustomProceduralTexture.prototype.readPixels = function (faceIndex, level, buffer) {
-        if (faceIndex === void 0) { faceIndex = 0; }
-        if (level === void 0) { level = 0; }
-        if (buffer === void 0) { buffer = null; }
+        if (faceIndex === void 0) {
+            faceIndex = 0;
+        }
+        if (level === void 0) {
+            level = 0;
+        }
+        if (buffer === void 0) {
+            buffer = null;
+        }
         if (!this._texture) {
             return null;
         }
@@ -233,13 +253,12 @@ var CustomCustomProceduralTexture = /** @class */ (function (_super) {
                 return _readTexturePixels(engine, this._texture, width, height, faceIndex, level, buffer);
             }
             return _readTexturePixels(engine, this._texture, width, height, -1, level, buffer);
-        }
-        catch (e) {
-            console.warn(e)
+        } catch (e) {
+            console.warn(e);
             return null;
         }
     };
-    Object.defineProperty(CustomCustomProceduralTexture.prototype, "animate", {
+    Object.defineProperty(CustomCustomProceduralTexture.prototype, 'animate', {
         /**
          * Define if the texture animates or not.
          */
@@ -250,9 +269,9 @@ var CustomCustomProceduralTexture = /** @class */ (function (_super) {
             this._animate = value;
         },
         enumerable: false,
-        configurable: true
+        configurable: true,
     });
     return CustomCustomProceduralTexture;
-}(ProceduralTexture));
+})(ProceduralTexture);
 export { CustomCustomProceduralTexture };
 //# sourceMappingURL=CustomcustomProceduralTexture.js.map

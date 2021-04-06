@@ -1,10 +1,10 @@
-import { makeParticleSystem } from "./makeParticleSystem"
+import { makeParticleSystem } from './makeParticleSystem';
 
 export const genericEnemyHit = (emitter, assets) => {
-    const particleSystem = makeParticleSystem(assets, "hitParticles", emitter)
+    const particleSystem = makeParticleSystem(assets, 'hitParticles', emitter);
     particleSystem.start();
 
     window.setTimeout(() => {
-        particleSystem.stop()
-    }, 20)
-}
+        particleSystem.stop();
+    }, 20);
+};

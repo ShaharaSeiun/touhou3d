@@ -1,9 +1,9 @@
-import { Vector3 } from "@babylonjs/core";
-import { MAX_ENEMIES, PLAYER_BULLETS_WHEEL_LENGTH } from "../../../utils/Constants";
-import { glsl, RandVector3 } from "../../BabylonUtils";
-import { makeTextureFromVectors } from "../BulletUtils";
-import { collisionSnippet, mainHeaderSnippet, uniformSnippet } from "./Common";
-import { PlayerBulletBehaviour } from "./PlayerBulletBehaviour";
+import { Vector3 } from '@babylonjs/core';
+import { MAX_ENEMIES, PLAYER_BULLETS_WHEEL_LENGTH } from '../../../utils/Constants';
+import { glsl, RandVector3 } from '../../BabylonUtils';
+import { makeTextureFromVectors } from '../BulletUtils';
+import { collisionSnippet, mainHeaderSnippet, uniformSnippet } from './Common';
+import { PlayerBulletBehaviour } from './PlayerBulletBehaviour';
 
 export const playerShotTrackingBehaviourPositionPixelShader = glsl`
     ${uniformSnippet}
@@ -40,7 +40,7 @@ export const playerShotTrackingBehaviourPositionPixelShader = glsl`
 
         gl_FragColor = out_Position;
     }
-`
+`;
 
 export const playerShotTrackingBehaviourVelocityPixelShader = glsl`
     uniform float delta;
@@ -95,50 +95,57 @@ export const playerShotTrackingBehaviourVelocityPixelShader = glsl`
 
         gl_FragColor = (bulletNotEnabled * velocity) + (bulletEnabled * vec4(shotVector, 1.));
     }
-`
+`;
 
-class PlayerShotTrackingBehaviour extends PlayerBulletBehaviour{
-    constructor(behaviourOptions, environmentCollision, parent){
-        const sourceSampler = makeTextureFromVectors(behaviourOptions.shotSources)
-        
-        super("playerShotTrackingBehaviourPosition", "playerShotTrackingBehaviourVelocity", parent, environmentCollision, (texture) => {
-            texture.setFloat("frame", 0.001)
-            texture.setFloat("firing", 0)
-            texture.setVector3("shotVector", new RandVector3(...behaviourOptions.initialShotVector))
-            texture.setVector3("sourceOffset", new Vector3(0, 0, 0))
-            texture.setTexture("sourceSampler", sourceSampler);
-            texture.setFloat("numSources", behaviourOptions.shotSources.length)
-        }, true)
+class PlayerShotTrackingBehaviour extends PlayerBulletBehaviour {
+    constructor(behaviourOptions, environmentCollision, parent) {
+        const sourceSampler = makeTextureFromVectors(behaviourOptions.shotSources);
+
+        super(
+            'playerShotTrackingBehaviourPosition',
+            'playerShotTrackingBehaviourVelocity',
+            parent,
+            environmentCollision,
+            (texture) => {
+                texture.setFloat('frame', 0.001);
+                texture.setFloat('firing', 0);
+                texture.setVector3('shotVector', new RandVector3(...behaviourOptions.initialShotVector));
+                texture.setVector3('sourceOffset', new Vector3(0, 0, 0));
+                texture.setTexture('sourceSampler', sourceSampler);
+                texture.setFloat('numSources', behaviourOptions.shotSources.length);
+            },
+            true
+        );
 
         this.bulletFrame = 0;
-        this.shotSourcesNum = behaviourOptions.shotSources.length
+        this.shotSourcesNum = behaviourOptions.shotSources.length;
         this.shotSpeed = behaviourOptions.shotSpeed || 20;
         this.firing = true;
     }
 
-    update(deltaS){
+    update(deltaS) {
         const ready = super.update(deltaS);
-        if(ready){
-            if(!this.target){
+        if (ready) {
+            if (!this.target) {
                 return false;
             }
 
             const sourceOffset = this.parent.getAbsolutePosition();
 
-            this.positionTexture1.setFloat("frame", this.bulletFrame + 0.001)
-            this.velocityTexture1.setFloat("frame", this.bulletFrame + 0.001)
-            this.positionTexture2.setFloat("frame", this.bulletFrame + 0.001)
-            this.velocityTexture2.setFloat("frame", this.bulletFrame + 0.001)
+            this.positionTexture1.setFloat('frame', this.bulletFrame + 0.001);
+            this.velocityTexture1.setFloat('frame', this.bulletFrame + 0.001);
+            this.positionTexture2.setFloat('frame', this.bulletFrame + 0.001);
+            this.velocityTexture2.setFloat('frame', this.bulletFrame + 0.001);
 
-            this.positionTexture1.setFloat("firing", +this.firing)
-            this.velocityTexture1.setFloat("firing", +this.firing)
-            this.positionTexture2.setFloat("firing", +this.firing)
-            this.velocityTexture2.setFloat("firing", +this.firing)
+            this.positionTexture1.setFloat('firing', +this.firing);
+            this.velocityTexture1.setFloat('firing', +this.firing);
+            this.positionTexture2.setFloat('firing', +this.firing);
+            this.velocityTexture2.setFloat('firing', +this.firing);
 
-            this.positionTexture1.setVector3("sourceOffset", sourceOffset)
-            this.velocityTexture1.setVector3("sourceOffset", sourceOffset)
-            this.positionTexture2.setVector3("sourceOffset", sourceOffset)
-            this.velocityTexture2.setVector3("sourceOffset", sourceOffset)
+            this.positionTexture1.setVector3('sourceOffset', sourceOffset);
+            this.velocityTexture1.setVector3('sourceOffset', sourceOffset);
+            this.positionTexture2.setVector3('sourceOffset', sourceOffset);
+            this.velocityTexture2.setVector3('sourceOffset', sourceOffset);
         }
 
         this.bulletFrame = (this.bulletFrame + 1) % PLAYER_BULLETS_WHEEL_LENGTH;
@@ -147,4 +154,4 @@ class PlayerShotTrackingBehaviour extends PlayerBulletBehaviour{
 
 export const makePlayerShotTrackingBehaviour = (behaviourOptions, environmentCollision, parent) => {
     return new PlayerShotTrackingBehaviour(behaviourOptions, environmentCollision, parent);
-}
+};

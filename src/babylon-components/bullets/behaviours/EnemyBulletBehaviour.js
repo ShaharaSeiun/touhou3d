@@ -1,6 +1,6 @@
-import { Vector3 } from "@babylonjs/core";
-import { globalActorRefs } from "../../gameLogic/StaticRefs";
-import { BulletBehaviour } from "./BulletBehaviour";
+import { Vector3 } from '@babylonjs/core';
+import { globalActorRefs } from '../../gameLogic/StaticRefs';
+import { BulletBehaviour } from './BulletBehaviour';
 
 export const BULLET_TYPE = {
     BULLET: 0,
@@ -8,23 +8,23 @@ export const BULLET_TYPE = {
     BOMB: 2,
     POWER: 3,
     POINT: 4,
-    SPECIAL: 5
-}
+    SPECIAL: 5,
+};
 
-export class EnemyBulletBehaviour extends BulletBehaviour{
-    constructor(positionShader, velocityShader, parent, collideWithEnvironment, initialValuesFunction, radius, bulletType = 0){
+export class EnemyBulletBehaviour extends BulletBehaviour {
+    constructor(positionShader, velocityShader, parent, collideWithEnvironment, initialValuesFunction, radius, bulletType = 0) {
         super(positionShader, velocityShader, parent, collideWithEnvironment, initialValuesFunction, radius);
-        this.collisionShader = "enemyBulletCollision";
+        this.collisionShader = 'enemyBulletCollision';
         this.isEnemyBullet = true;
         this.isPlayerBullet = false;
         this.bulletType = bulletType;
     }
 
-    update(deltaS){
+    update(deltaS) {
         const ready = super.update(deltaS);
-        if(ready){
-            this.collisionTexture1.setVector3("playerPosition", globalActorRefs.player.position);
-            this.collisionTexture2.setVector3("playerPosition", globalActorRefs.player.position);
+        if (ready) {
+            this.collisionTexture1.setVector3('playerPosition', globalActorRefs.player.position);
+            this.collisionTexture2.setVector3('playerPosition', globalActorRefs.player.position);
         }
         return ready;
     }
@@ -34,20 +34,33 @@ export class EnemyBulletBehaviour extends BulletBehaviour{
         const typeVector1 = new Vector3(0, 0, 0);
         const typeVector2 = new Vector3(0, 0, 0);
 
-        switch(this.bulletType){
-            case 0: typeVector1.x = 1; break;//bullet
-            case 1: typeVector1.y = 1; break;//life
-            case 2: typeVector1.z = 1; break;//bomb
-            case 3: typeVector2.x = 1; break;//power
-            case 4: typeVector2.y = 1; break;//point
-            case 5: typeVector2.z = 1; break;//special
-            default: throw new Error("Invalid bullet type " + this.bulletType);
+        switch (this.bulletType) {
+            case 0:
+                typeVector1.x = 1;
+                break; //bullet
+            case 1:
+                typeVector1.y = 1;
+                break; //life
+            case 2:
+                typeVector1.z = 1;
+                break; //bomb
+            case 3:
+                typeVector2.x = 1;
+                break; //power
+            case 4:
+                typeVector2.y = 1;
+                break; //point
+            case 5:
+                typeVector2.z = 1;
+                break; //special
+            default:
+                throw new Error('Invalid bullet type ' + this.bulletType);
         }
         const radius = this.radius;
 
-        texture.setVector3("bulletTypePack1", typeVector1);
-        texture.setVector3("bulletTypePack2", typeVector2);
-        texture.setFloat("bulletRadius", radius);
-        texture.setVector3("playerPosition", globalActorRefs.player.position);
-    }
+        texture.setVector3('bulletTypePack1', typeVector1);
+        texture.setVector3('bulletTypePack2', typeVector2);
+        texture.setFloat('bulletRadius', radius);
+        texture.setVector3('playerPosition', globalActorRefs.player.position);
+    };
 }

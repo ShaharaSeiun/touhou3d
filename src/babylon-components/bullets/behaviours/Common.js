@@ -1,5 +1,5 @@
-import { GRAZE_DISTANCE, MAX_BULLETS_PER_GROUP, MAX_ENEMIES } from "../../../utils/Constants";
-import { glsl } from "../../BabylonUtils"
+import { GRAZE_DISTANCE, MAX_BULLETS_PER_GROUP, MAX_ENEMIES } from '../../../utils/Constants';
+import { glsl } from '../../BabylonUtils';
 
 export const uniformSnippet = glsl`
     uniform float delta;
@@ -7,7 +7,7 @@ export const uniformSnippet = glsl`
     uniform sampler2D positionSampler;
     uniform sampler2D velocitySampler;
     uniform sampler2D collisionSampler;
-`
+`;
 
 export const mainHeaderSnippet = glsl`
     vec2 uv = gl_FragCoord.xy / resolution.xy;
@@ -16,7 +16,7 @@ export const mainHeaderSnippet = glsl`
     vec3 position = texture2D( positionSampler, uv ).xyz;
     vec3 velocity = texture2D( velocitySampler, uv ).xyz;
     vec4 collision = texture2D( collisionSampler, uv );
-`
+`;
 
 export const collisionSnippet = glsl`
     float collidedWithAnything = clamp(collision.w, 0.0, 1.0);
@@ -61,14 +61,14 @@ export const playerBulletCollisionPixelShader = glsl`
 
         gl_FragColor = vec4(0., 0., 0., collision);
     }
-`
+`;
 
 /**
  * x: 0 is no collision, 1x is points, ${MAX_BULLETS_PER_GROUP}x is graze
  * y: 0 is no collision, 1x is bomb, 1000x is life
  * z: 0 is no collision, 1x is power, 1000x is special
  * w: 0 is no collision, 1x is environment, ${MAX_BULLETS_PER_GROUP}x is collidingWithPlayer
- * 
+ *
  */
 
 export const enemyBulletCollisionPixelShader = glsl`
@@ -116,4 +116,4 @@ export const enemyBulletCollisionPixelShader = glsl`
 
         gl_FragColor = collision;
     }
-`
+`;

@@ -1,26 +1,24 @@
-import { makeFresnelMaterial } from "./Fresnel"
-import { makeItemMaterial } from "./Item";
-import { makeTextureMaterial } from "./Texture";
+import { makeFresnelMaterial } from './Fresnel';
+import { makeItemMaterial } from './Item';
+import { makeTextureMaterial } from './Texture';
 
 export const makeBulletMaterial = (materialOptions, parent, assets, scene) => {
-
     let _material;
 
-    switch(materialOptions.material){
-        case "fresnel": 
-            _material = makeFresnelMaterial(scene)
+    switch (materialOptions.material) {
+        case 'fresnel':
+            _material = makeFresnelMaterial(scene);
             break;
-        case "texture": 
-            _material = makeTextureMaterial(materialOptions, assets, scene)
+        case 'texture':
+            _material = makeTextureMaterial(materialOptions, assets, scene);
             break;
-        case "item": 
-            _material = makeItemMaterial(materialOptions, assets, scene)
+        case 'item':
+            _material = makeItemMaterial(materialOptions, assets, scene);
             break;
-        default: 
-            throw new Error("Unsupported bullet material option: " + materialOptions.material)
+        default:
+            throw new Error('Unsupported bullet material option: ' + materialOptions.material);
     }
     _material.backFaceCulling = !materialOptions.doubleSided;
 
-
     return _material;
-}
+};

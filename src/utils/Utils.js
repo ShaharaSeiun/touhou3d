@@ -1,11 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
 export const sleep = (ms) => {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+    return new Promise((resolve) => setTimeout(resolve, ms));
+};
 
 export const filterInPlace = (a, condition) => {
-    let i = 0, j = 0;
+    let i = 0,
+        j = 0;
 
     while (i < a.length) {
         const val = a[i];
@@ -15,7 +16,7 @@ export const filterInPlace = (a, condition) => {
 
     a.length = j;
     return a;
-}
+};
 
 const usePrevious = (value, initialValue) => {
     const ref = useRef(initialValue);
@@ -35,8 +36,8 @@ export const useEffectDebugger = (effectHook, dependencies, dependencyNames = []
                 ...accum,
                 [keyName]: {
                     before: previousDeps[index],
-                    after: dependency
-                }
+                    after: dependency,
+                },
             };
         }
 
@@ -51,15 +52,15 @@ export const useEffectDebugger = (effectHook, dependencies, dependencyNames = []
 };
 
 export const capFirst = (str) => {
-    return str.charAt(0).toUpperCase() + str.slice(1)
-}
+    return str.charAt(0).toUpperCase() + str.slice(1);
+};
 
 export const mod = (n, m) => {
     return ((n % m) + m) % m;
-}
+};
 
 export const staticReplace = (obj, prop, index, value) => {
     const newArray = [...obj[prop]];
     newArray[index] = value;
     obj[prop] = newArray;
-}
+};

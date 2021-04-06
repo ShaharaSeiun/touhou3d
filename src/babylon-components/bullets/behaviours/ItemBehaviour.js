@@ -1,9 +1,9 @@
-import { ARENA_LENGTH } from "../../../utils/Constants";
-import { glsl } from "../../BabylonUtils";
-import { collisionSnippet, mainHeaderSnippet, uniformSnippet } from "./Common";
-import { EnemyBulletBehaviour } from "./EnemyBulletBehaviour";
+import { ARENA_LENGTH } from '../../../utils/Constants';
+import { glsl } from '../../BabylonUtils';
+import { collisionSnippet, mainHeaderSnippet, uniformSnippet } from './Common';
+import { EnemyBulletBehaviour } from './EnemyBulletBehaviour';
 
-export const itemBehaviourPositionPixelShader =  glsl`
+export const itemBehaviourPositionPixelShader = glsl`
     ${uniformSnippet}
 
     void main()	{
@@ -15,7 +15,7 @@ export const itemBehaviourPositionPixelShader =  glsl`
         
         gl_FragColor = out_Position;
     }
-`
+`;
 
 export const itemBehaviourVelocityPixelShader = glsl`
     uniform float delta;
@@ -31,21 +31,21 @@ export const itemBehaviourVelocityPixelShader = glsl`
         instVel.xy = instVel.xy * .98;
         instVel.z = instVel.z + (-5. - instVel.z) * .05;
 
-        float closeToPlayer = float(distance(instPos, playerPosition) < 4.) * float(instPos.z < ${-ARENA_LENGTH/2 + 2}.);
+        float closeToPlayer = float(distance(instPos, playerPosition) < 4.) * float(instPos.z < ${-ARENA_LENGTH / 2 + 2}.);
         float notCloseToPlayer = 1. - closeToPlayer;
 
         vec3 towardsPlayer = normalize(playerPosition - instPos);
 
         gl_FragColor = vec4(instVel, 1.) * notCloseToPlayer + vec4(towardsPlayer * 6., 1.) * closeToPlayer;
     }
-`
+`;
 
-class Itembehaviour extends EnemyBulletBehaviour{
-    constructor(bulletType, environmentCollision, radius, parent){
-        super("itemBehaviourPosition", "itemBehaviourVelocity", parent, environmentCollision, null, radius, bulletType || 4)
+class Itembehaviour extends EnemyBulletBehaviour {
+    constructor(bulletType, environmentCollision, radius, parent) {
+        super('itemBehaviourPosition', 'itemBehaviourVelocity', parent, environmentCollision, null, radius, bulletType || 4);
     }
 }
 
 export const makeItembehaviour = (behaviourOptions, environmentCollision, radius, parent) => {
     return new Itembehaviour(behaviourOptions.bulletType, environmentCollision, radius, parent);
-}
+};

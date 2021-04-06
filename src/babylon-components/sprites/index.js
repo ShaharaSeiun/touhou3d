@@ -1,3 +1,3 @@
-import {BlueFairy} from "./BlueFairy";
+import { BlueFairy } from './BlueFairy';
 
-export {BlueFairy}
+export { BlueFairy };

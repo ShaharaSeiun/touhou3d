@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react'
-import { useBullets } from "./useBullets"
+import React, { useState, useMemo } from 'react';
+import { useBullets } from './useBullets';
 import { useLoadAssets } from './useLoadAssets';
 import { usePositions } from './usePositions';
 import { useEffects } from './useEffects';
@@ -20,17 +20,17 @@ export const GlowContext = React.createContext();
 export const PauseContext = React.createContext();
 export const AnimationContext = React.createContext();
 
-export const GeneralContainer = ({children}) => {
+export const GeneralContainer = ({ children }) => {
     const target = useMemo(() => new Vector3(0, 0, 10), []);
     const [environmentCollision, setEnvironmentCollision] = useState(new Vector3(1, 0, 0));
 
     const assets = useLoadAssets();
     const addEffect = useEffects(assets);
-    const {addEnemy, removeEnemy, killEnemy} = usePositions();
+    const { addEnemy, removeEnemy, killEnemy } = usePositions();
     const bulletsObject = useBullets(assets, environmentCollision, killEnemy, addEffect);
-    const UIProps = useUI()
+    const UIProps = useUI();
     const glowLayer = useGlowLayer();
-    const {registerAnimation, ...pauseProps} = usePause();
+    const { registerAnimation, ...pauseProps } = usePause();
 
     //Supports readpixels
     useBeforeRender((scene) => {
@@ -55,28 +55,32 @@ export const GeneralContainer = ({children}) => {
             gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
 
             sync.promiseResolve(sync.buffer);
-        })
-        
-        allSyncs.syncs = newSyncs;
-    })
+        });
 
-    return assets ? <AssetsContext.Provider value={assets}>
-        <PositionsContext.Provider value={{addEnemy, removeEnemy}}>
-            <BulletsContext.Provider value={{...bulletsObject, setEnvironmentCollision}}>
-                <EffectsContext.Provider value={addEffect}>
-                    <TargetContext.Provider value={target}>
-                        <GlowContext.Provider value={glowLayer}>
-                            <UIContext.Provider value={UIProps}>
-                                <PauseContext.Provider value={pauseProps}>
-                                    <AnimationContext.Provider value={{registerAnimation}}>
-                                        {children}
-                                    </AnimationContext.Provider>
-                                </PauseContext.Provider>
-                            </UIContext.Provider>
-                        </GlowContext.Provider>
-                    </TargetContext.Provider>
-                </EffectsContext.Provider>
-            </BulletsContext.Provider>
-        </PositionsContext.Provider>
-    </AssetsContext.Provider> : <camera name="fallbackCamera" position={new Vector3(0, 0, 0)}/>
-}
+        allSyncs.syncs = newSyncs;
+    });
+
+    return assets ? (
+        <AssetsContext.Provider value={assets}>
+            <PositionsContext.Provider value={{ addEnemy, removeEnemy }}>
+                <BulletsContext.Provider value={{ ...bulletsObject, setEnvironmentCollision }}>
+                    <EffectsContext.Provider value={addEffect}>
+                        <TargetContext.Provider value={target}>
+                            <GlowContext.Provider value={glowLayer}>
+                                <UIContext.Provider value={UIProps}>
+                                    <PauseContext.Provider value={pauseProps}>
+                                        <AnimationContext.Provider value={{ registerAnimation }}>
+                                            {children}
+                                        </AnimationContext.Provider>
+                                    </PauseContext.Provider>
+                                </UIContext.Provider>
+                            </GlowContext.Provider>
+                        </TargetContext.Provider>
+                    </EffectsContext.Provider>
+                </BulletsContext.Provider>
+            </PositionsContext.Provider>
+        </AssetsContext.Provider>
+    ) : (
+        <camera name="fallbackCamera" position={new Vector3(0, 0, 0)} />
+    );
+};
