@@ -1,8 +1,7 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
 import { useAddBulletGroup } from '../hooks/useAddBulletGroup';
-import { PositionsContext } from '../gameLogic/GeneralContainer';
-import { globalActorRefs } from '../gameLogic/StaticRefs';
+import { addEnemy, globalActorRefs, removeEnemy } from '../gameLogic/StaticRefs';
 import { FairyBase } from '../enemyActors/FairyBase';
 import { useAssets } from '../hooks/useAssets';
 import { RandomEnemyBehaviour } from '../enemyBehaviours/RandomEnemyBehaviour';
@@ -43,12 +42,11 @@ export const Enemy = ({ type, name, asset, behaviour, radius, health, removeEnem
     const mesh = useAssets(asset);
     const [positionID, setPositionID] = useState();
     const addBulletGroup = useAddBulletGroup();
-    const { addEnemy, removeEnemy } = useContext(PositionsContext);
 
     const leaveScene = useCallback(() => {
         removeEnemy(positionID);
         removeEnemyFromScene(name);
-    }, [removeEnemyFromScene, name, positionID, removeEnemy]);
+    }, [removeEnemyFromScene, name, positionID]);
 
     useEffect(() => {
         if (!enemy) return; //on death
@@ -62,7 +60,7 @@ export const Enemy = ({ type, name, asset, behaviour, radius, health, removeEnem
             health
         );
         setPositionID(id);
-    }, [enemy, radius, addEnemy, name, removeEnemyFromScene, health, addBulletGroup]);
+    }, [enemy, radius, name, removeEnemyFromScene, health, addBulletGroup]);
 
     useBeforeRender(() => {
         if (enemyRef.current && !enemy) {

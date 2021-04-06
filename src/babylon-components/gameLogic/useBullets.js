@@ -10,7 +10,7 @@ import { makeBulletMaterial } from '../bullets/materials';
 import { makeBulletMesh } from '../bullets/meshes';
 import { makeBulletPattern } from '../bullets/patterns';
 import { makeName } from '../hooks/useName';
-import { globalActorRefs, allBullets } from './StaticRefs';
+import { globalActorRefs, allBullets, killEnemy } from './StaticRefs';
 import { RandVector3 } from '../BabylonUtils';
 
 const hitParticleRandomization = [
@@ -22,7 +22,7 @@ const hitParticleRandomization = [
 let playHitSound = false;
 let framesSincePlayHit = 0;
 
-export const useBullets = (assets, environmentCollision, killEnemy, addEffect) => {
+export const useBullets = (assets, environmentCollision, addEffect) => {
     const scene = useScene();
     const { setGlobal } = useContext(GlobalsContext);
     const frame = useRef(0);

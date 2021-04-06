@@ -3,15 +3,13 @@ import { useContext, useEffect, useMemo, useRef } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { playerBombShoot } from '../../../../sounds/SFX';
 import { AnimationContext } from '../../../gameLogic/GeneralContainer';
-import { globalActorRefs } from '../../../gameLogic/StaticRefs';
-import { usePositions } from '../../../gameLogic/usePositions';
+import { globalActorRefs, killEnemy } from '../../../gameLogic/StaticRefs';
 import { useDoSequence } from '../../../hooks/useDoSequence';
 import { useName } from '../../../hooks/useName';
 
 const initialVelocity = 4;
 
 export const ReimuBombObject = ({ color, delay, ...props }) => {
-    const { killEnemy } = usePositions();
 
     const sphereRef = useRef();
     const timeDelta = useRef(0);

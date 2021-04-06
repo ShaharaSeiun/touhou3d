@@ -21,6 +21,30 @@ export const globalActorRefs = {
     enemyIndex: 0,
 };
 
+export const addEnemy = (position, radius, onDeath, health) => {
+    const indexToAdd = globalActorRefs.enemyIndex;
+    globalActorRefs.enemies[indexToAdd] = {
+        position,
+        health,
+        radius,
+        onDeath,
+    };
+    globalActorRefs.enemyIndex = (globalActorRefs.enemyIndex + 1) % MAX_ENEMIES;
+    return indexToAdd;
+}
+
+export const removeEnemy = (id) => {
+    globalActorRefs.enemies[id] = enemyDefaultVals;
+};
+
+export const killEnemy = (id) => {
+    if (!globalActorRefs.enemies[id].dead) {
+        globalActorRefs.enemies[id].onDeath();
+        globalActorRefs.enemies[id].dead = true;
+        removeEnemy(id);
+    }
+}
+
 export const bufferMatricesSource = new Float32Array(MAX_BULLETS_PER_GROUP * 16);
 for (let i = 0; i < MAX_BULLETS_PER_GROUP; i++) {
     const matrix = Matrix.Identity();
