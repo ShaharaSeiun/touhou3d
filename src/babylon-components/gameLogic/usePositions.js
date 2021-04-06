@@ -1,39 +1,39 @@
-import { Vector3 } from "@babylonjs/core";
 import { useCallback } from "react";
 import { useBeforeRender } from "react-babylonjs";
 import { MAX_ENEMIES } from "../../utils/Constants";
-import { actorPositions } from "./StaticRefs";
-import { staticReplace } from "../../utils/Utils"
+import { enemyDefaultVals, globalActorRefs } from "./StaticRefs";
 
 export const usePositions = () => {
-    const addEnemy = useCallback((position, radius, killSelf, health) => {
-        const indexToAdd = actorPositions.enemyIndex
-        staticReplace(actorPositions, "enemies", indexToAdd, position);
-        staticReplace(actorPositions, "enemyHealths", indexToAdd, health);
-        staticReplace(actorPositions, "enemyRadii", indexToAdd, radius);
-        staticReplace(actorPositions, "enemyKillSelfs", indexToAdd, killSelf);
-        actorPositions.enemyIndex = (actorPositions.enemyIndex + 1) % MAX_ENEMIES;
+    const addEnemy = useCallback((position, radius, onDeath, health) => {
+        const indexToAdd = globalActorRefs.enemyIndex
+        globalActorRefs.enemies[indexToAdd] = {
+            position,
+            health,
+            radius,
+            onDeath
+        }
+        globalActorRefs.enemyIndex = (globalActorRefs.enemyIndex + 1) % MAX_ENEMIES;
         return indexToAdd;
     }, [])
 
     const removeEnemy = useCallback((id) => {
-        staticReplace(actorPositions, "enemies", id, new Vector3(-1000000, -1000000, -1000000));
-        staticReplace(actorPositions, "enemyKillSelfs", id, () => {});
+        globalActorRefs.enemies[id] = enemyDefaultVals
     }, [])
 
     const killEnemy = useCallback((id) => {
-        if(!actorPositions.enemyKillSelfs[id].dead){
-            actorPositions.enemyKillSelfs[id]();
-            actorPositions.enemyKillSelfs[id].dead = true;
+        if(!globalActorRefs.enemies[id].dead){
+            globalActorRefs.enemies[id].onDeath();
+            globalActorRefs.enemies[id].dead = true;
             removeEnemy(id);
         }
     }, [removeEnemy])
 
     useBeforeRender(() => {
-        actorPositions.enemies.forEach((vector, i) => {
-            actorPositions.enemiesBuffer[i * 3 + 0] = vector.x
-            actorPositions.enemiesBuffer[i * 3 + 1] = vector.y
-            actorPositions.enemiesBuffer[i * 3 + 2] = vector.z
+        globalActorRefs.enemies.forEach((enemy, i) => {
+            globalActorRefs.enemiesBuffer[i * 3 + 0] = enemy.position.x
+            globalActorRefs.enemiesBuffer[i * 3 + 1] = enemy.position.y
+            globalActorRefs.enemiesBuffer[i * 3 + 2] = enemy.position.z
+            globalActorRefs.enemyRadiiBuffer[i] = enemy.radius;
         })
     })
 

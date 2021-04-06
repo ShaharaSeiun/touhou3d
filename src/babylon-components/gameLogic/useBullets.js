@@ -10,7 +10,7 @@ import { makeBulletMaterial } from '../bullets/materials';
 import { makeBulletMesh } from '../bullets/meshes';
 import { makeBulletPattern } from '../bullets/patterns';
 import { makeName } from '../hooks/useName';
-import { actorPositions, allBullets } from './StaticRefs';
+import { globalActorRefs, allBullets } from './StaticRefs';
 import { RandVector3 } from '../BabylonUtils';
 
 const hitParticleRandomization = [[-0.3, 0.3], [-0.3, 0.3], [-0.3, 0.3]]
@@ -84,15 +84,15 @@ export const useBullets = (assets, environmentCollision, killEnemy, addEffect) =
                     collisions.forEach(collision => {
                         if(collision.collisionID > 10000 - MAX_ENEMIES){
                             const enemyID = 10000 - collision.collisionID;
-                            actorPositions.enemyHealths[enemyID]--;
+                            globalActorRefs.enemies[enemyID].health--;
                             playHitSound = true;
-                            if(actorPositions.enemies[enemyID]){
-                                addEffect(actorPositions.enemies[enemyID].clone().add(
+                            if(globalActorRefs.enemies[enemyID]){
+                                addEffect(globalActorRefs.enemies[enemyID].position.clone().add(
                                     new RandVector3(...hitParticleRandomization)
                                 ), "hitParticles")
                             }
                             
-                            if(actorPositions.enemyHealths[enemyID] <= 0){
+                            if(globalActorRefs.enemies[enemyID].health <= 0){
                                 killEnemy(enemyID);
                             }
                         }

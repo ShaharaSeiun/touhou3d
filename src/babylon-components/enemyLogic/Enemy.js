@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import { useBeforeRender } from 'react-babylonjs';
 import { useAddBulletGroup } from '../hooks/useAddBulletGroup';
 import { PositionsContext } from '../gameLogic/GeneralContainer';
-import { actorPositions } from '../gameLogic/StaticRefs';
+import { globalActorRefs } from '../gameLogic/StaticRefs';
 import { FairyBase } from '../enemyActors/FairyBase';
 import { useAssets } from '../hooks/useAssets';
 import { RandomEnemyBehaviour } from '../enemyBehaviours/RandomEnemyBehaviour'
@@ -60,10 +60,11 @@ export const Enemy = ({type, name, asset, behaviour, radius, health, removeEnemy
         if(enemyRef.current && !enemy){
             setEnemy(enemyRef.current);
         }
-        if(!enemy) return;
+        if(!enemy || !positionID) return;
 
         const enemyWorldPosition = enemy.getAbsolutePosition();
-        actorPositions.enemies[positionID] = enemyWorldPosition;
+
+        globalActorRefs.enemies[positionID].position = enemyWorldPosition;
     })
 
     let enemyMesh;

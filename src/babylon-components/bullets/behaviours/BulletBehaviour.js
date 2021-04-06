@@ -4,7 +4,7 @@ import { v4 } from "uuid";
 import { CustomCustomProceduralTexture } from "../../CustomCustomProceduralTexture";
 import { makeTextureFromBlank, makeTextureFromVectors, parallelReducer } from "../BulletUtils";
 import { ARENA_MAX, ARENA_MIN, REDUCER_ENABLED } from "../../../utils/Constants";
-import { actorPositions } from "../../gameLogic/StaticRefs";
+import { globalActorRefs } from "../../gameLogic/StaticRefs";
 
 
 const makeComputeProceduralTexture = (shader, initialPositionTexture, initialVelocityTexture, initialCollisionTexture, initialValuesFunction, WIDTH, scene) => {
@@ -12,7 +12,7 @@ const makeComputeProceduralTexture = (shader, initialPositionTexture, initialVel
     proceduralTexture.setTexture("velocitySampler", initialVelocityTexture);
     proceduralTexture.setTexture("positionSampler", initialPositionTexture);
     proceduralTexture.setTexture("collisionSampler", initialCollisionTexture);
-    proceduralTexture.setVector3("playerPosition", actorPositions.player);
+    proceduralTexture.setVector3("playerPosition", globalActorRefs.player.position);
     proceduralTexture.setVector2("resolution", new Vector2(WIDTH, WIDTH));
     proceduralTexture.setFloat("delta", 0.001);
 
@@ -161,12 +161,12 @@ export class BulletBehaviour{
         outputPositionTexture.setTexture("velocitySampler", inputVelocityTexture);
         outputPositionTexture.setTexture("collisionSampler", inputCollisionTexture);
         outputPositionTexture.setFloat("delta", deltaS);
-        outputPositionTexture.setVector3("playerPosition", actorPositions.player);
+        outputPositionTexture.setVector3("playerPosition", globalActorRefs.player.position);
         outputVelocityTexture.setTexture("positionSampler", inputPositionTexture);
         outputVelocityTexture.setTexture("velocitySampler", inputVelocityTexture);
         outputVelocityTexture.setTexture("collisionSampler", inputCollisionTexture);
         outputVelocityTexture.setFloat("delta", deltaS);
-        outputVelocityTexture.setVector3("playerPosition", actorPositions.player);
+        outputVelocityTexture.setVector3("playerPosition", globalActorRefs.player.position);
 
         outputCollisionTexture.setTexture("positionSampler", inputPositionTexture);
         outputCollisionTexture.setTexture("velocitySampler", inputVelocityTexture);

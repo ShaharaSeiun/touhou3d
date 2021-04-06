@@ -3,7 +3,7 @@ import React, { useRef } from 'react'
 import {  useBeforeRender } from 'react-babylonjs';
 import { useControl } from '../../hooks/useControl';
 import {LATERAL_SPEED, ARENA_WIDTH, ARENA_HEIGHT, ARENA_FLOOR, ARENA_LENGTH} from "../../../utils/Constants"
-import { actorPositions } from '../../gameLogic/StaticRefs';
+import { globalActorRefs } from '../../gameLogic/StaticRefs';
 
 export const PlayerMovement = ({children}) => {
     const transformNodeRef = useRef();
@@ -26,7 +26,7 @@ export const PlayerMovement = ({children}) => {
         if(position.y > ARENA_HEIGHT) position.y = ARENA_HEIGHT
         if(position.y < ARENA_FLOOR) position.y = ARENA_FLOOR
 
-        actorPositions.player = transformNodeRef.current.getAbsolutePosition();
+        globalActorRefs.player.position = transformNodeRef.current.getAbsolutePosition();
     })
 
     return <transformNode ref={transformNodeRef} name="playerTransform" position={new Vector3(0, 5, -ARENA_LENGTH/2)}>

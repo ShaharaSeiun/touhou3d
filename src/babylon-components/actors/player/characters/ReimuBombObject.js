@@ -3,7 +3,7 @@ import { useContext, useEffect, useMemo, useRef } from "react"
 import { useBeforeRender, useScene } from "react-babylonjs";
 import { playerBombShoot } from "../../../../sounds/SFX";
 import { AnimationContext } from "../../../gameLogic/GeneralContainer";
-import { actorPositions } from "../../../gameLogic/StaticRefs";
+import { globalActorRefs } from "../../../gameLogic/StaticRefs";
 import { usePositions } from "../../../gameLogic/usePositions";
 import { useDoSequence } from "../../../hooks/useDoSequence";
 import { useName } from "../../../hooks/useName";
@@ -76,12 +76,12 @@ export const ReimuBombObject = ({color, delay, ...props}) => {
         let closestEnemyDistance = Number.MAX_SAFE_INTEGER;
         let closestEnemyID;
         
-        actorPositions.enemies.forEach((enemy, id) => {
+        globalActorRefs.enemies.forEach((enemy, id) => {
             if(enemy.x < -500000) return;
-            const distance = Vector3.Distance(enemy, thisPosition);
+            const distance = Vector3.Distance(enemy.position, thisPosition);
             if(distance < closestEnemyDistance){
                 closestEnemyDistance = distance;
-                closestEnemyPosition = enemy;
+                closestEnemyPosition = enemy.position;
                 closestEnemyID = id;
             }
         })

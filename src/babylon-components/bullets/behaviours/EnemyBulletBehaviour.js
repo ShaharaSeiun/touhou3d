@@ -1,5 +1,5 @@
 import { Vector3 } from "@babylonjs/core";
-import { actorPositions } from "../../gameLogic/StaticRefs";
+import { globalActorRefs } from "../../gameLogic/StaticRefs";
 import { BulletBehaviour } from "./BulletBehaviour";
 
 export const BULLET_TYPE = {
@@ -23,8 +23,8 @@ export class EnemyBulletBehaviour extends BulletBehaviour{
     update(deltaS){
         const ready = super.update(deltaS);
         if(ready){
-            this.collisionTexture1.setVector3("playerPosition", actorPositions.player);
-            this.collisionTexture2.setVector3("playerPosition", actorPositions.player);
+            this.collisionTexture1.setVector3("playerPosition", globalActorRefs.player.position);
+            this.collisionTexture2.setVector3("playerPosition", globalActorRefs.player.position);
         }
         return ready;
     }
@@ -48,6 +48,6 @@ export class EnemyBulletBehaviour extends BulletBehaviour{
         texture.setVector3("bulletTypePack1", typeVector1);
         texture.setVector3("bulletTypePack2", typeVector2);
         texture.setFloat("bulletRadius", radius);
-        texture.setVector3("playerPosition", actorPositions.player);
+        texture.setVector3("playerPosition", globalActorRefs.player.position);
     }
 }

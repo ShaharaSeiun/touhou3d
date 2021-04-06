@@ -1,4 +1,4 @@
-import { actorPositions } from "../../gameLogic/StaticRefs";
+import { globalActorRefs } from "../../gameLogic/StaticRefs";
 import { BulletBehaviour } from "./BulletBehaviour";
 
 export class PlayerBulletBehaviour extends BulletBehaviour{
@@ -6,8 +6,8 @@ export class PlayerBulletBehaviour extends BulletBehaviour{
 
         const playerInitialValuesFunction = needsEnemies ? (texture) => {
             if(initialValuesFunction) initialValuesFunction(texture);
-            texture.setFloats("enemyPositions", actorPositions.enemiesBuffer);
-            texture.setFloats("enemyRadii", actorPositions.enemyRadii);
+            texture.setFloats("enemyPositions", globalActorRefs.enemiesBuffer);
+            texture.setFloats("enemyRadii", globalActorRefs.enemyRadiiBuffer);
         } : initialValuesFunction;
 
         super(positionShader, velocityShader, parent, collideWithEnvironment, playerInitialValuesFunction);
@@ -19,23 +19,23 @@ export class PlayerBulletBehaviour extends BulletBehaviour{
 
     bindCollisionVars = (texture) => {
         super.bindCollisionVars(texture);
-        texture.setFloats("enemyPositions", actorPositions.enemiesBuffer);
-        texture.setFloats("enemyRadii", actorPositions.enemyRadii);
+        texture.setFloats("enemyPositions", globalActorRefs.enemiesBuffer);
+        texture.setFloats("enemyRadii", globalActorRefs.enemyRadiiBuffer);
     }
 
     update(deltaS){
         const ready = super.update(deltaS);
 
         if(ready){
-            this.collisionTexture1.setFloats("enemyPositions", actorPositions.enemiesBuffer);
-            this.collisionTexture2.setFloats("enemyPositions", actorPositions.enemiesBuffer);
-            this.collisionTexture1.setFloats("enemyRadii", actorPositions.enemyRadii);
-            this.collisionTexture2.setFloats("enemyRadii", actorPositions.enemyRadii);
+            this.collisionTexture1.setFloats("enemyPositions", globalActorRefs.enemiesBuffer);
+            this.collisionTexture2.setFloats("enemyPositions", globalActorRefs.enemiesBuffer);
+            this.collisionTexture1.setFloats("enemyRadii", globalActorRefs.enemyRadiiBuffer);
+            this.collisionTexture2.setFloats("enemyRadii", globalActorRefs.enemyRadiiBuffer);
 
             if(this.needsEnemies){
                 ready.forEach(texture => {
-                    texture.setFloats("enemyPositions", actorPositions.enemiesBuffer);
-                    texture.setFloats("enemyRadii", actorPositions.enemyRadii);
+                    texture.setFloats("enemyPositions", globalActorRefs.enemiesBuffer);
+                    texture.setFloats("enemyRadii", globalActorRefs.enemyRadiiBuffer);
                 })
             }
         }
