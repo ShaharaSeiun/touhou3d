@@ -3,7 +3,7 @@ import nextPOT from 'next-power-of-two';
 import { v4 } from 'uuid';
 import { CustomCustomProceduralTexture } from '../../CustomCustomProceduralTexture';
 import { makeTextureFromBlank, makeTextureFromVectors, parallelReducer } from '../BulletUtils';
-import { ARENA_MAX, ARENA_MIN, REDUCER_ENABLED } from '../../../utils/Constants';
+import { ARENA_MAX, ARENA_MIN } from '../../../utils/Constants';
 import { globalActorRefs } from '../../gameLogic/StaticRefs';
 
 const makeComputeProceduralTexture = (
@@ -125,7 +125,7 @@ export class BulletBehaviour {
             scene
         );
 
-        if (REDUCER_ENABLED) {
+        if (this.isEnemyBullet) {
             const [collisionResult, reducerLayers] = parallelReducer(this.collisionTexture1, WIDTH, scene);
             this.collisionResult = collisionResult;
             this.reducerLayers = reducerLayers;
@@ -153,7 +153,7 @@ export class BulletBehaviour {
         this.initialVelocityTexture.dispose();
         this.initialCollisionTexture.dispose();
 
-        if (REDUCER_ENABLED) {
+        if (this.isEnemyBullet) {
             this.collisionResult.dispose();
             this.reducerLayers.forEach((reducer) => {
                 reducer.dispose();
@@ -233,9 +233,11 @@ export class BulletBehaviour {
 
         outputCollisionTexture.setTexture('positionSampler', inputPositionTexture);
         outputCollisionTexture.setTexture('velocitySampler', inputVelocityTexture);
-        this.reducerLayers[0].setTexture('source', outputCollisionTexture);
 
-        if (!REDUCER_ENABLED) {
+        if (this.isEnemyBullet) {
+            this.reducerLayers[0].setTexture('source', outputCollisionTexture);
+        }
+        else{
             this.collisionResult = outputCollisionTexture;
         }
 

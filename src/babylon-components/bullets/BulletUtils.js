@@ -94,9 +94,9 @@ export const prepareBulletInstruction = (instruction) => {
     return defaultInstruction;
 };
 
-export const makeTextureFromVectors = (vectors, scene, w = 1, fill = -1000000) => {
+export const makeTextureFromVectors = (vectors, scene, w = 1, fill = -510) => {
     const num = vectors.length;
-    const WIDTH = Math.max(nextPowerOfTwo(Math.ceil(Math.sqrt(num))), 4);
+    const WIDTH = Math.max(nextPowerOfTwo(Math.ceil(Math.sqrt(num))), 2);
     const data = new Float32Array(WIDTH * WIDTH * 4);
 
     let offset;
@@ -129,8 +129,8 @@ export const makeTextureFromVectors = (vectors, scene, w = 1, fill = -1000000) =
     );
 };
 
-export const makeTextureFromBlank = (num, scene, w = 1, fill = -1000000) => {
-    const WIDTH = Math.max(nextPowerOfTwo(Math.ceil(Math.sqrt(num))), 4);
+export const makeTextureFromBlank = (num, scene, w = 1, fill = -510) => {
+    const WIDTH = Math.max(nextPowerOfTwo(Math.ceil(Math.sqrt(num))), 2);
     const data = new Float32Array(WIDTH * WIDTH * 4);
 
     let offset;

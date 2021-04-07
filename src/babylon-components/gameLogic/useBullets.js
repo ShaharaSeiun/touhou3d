@@ -11,13 +11,6 @@ import { makeBulletMesh } from '../bullets/meshes';
 import { makeBulletPattern } from '../bullets/patterns';
 import { makeName } from '../hooks/useName';
 import { globalActorRefs, allBullets, killEnemy } from './StaticRefs';
-import { RandVector3 } from '../BabylonUtils';
-
-const hitParticleRandomization = [
-    [-0.3, 0.3],
-    [-0.3, 0.3],
-    [-0.3, 0.3],
-];
 
 let playHitSound = false;
 let framesSincePlayHit = 0;
@@ -78,18 +71,16 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
 
         Object.values(allBullets).forEach((bulletGroup) => {
             if (bulletGroup.behaviour.isPlayerBullet) {
-                bulletGroup.behaviour.collisionResult.readPixels().then((buffer) => {
+                bulletGroup.behaviour.collisionTexture1.readPixels().then((buffer) => {
                     const collisions = convertPlayerBulletCollisions(buffer);
                     collisions.forEach((collision) => {
-                        if (collision.collisionID > 10000 - MAX_ENEMIES) {
-                            const enemyID = 10000 - collision.collisionID;
+                        if (collision.collisionID > MAX_ENEMIES && collision.collisionID < MAX_ENEMIES * 2.) {
+                            const enemyID = collision.collisionID - MAX_ENEMIES;
                             globalActorRefs.enemies[enemyID].health--;
                             playHitSound = true;
                             if (globalActorRefs.enemies[enemyID]) {
                                 addEffect(
-                                    globalActorRefs.enemies[enemyID].position
-                                        .clone()
-                                        .add(new RandVector3(...hitParticleRandomization)),
+                                    collision.hit,
                                     'hitParticles'
                                 );
                             }
@@ -137,6 +128,14 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
         });
 
         if (toRemove.length > 0) dispose(toRemove);
+
+        globalActorRefs.enemies.forEach((enemy, i) => {
+            const offset = i * 3;
+            globalActorRefs.enemiesBuffer[offset + 0] = enemy.position.x
+            globalActorRefs.enemiesBuffer[offset + 1] = enemy.position.y
+            globalActorRefs.enemiesBuffer[offset + 2] = enemy.position.z
+            globalActorRefs.enemyRadiiBuffer[i] = enemy.radius;
+        })
     });
 
     return { disposeSingle, dispose, addBulletGroup };

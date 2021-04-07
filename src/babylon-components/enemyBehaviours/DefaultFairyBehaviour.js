@@ -4,11 +4,13 @@ import { randVectorToPosition } from '../BabylonUtils';
 import { AnimationContext } from '../gameLogic/GeneralContainer';
 import { globalActorRefs } from '../gameLogic/StaticRefs';
 import { useDoSequence } from '../hooks/useDoSequence';
+import { useAddBulletGroup } from '../hooks/useAddBulletGroup';
 
 export const DefaultFairyBehaviour = ({ children, leaveScene, spawn }) => {
     const transformNodeRef = useRef();
     const startPosition = useMemo(() => randVectorToPosition(spawn), [spawn]);
     const { registerAnimation } = useContext(AnimationContext);
+    const addBulletGroup = useAddBulletGroup();
 
     const actionsTimings = useMemo(() => [0, 2, 5], []);
 
@@ -54,8 +56,8 @@ export const DefaultFairyBehaviour = ({ children, leaveScene, spawn }) => {
                 );
             },
             leaveScene,
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         ],
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [leaveScene]
     );
 

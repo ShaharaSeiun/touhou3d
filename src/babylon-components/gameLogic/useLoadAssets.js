@@ -11,8 +11,6 @@ import {
 import { useCallback, useState, useEffect } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { makeSpriteSheetAnimation } from '../BabylonUtils';
-import { makeParticleSystemFromSingle } from '../effects/makeParticleSystem';
-import { SYSTEMS_PER_WHEEL } from '../../utils/Constants';
 import { capFirst } from '../../utils/Utils';
 
 export const useLoadAssets = () => {
@@ -155,6 +153,7 @@ export const useLoadAssets = () => {
                         scene
                     );
                     mesh.isVisible = false;
+                    return mesh;
                 },
             },
             {
@@ -220,13 +219,7 @@ export const useLoadAssets = () => {
                 case 'particles':
                     new ParticleHelper.CreateAsync(asset.json, scene, true).then(function (set) {
                         set.systems[0].emitter = new Vector3(0, 0, 0);
-                        tempAssets[asset.name] = [];
-
-                        for (let i = 0; i < SYSTEMS_PER_WHEEL; i++) {
-                            tempAssets[asset.name].push(makeParticleSystemFromSingle(set.systems[0], asset.name + i));
-                        }
-
-                        tempAssets[asset.name].curWheelIndex = 0;
+                        tempAssets[asset.name] = set.systems[0];
                     });
                     break;
                 case 'texture':

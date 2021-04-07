@@ -3,7 +3,7 @@
         {
             "name": "New Particle System",
             "id": "f207d1a3-438b-4818-8ae1-d3b9c624bc3d",
-            "capacity": 10000,
+            "capacity": 500,
             "emitter": [0, 0, 0],
             "particleEmitterType": {
                 "type": "SphereParticleEmitter",
@@ -34,7 +34,7 @@
             "maxEmitPower": -2,
             "minLifeTime": 0.5,
             "maxLifeTime": 0.5,
-            "emitRate": 50,
+            "emitRate": 500,
             "gravity": [0, 0, 0],
             "noiseStrength": [10, 10, 10],
             "color1": [1, 0, 0, 1],

@@ -46,6 +46,7 @@ export const PlayerCamera = () => {
     }, [canvas, cameraHandler]);
 
     useBeforeRender(() => {
+        if(!targetRef.current) return;
         target.copyFrom(targetRef.current.getAbsolutePosition());
     });
 

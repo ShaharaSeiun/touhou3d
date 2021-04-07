@@ -3,7 +3,7 @@
         {
             "name": "deathParticles",
             "id": "305e69a1-1b94-4d53-9072-b3701ccef8a9",
-            "capacity": 1000,
+            "capacity": 500,
             "emitterId": "a26a3fca-2327-4f38-b94f-a04a255da8d5",
             "particleEmitterType": {
                 "type": "SphereParticleEmitter",
@@ -34,7 +34,7 @@
             "maxEmitPower": 10,
             "minLifeTime": 1,
             "maxLifeTime": 1,
-            "emitRate": 50,
+            "emitRate": 500,
             "gravity": [0, 0, 0],
             "noiseStrength": [10, 10, 10],
             "color1": [0.65, 0.51, 1, 1],

@@ -11,18 +11,20 @@ export const uniformSnippet = glsl`
 
 export const mainHeaderSnippet = glsl`
     vec2 uv = gl_FragCoord.xy / resolution.xy;
-    float id = (gl_FragCoord.x - 0.5) + ((gl_FragCoord.y - 0.5) * resolution.x) - 1.;
+    float id = (gl_FragCoord.x - 0.5) + ((gl_FragCoord.y - 0.5) * resolution.x);
 
     vec3 position = texture2D( positionSampler, uv ).xyz;
     vec3 velocity = texture2D( velocitySampler, uv ).xyz;
     vec4 collision = texture2D( collisionSampler, uv );
+
+    vec3 startPosition = position;
 `;
 
 export const collisionSnippet = glsl`
     float collidedWithAnything = clamp(collision.w, 0.0, 1.0);
     float noCollision = 1. - collidedWithAnything;
 
-    out_Position = (collidedWithAnything * vec4(-1000000., -1000000., -1000000., 1.)) + (noCollision * out_Position);
+    out_Position = (collidedWithAnything * vec4(-510., -510., -510., 1.)) + (noCollision * out_Position);
 `;
 
 export const playerBulletCollisionPixelShader = glsl`
@@ -45,21 +47,19 @@ export const playerBulletCollisionPixelShader = glsl`
         //Bullet colliding with ceiling?
         collision = max(collision, collideWithEnvironment.z * float(position.y > arenaMax.y));
 
-        vec3 dPosition = vec3(0., 0., 0.);
-
         for(int i = 0; i < ${MAX_ENEMIES}; i ++){
             int offset = i * 3;
             vec3 enemyPosition = vec3(enemyPositions[offset], enemyPositions[offset + 1], enemyPositions[offset + 2]);
             float enemyBulletDistance = distance(position, enemyPosition);
             float close = float(enemyBulletDistance < enemyRadii[i]);
-            collision = max(collision, close * (10000. - float(i)));
+            collision = max(collision, close * (${MAX_ENEMIES}. + float(i)));
         }
 
 
         //Bullet exists in scene?
-        collision = collision * float(position.y > -500000.);
+        collision = collision * float(position.y > -500.);
 
-        gl_FragColor = vec4(0., 0., 0., collision);
+        gl_FragColor = vec4(position, collision);
     }
 `;
 
@@ -112,7 +112,7 @@ export const enemyBulletCollisionPixelShader = glsl`
         vec4 collision = vec4(x, y, z, w);
 
         //Bullet exists in scene?
-        collision = collision * float(position.y > -500000.);
+        collision = collision * float(position.y > -500.);
 
         gl_FragColor = collision;
     }

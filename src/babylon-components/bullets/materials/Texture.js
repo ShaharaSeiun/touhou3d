@@ -6,10 +6,11 @@ import { commonVertexShader } from './Common';
 export const textureVertexShader = commonVertexShader;
 export const textureFragmentShader = glsl`
     uniform sampler2D textureSampler;
+    uniform float alpha;
     varying vec2 vUV;
 
     void main() {
-        gl_FragColor = texture(textureSampler, vUV);
+        gl_FragColor = vec4(texture(textureSampler, vUV).xyz, alpha);
     }
 `;
 
@@ -28,7 +29,7 @@ export const makeTextureMaterial = (materialOptions, assets, scene) => {
         }
     );
     _material.setTexture('textureSampler', assets[materialOptions.texture]);
-    _material.alpha = materialOptions.alpha || (materialOptions.hasAlpha && 0.5) || 1;
+    _material.setFloat('alpha', materialOptions.alpha || (materialOptions.hasAlpha && 0.01) || 1);
 
     return _material;
 };

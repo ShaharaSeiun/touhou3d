@@ -1,112 +1,23 @@
 import { Animation, BezierCurveEase, Color3, Space, StandardMaterial, TrailMesh, Vector3 } from '@babylonjs/core';
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useContext, useMemo, useRef, useState } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
-import { useName } from '../../../hooks/useName';
-import { useKeydown, useKeyup } from '../../../../hooks/useKeydown';
-import { playerShoot } from '../../../../sounds/SFX';
-import { useNormalizedFrameSkip } from '../../../hooks/useNormalizedFrameSkip';
-import { useControl } from '../../../hooks/useControl';
-import { useTarget } from '../../../hooks/useTarget';
-import { allBullets } from '../../../gameLogic/StaticRefs';
-import { useEffects } from '../../../gameLogic/useEffects';
+import { useName } from '../../../../hooks/useName';
+import { useKeydown, useKeyup } from '../../../../../hooks/useKeydown';
+import { useEffects } from '../../../../gameLogic/useEffects';
 import { ReimuBombObject } from './ReimuBombObject';
-import { useDoSequence } from '../../../hooks/useDoSequence';
-import { AnimationContext, BulletsContext, PauseContext } from '../../../gameLogic/GeneralContainer';
-import { PlayerUILeft } from './PlayerUILeft';
-import { PlayerUIRight } from './PlayerUIRight';
-import { globals, GlobalsContext } from '../../../../components/GlobalsContainer';
-import { calcPowerClass } from '../PlayerUtils';
-import { PLAYER_BULLETS_WHEEL_LENGTH } from '../../../../utils/Constants';
+import { useDoSequence } from '../../../../hooks/useDoSequence';
+import { AnimationContext } from '../../../../gameLogic/GeneralContainer';
+import { PlayerUILeft } from '../PlayerUILeft';
+import { PlayerUIRight } from '../PlayerUIRight';
+import { globals, GlobalsContext } from '../../../../../components/GlobalsContainer';
+import { calcPowerClass } from '../../PlayerUtils';
+import { ReimuLinearBulletEmitter } from './ReimuLinearBulletEmitter';
 
 const z = new Vector3(0, 0, 1);
 const focusPosition1 = new Vector3(0.5, 0, 0);
 const focusPosition2 = new Vector3(-0.5, 0, 0);
 const unfocusPosition1 = new Vector3(1, 0, 0);
 const unfocusPosition2 = new Vector3(-1, 0, 0);
-
-//15 bullets per second
-let bulletFrameSkip = 5;
-
-const shotInstruction = (powerClass, initialVelocity) => {
-    let shotSourcesLinear;
-    let shotSourcesTracking;
-
-    if (powerClass === 0) {
-        shotSourcesLinear = [new Vector3(0, 0, 0.15)];
-    } else if (powerClass === 1) {
-        shotSourcesLinear = [new Vector3(0, 0, 0.15)];
-        shotSourcesTracking = [new Vector3(0, 0, 0.15)];
-    } else if (powerClass === 2) {
-        shotSourcesLinear = [
-            new Vector3(0.3 * Math.cos(2.09 * 0), 0.3 * Math.sin(2.09 * 0), 0.15),
-            new Vector3(0.3 * Math.cos(2.09 * 1), 0.3 * Math.sin(2.09 * 1), 0.15),
-            new Vector3(0.3 * Math.cos(2.09 * 2), 0.3 * Math.sin(2.09 * 2), 0.15),
-        ];
-        shotSourcesTracking = [new Vector3(0, 0, 0.15)];
-    } else if (powerClass === 3) {
-        shotSourcesLinear = [
-            new Vector3(0.3 * Math.cos(2.09 * 0), 0.3 * Math.sin(2.09 * 0), 0.15),
-            new Vector3(0.3 * Math.cos(2.09 * 1), 0.3 * Math.sin(2.09 * 1), 0.15),
-            new Vector3(0.3 * Math.cos(2.09 * 2), 0.3 * Math.sin(2.09 * 2), 0.15),
-        ];
-        shotSourcesTracking = [new Vector3(0, 0.3, 0.15), new Vector3(0, -0.3, 0.15)];
-    }
-
-    const instructions = [
-        {
-            type: 'shoot',
-            materialOptions: {
-                material: 'texture',
-                texture: 'reimu_ofuda',
-                hasAlpha: true,
-                doubleSided: true,
-            },
-            patternOptions: {
-                pattern: 'empty',
-                num: PLAYER_BULLETS_WHEEL_LENGTH * shotSourcesLinear.length,
-            },
-            meshOptions: {
-                mesh: 'card',
-            },
-            behaviourOptions: {
-                behaviour: 'playerShot',
-                shotSources: shotSourcesLinear,
-                shotSpeed: 20,
-            },
-            lifespan: Infinity,
-            wait: 0,
-        },
-    ];
-
-    if (powerClass > 0) {
-        instructions.push({
-            type: 'shoot',
-            materialOptions: {
-                material: 'texture',
-                texture: 'reimu_ofuda_blue',
-                hasAlpha: true,
-                doubleSided: true,
-            },
-            patternOptions: {
-                pattern: 'empty',
-                num: PLAYER_BULLETS_WHEEL_LENGTH * shotSourcesTracking.length,
-            },
-            meshOptions: {
-                mesh: 'card',
-            },
-            behaviourOptions: {
-                behaviour: 'playerShotTracking',
-                initialShotVector: initialVelocity,
-                shotSources: shotSourcesTracking,
-                shotSpeed: 20,
-            },
-            lifespan: Infinity,
-            wait: 0,
-        });
-    }
-
-    return instructions;
-};
 
 export const Reimu = () => {
     const transformNodeRef = useRef();
@@ -117,16 +28,9 @@ export const Reimu = () => {
     const sphereRef2 = useRef();
     const trail1 = useRef();
     const trail2 = useRef();
-    const target = useTarget();
     const name = useName('reimu');
-    const frameSkip = useNormalizedFrameSkip(bulletFrameSkip);
-    const { addBulletGroup, dispose } = useContext(BulletsContext);
-    const SHOOT = useControl('SHOOT');
-    const [shot1Id, setShot1Ids] = useState([]);
-    const [shot2Id, setShot2Ids] = useState([]);
     const [isBombing, setIsBombing] = useState(false);
     const { registerAnimation } = useContext(AnimationContext);
-    const { paused } = useContext(PauseContext);
     const { setGlobal } = useContext(GlobalsContext);
     const [powerClass, setPowerClass] = useState(0);
     const addEffect = useEffects();
@@ -178,7 +82,7 @@ export const Reimu = () => {
     });
     useKeydown('BOMB', () => {
         if (!globals.BOMB || isBombing) return;
-        setGlobal('BOMB', globals.BOMB - 1);
+        setGlobal('BOMB', 1);
         setIsBombing(true);
     });
 
@@ -225,68 +129,20 @@ export const Reimu = () => {
             () => {
                 setIsBombing(false);
             },
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         ],
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         []
     );
 
     useDoSequence(isBombing, actionsTimings, actions);
 
-    useEffect(() => {
-        if (!sphereTransformRef1.current || !sphereTransformRef2.current) return;
-
-        const ids1 = [addBulletGroup(sphereTransformRef1.current, shotInstruction(powerClass, [3, 0, 6])[0])];
-        if (powerClass > 0) {
-            ids1.push(addBulletGroup(sphereTransformRef1.current, shotInstruction(powerClass, [3, 0, 6])[1]));
-        }
-        const ids2 = [addBulletGroup(sphereTransformRef2.current, shotInstruction(powerClass, [-3, 0, 6])[0])];
-        if (powerClass > 0) {
-            ids2.push(addBulletGroup(sphereTransformRef2.current, shotInstruction(powerClass, [-3, 0, 6])[1]));
-        }
-
-        setShot1Ids(ids1);
-        setShot2Ids(ids2);
-
-        return () => {
-            ids1.forEach((shotId) => (allBullets[shotId].behaviour.firing = false));
-            ids2.forEach((shotId) => (allBullets[shotId].behaviour.firing = false));
-            window.setTimeout(() => {
-                dispose([...ids1, ...ids2]);
-            }, 5000);
-        };
-    }, [addBulletGroup, dispose, powerClass]);
-
     useBeforeRender((scene) => {
-        if (!sphereTransformRef1.current || !sphereTransformRef2.current || !transformNodeRef.current) return;
-        if (!transformNodeRef.current.shotFrame) {
-            transformNodeRef.current.shotFrame = 0;
-        }
-
-        if (SHOOT && !paused) {
-            playerShoot.play();
-        } else {
-            playerShoot.stop();
-        }
+        if (!sphereTransformRef1.current || !sphereTransformRef2.current) return;
 
         const deltaS = scene.paused ? 0 : scene.getEngine().getDeltaTime() / 1000;
 
         sphereRef1.current.rotate(z, deltaS, Space.WORLD);
         sphereRef2.current.rotate(z, -deltaS, Space.WORLD);
-
-        transformNodeRef.current.shotFrame += 1;
-
-        shot1Id.forEach((shotId) => (allBullets[shotId].behaviour.firing = false));
-        shot2Id.forEach((shotId) => (allBullets[shotId].behaviour.firing = false));
-        shot1Id.forEach((shotId) => (allBullets[shotId].behaviour.target = target));
-        shot2Id.forEach((shotId) => (allBullets[shotId].behaviour.target = target));
-
-        if (transformNodeRef.current.shotFrame > frameSkip) {
-            if (SHOOT && !paused) {
-                shot1Id.forEach((shotId) => (allBullets[shotId].behaviour.firing = true));
-                shot2Id.forEach((shotId) => (allBullets[shotId].behaviour.firing = true));
-            }
-            transformNodeRef.current.shotFrame = 0;
-        }
 
         const curPowerClass = calcPowerClass(globals.POWER);
         if (curPowerClass !== powerClass) setPowerClass(curPowerClass);
@@ -295,8 +151,9 @@ export const Reimu = () => {
     return (
         <transformNode name={name} ref={transformNodeRef}>
             <transformNode name={name + 'sphereTransformNode'} position={new Vector3(0, 0, 1)} ref={sphereTransformNodeRef}>
-                <transformNode ref={sphereTransformRef1} position={new Vector3(1, 0, 0)}>
+                <transformNode name={name + 'sphereTransform'} ref={sphereTransformRef1} position={new Vector3(1, 0, 0)}>
                     {!isBombing && <PlayerUIRight position={new Vector3(0, -0.6, 0)} />}
+                    <ReimuLinearBulletEmitter powerClass={powerClass}/>
                     <sphere
                         name={name + 'sphere1'}
                         scaling={new Vector3(0.5, 0.5, 0.5)}
@@ -308,7 +165,7 @@ export const Reimu = () => {
                         </standardMaterial>
                     </sphere>
                 </transformNode>
-                <transformNode ref={sphereTransformRef2} position={new Vector3(-1, 0, 0)}>
+                <transformNode name={name + 'sphereTransform'} ref={sphereTransformRef2} position={new Vector3(-1, 0, 0)}>
                     {!isBombing && <PlayerUILeft position={new Vector3(0, -0.6, 0)} />}
                     <sphere
                         name={name + 'sphere2'}

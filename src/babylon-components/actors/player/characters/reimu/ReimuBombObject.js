@@ -1,11 +1,11 @@
 import { Animation, Color3, StandardMaterial, TrailMesh, Vector3 } from '@babylonjs/core';
 import { useContext, useEffect, useMemo, useRef } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
-import { playerBombShoot } from '../../../../sounds/SFX';
-import { AnimationContext } from '../../../gameLogic/GeneralContainer';
-import { globalActorRefs, killEnemy } from '../../../gameLogic/StaticRefs';
-import { useDoSequence } from '../../../hooks/useDoSequence';
-import { useName } from '../../../hooks/useName';
+import { playerBombShoot } from '../../../../../sounds/SFX';
+import { AnimationContext } from '../../../../gameLogic/GeneralContainer';
+import { globalActorRefs, killEnemy } from '../../../../gameLogic/StaticRefs';
+import { useDoSequence } from '../../../../hooks/useDoSequence';
+import { useName } from '../../../../hooks/useName';
 
 const initialVelocity = 4;
 
@@ -22,8 +22,8 @@ export const ReimuBombObject = ({ color, delay, ...props }) => {
         () => [
             0,
             delay,
-            //eslint-disable-next-line react-hooks/exhaustive-deps
         ],
+        //eslint-disable-next-line react-hooks/exhaustive-deps
         []
     );
 
@@ -72,8 +72,8 @@ export const ReimuBombObject = ({ color, delay, ...props }) => {
                     )
                 );
             },
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         ],
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         []
     );
 
@@ -103,7 +103,7 @@ export const ReimuBombObject = ({ color, delay, ...props }) => {
         let closestEnemyID;
 
         globalActorRefs.enemies.forEach((enemy, id) => {
-            if (enemy.x < -500000) return;
+            if (enemy.x < -500) return;
             const distance = Vector3.Distance(enemy.position, thisPosition);
             if (distance < closestEnemyDistance) {
                 closestEnemyDistance = distance;
@@ -134,7 +134,7 @@ export const ReimuBombObject = ({ color, delay, ...props }) => {
     return (
         <transformNode name={name + 'transformNode'} {...props}>
             <sphere name={name + 'sphere'} ref={sphereRef} scaling={new Vector3(0, 0, 0)}>
-                <standardMaterial alpha={0.3} diffuseColor={color} emissiveColor={color} specularColor={new Color3(0, 0, 0)} />
+                <standardMaterial name={name + 'material'} alpha={0.3} diffuseColor={color} emissiveColor={color} specularColor={new Color3(0, 0, 0)} />
             </sphere>
             <pointLight name={name + 'pointLight'} position={new Vector3(0, 0, 0)} />
         </transformNode>

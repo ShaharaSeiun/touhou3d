@@ -12,8 +12,8 @@ export const CharacterPortrait = ({ name, side, active, emotion, index }) => {
                 side === 'left' ? -5 : 4,
                 5,
                 active ? 0 : index + 1
-                //eslint-disable-next-line react-hooks/exhaustive-deps
             ),
+    //eslint-disable-next-line react-hooks/exhaustive-deps
         [side]
     );
 

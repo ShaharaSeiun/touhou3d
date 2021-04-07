@@ -51,7 +51,7 @@ export const Enemy = ({ type, name, asset, behaviour, radius, health, removeEnem
     useEffect(() => {
         if (!enemy) return; //on death
         const id = addEnemy(
-            enemy.position,
+            enemy.getAbsolutePosition(),
             radius,
             () => {
                 addBulletGroup(enemy, deathInstruction);

@@ -43,23 +43,17 @@ export const playerShotTrackingBehaviourPositionPixelShader = glsl`
 `;
 
 export const playerShotTrackingBehaviourVelocityPixelShader = glsl`
-    uniform float delta;
-    uniform vec2 resolution;
-    uniform sampler2D positionSampler;
-    uniform sampler2D velocitySampler;
-    uniform float enemyPositions[${MAX_ENEMIES * 3}];
+    ${uniformSnippet}
 
     uniform float firing;
     uniform float frame;
     uniform float numSources;
     uniform vec3 shotVector;
+    uniform float enemyPositions[${MAX_ENEMIES * 3}];
+
 
     void main() {
-        vec2 uv = gl_FragCoord.xy / resolution;
-        float id = (gl_FragCoord.x - 0.5) + ((gl_FragCoord.y - 0.5) * resolution.x) - 1.;
-
-        vec3 position = texture2D( positionSampler, uv ).xyz;
-        vec4 velocity = texture2D( velocitySampler, uv );
+        ${mainHeaderSnippet}
 
         float currentWindowStart = frame * numSources;
         float currentWindowEnd = currentWindowStart + numSources;
@@ -86,14 +80,14 @@ export const playerShotTrackingBehaviourVelocityPixelShader = glsl`
         }
 
         vec3 towardsEnemy = normalize(closestPosition - position);
-        vec3 mutatedVelocity = (velocity.xyz * (1. - delta * 3.)) + (towardsEnemy * delta * 40.);
+        vec3 mutatedVelocity = (velocity.xyz * (1. - delta * 10.)) + (towardsEnemy * delta * 100.);
 
         float newClosest = float(closestPosition.x > -1000.);
         float notNewClosest = 1. - newClosest;
 
-        velocity = newClosest * vec4(mutatedVelocity, 1.) + notNewClosest * velocity;
+        velocity = newClosest * mutatedVelocity + notNewClosest * velocity;
 
-        gl_FragColor = (bulletNotEnabled * velocity) + (bulletEnabled * vec4(shotVector, 1.));
+        gl_FragColor = vec4((bulletNotEnabled * velocity) + (bulletEnabled * shotVector), 1.);
     }
 `;
 

@@ -13,7 +13,6 @@ import {
     CylinderDirectedParticleEmitter,
 } from '@babylonjs/core';
 import { _TypeStore } from '@babylonjs/core';
-import { SYSTEMS_PER_WHEEL } from '../../utils/Constants';
 
 const safeParticleParse = function (parsedParticleSystem, particleSystem, sceneOrEngine, rootUrl, sharedTexture) {
     var scene;
@@ -314,9 +313,7 @@ const safeClone = function (system, name, newEmitter) {
 };
 
 export const makeParticleSystem = (assets, particleSystemName, emitter) => {
-    const particleSystemArray = assets[particleSystemName];
-    particleSystemArray.curWheelIndex = (particleSystemArray.curWheelIndex + 1) % SYSTEMS_PER_WHEEL;
-    const particleSystem = particleSystemArray[particleSystemArray.curWheelIndex];
+    const particleSystem = assets[particleSystemName];
     particleSystem.emitter = emitter;
 
     return particleSystem;

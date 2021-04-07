@@ -43,10 +43,7 @@ export const playerShotBehaviourPositionPixelShader = glsl`
 `;
 
 export const playerShotBehaviourVelocityPixelShader = glsl`
-    uniform float delta;
-    uniform vec2 resolution;
-    uniform sampler2D positionSampler;
-    uniform sampler2D velocitySampler;
+    ${uniformSnippet}
 
     uniform float firing;
     uniform float frame;
@@ -54,10 +51,7 @@ export const playerShotBehaviourVelocityPixelShader = glsl`
     uniform vec3 shotVector;
 
     void main() {
-        vec2 uv = gl_FragCoord.xy / resolution;
-        float id = (gl_FragCoord.x - 0.5) + ((gl_FragCoord.y - 0.5) * resolution.x) - 1.;
-
-        vec4 velocity = texture2D( velocitySampler, uv );
+        ${mainHeaderSnippet}
 
         float currentWindowStart = frame * numSources;
         float currentWindowEnd = currentWindowStart + numSources;
@@ -65,7 +59,7 @@ export const playerShotBehaviourVelocityPixelShader = glsl`
         float bulletEnabled = float((id > (currentWindowStart - 0.1)) && (id < (currentWindowEnd - 0.1))) * firing;
         float bulletNotEnabled = 1. - bulletEnabled;
 
-        gl_FragColor = (bulletNotEnabled * velocity) + (bulletEnabled * vec4(shotVector, 1.));
+        gl_FragColor = (bulletNotEnabled * vec4(velocity, 1.)) + (bulletEnabled * vec4(shotVector, 1.));
     }
 `;
 
@@ -98,10 +92,10 @@ class PlayerShotBehaviour extends PlayerBulletBehaviour {
             const sourceOffset = this.parent.getAbsolutePosition();
             const shotVector = this.target.subtract(sourceOffset).normalize().scale(this.shotSpeed);
 
-            this.positionTexture1.setFloat('frame', this.bulletFrame + 0.001);
-            this.velocityTexture1.setFloat('frame', this.bulletFrame + 0.001);
-            this.positionTexture2.setFloat('frame', this.bulletFrame + 0.001);
-            this.velocityTexture2.setFloat('frame', this.bulletFrame + 0.001);
+            this.positionTexture1.setFloat('frame', this.bulletFrame);
+            this.velocityTexture1.setFloat('frame', this.bulletFrame);
+            this.positionTexture2.setFloat('frame', this.bulletFrame);
+            this.velocityTexture2.setFloat('frame', this.bulletFrame);
 
             this.positionTexture1.setFloat('firing', +this.firing);
             this.velocityTexture1.setFloat('firing', +this.firing);
@@ -119,7 +113,7 @@ class PlayerShotBehaviour extends PlayerBulletBehaviour {
             this.velocityTexture2.setVector3('sourceOffset', sourceOffset);
         }
 
-        this.bulletFrame = (this.bulletFrame + 1) % PLAYER_BULLETS_WHEEL_LENGTH;
+        this.bulletFrame = (this.bulletFrame + 1) % (PLAYER_BULLETS_WHEEL_LENGTH);
     }
 }
 

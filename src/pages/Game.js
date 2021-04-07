@@ -8,7 +8,7 @@ import { ControlsContainer } from '../components/ControlsContainer';
 import { BindControls } from '../babylon-components/BindControls';
 import { GeneralContainer } from '../babylon-components/gameLogic/GeneralContainer';
 import { Playground } from '../babylon-components/actors/Playground';
-import { Reimu } from '../babylon-components/actors/player/characters/Reimu';
+import { Reimu } from '../babylon-components/actors/player/characters/reimu/Reimu';
 import { PlayerMovement } from '../babylon-components/actors/player/PlayerMovement';
 import { PlayerCamera } from '../babylon-components/actors/player/PlayerCamera';
 import { FightRoot } from '../babylon-components/actors/FightRoot';

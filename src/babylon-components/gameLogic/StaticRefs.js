@@ -5,8 +5,8 @@ import { MAX_BULLETS_PER_GROUP, MAX_ENEMIES } from '../../utils/Constants';
 export const allBullets = {};
 
 export const enemyDefaultVals = {
-    position: new Vector3(-1000000, -1000000, -1000000),
-    health: -1000000,
+    position: new Vector3(-510, -510, -510),
+    health: -510,
     radius: 0,
     onDeath: () => {},
 };
@@ -16,7 +16,7 @@ export const globalActorRefs = {
     player: {
         position: new Vector3(0, 0, 0),
     },
-    enemiesBuffer: new Float32Array(times(MAX_ENEMIES * 3, () => -1000000)),
+    enemiesBuffer: new Float32Array(times(MAX_ENEMIES * 3, () => -510)),
     enemyRadiiBuffer: new Float32Array(times(MAX_ENEMIES, () => 0)),
     enemyIndex: 0,
 };
