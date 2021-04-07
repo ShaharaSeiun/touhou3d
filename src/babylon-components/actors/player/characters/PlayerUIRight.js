@@ -18,10 +18,10 @@ export const PlayerUIRight = ({ ...props }) => {
         textOnCtx(ctx, `Player: `, 0.12, 0.05, 0.5, textColor);
         textOnCtx(ctx, `Bomb: `, 0.12, 0.05, 0.65, textColor);
 
-        textOnCtx(ctx, `${globals.HISCORE}`, 0.12, 0.4, 0.2, textColor);
-        textOnCtx(ctx, `${globals.SCORE}`, 0.12, 0.4, 0.35, textColor);
-        textOnCtx(ctx, `${'★'.repeat(globals.PLAYER)}`, 0.12, 0.4, 0.5, textColor);
-        textOnCtx(ctx, `${'★'.repeat(globals.BOMB)}`, 0.12, 0.4, 0.65, textColor);
+        textOnCtx(ctx, `${Math.round(globals.HISCORE)}`, 0.12, 0.4, 0.2, textColor);
+        textOnCtx(ctx, `${Math.round(globals.SCORE)}`, 0.12, 0.4, 0.35, textColor);
+        textOnCtx(ctx, `${'★'.repeat(Math.round(globals.PLAYER))}`, 0.12, 0.4, 0.5, textColor);
+        textOnCtx(ctx, `${'★'.repeat(Math.round(globals.BOMB))}`, 0.12, 0.4, 0.65, textColor);
 
         textTexture.update();
     });

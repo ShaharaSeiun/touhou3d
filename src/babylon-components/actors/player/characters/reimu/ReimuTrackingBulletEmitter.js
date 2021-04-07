@@ -8,11 +8,12 @@ import { allBullets } from '../../../../gameLogic/StaticRefs';
 import { useControl } from '../../../../hooks/useControl';
 import { useTarget } from '../../../../hooks/useTarget';
 import { useNormalizedFrameSkip } from '../../../../hooks/useNormalizedFrameSkip';
+import { useName } from '../../../../hooks/useName';
 
 //15 bullets per second
 let bulletFrameSkip = 5;
 
-const shotInstruction = (powerClass, initialVelocity) => {
+const makeShotInstruction = (powerClass, initialVelocity) => {
     let shotSources;
 
     switch(powerClass){
@@ -22,6 +23,8 @@ const shotInstruction = (powerClass, initialVelocity) => {
             shotSources = [new Vector3(0, 0, 0.15)];
             break;
         case 2:
+            shotSources = [new Vector3(0, 0, 0.15)];
+            break;
         case 3:
             shotSources = [
                 new Vector3(0, 0.3, 0.15), 
@@ -38,6 +41,7 @@ const shotInstruction = (powerClass, initialVelocity) => {
             material: 'texture',
             texture: 'reimu_ofuda_blue',
             hasAlpha: true,
+            alpha: 0.003,
             doubleSided: true,
         },
         patternOptions: {
@@ -68,20 +72,22 @@ export const ReimuTrackingBulletEmitter = ({powerClass, initialVelocity, ...prop
     const SHOOT = useControl('SHOOT');
     const target = useTarget();
     const frameSkip = useNormalizedFrameSkip(bulletFrameSkip)
+    const name = useName("TrackingBulletEmitter")
 
     useEffect(() => {
         if (!transformNodeRef.current) return;
 
-        const id = addBulletGroup(transformNodeRef.current, shotInstruction(powerClass, initialVelocity));
+        const id = addBulletGroup(transformNodeRef.current, makeShotInstruction(powerClass, initialVelocity));
         setShotId(id);
 
         return () => {
-            allBullets[id].behaviour.firing = false;
+
+            allBullets[id].behaviour.disabled = true;
             window.setTimeout(() => {
                 disposeSingle(id);
             }, 5000);
         };
-    }, [addBulletGroup, disposeSingle, powerClass]);
+    }, [addBulletGroup, disposeSingle, powerClass, initialVelocity]);
 
     useBeforeRender((scene) => {
         if (!transformNodeRef.current) return;
@@ -106,6 +112,6 @@ export const ReimuTrackingBulletEmitter = ({powerClass, initialVelocity, ...prop
     });
 
     return (
-        <transformNode ref={transformNodeRef} {...props}/>
+        <transformNode name={name} ref={transformNodeRef} {...props}/>
     )
 }

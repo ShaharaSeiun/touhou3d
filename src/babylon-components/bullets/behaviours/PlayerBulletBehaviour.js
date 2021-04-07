@@ -6,7 +6,7 @@ export class PlayerBulletBehaviour extends BulletBehaviour {
         const playerInitialValuesFunction = needsEnemies
             ? (texture) => {
                   if (initialValuesFunction) initialValuesFunction(texture);
-                  texture.setFloats('enemyPositions', globalActorRefs.enemiesBuffer);
+                  texture.setFloats('enemyPositions', globalActorRefs.enemyPositionBuffer);
                   texture.setFloats('enemyRadii', globalActorRefs.enemyRadiiBuffer);
               }
             : initialValuesFunction;
@@ -20,7 +20,7 @@ export class PlayerBulletBehaviour extends BulletBehaviour {
 
     bindCollisionVars = (texture) => {
         super.bindCollisionVars(texture);
-        texture.setFloats('enemyPositions', globalActorRefs.enemiesBuffer);
+        texture.setFloats('enemyPositions', globalActorRefs.enemyPositionBuffer);
         texture.setFloats('enemyRadii', globalActorRefs.enemyRadiiBuffer);
     };
 
@@ -28,14 +28,14 @@ export class PlayerBulletBehaviour extends BulletBehaviour {
         const ready = super.update(deltaS);
 
         if (ready) {
-            this.collisionTexture1.setFloats('enemyPositions', globalActorRefs.enemiesBuffer);
-            this.collisionTexture2.setFloats('enemyPositions', globalActorRefs.enemiesBuffer);
+            this.collisionTexture1.setFloats('enemyPositions', globalActorRefs.enemyPositionBuffer);
+            this.collisionTexture2.setFloats('enemyPositions', globalActorRefs.enemyPositionBuffer);
             this.collisionTexture1.setFloats('enemyRadii', globalActorRefs.enemyRadiiBuffer);
             this.collisionTexture2.setFloats('enemyRadii', globalActorRefs.enemyRadiiBuffer);
 
             if (this.needsEnemies) {
                 ready.forEach((texture) => {
-                    texture.setFloats('enemyPositions', globalActorRefs.enemiesBuffer);
+                    texture.setFloats('enemyPositions', globalActorRefs.enemyPositionBuffer);
                     texture.setFloats('enemyRadii', globalActorRefs.enemyRadiiBuffer);
                 });
             }

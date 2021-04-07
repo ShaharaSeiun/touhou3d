@@ -6,6 +6,7 @@ import { CharacterPortrait } from './CharacterPortrait';
 import { StageStartQuote } from './StageStartQuote';
 import { IngameMenu } from './IngameMenu';
 import { selectSound } from '../../sounds/SFX';
+import { Notice } from './Notice';
 
 const mainCharacters = ['reimu'];
 
@@ -60,6 +61,7 @@ export const UI = () => {
             {activeCharacter && <CharacterDialogueText character={activeCharacter} text={activeCharacterText} />}
             {stageStartQuote && <StageStartQuote text={stageStartQuote} />}
             {paused && <IngameMenu />}
+            <Notice />
         </>
     );
 };

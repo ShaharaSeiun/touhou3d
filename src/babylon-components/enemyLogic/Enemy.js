@@ -66,7 +66,7 @@ export const Enemy = ({ type, name, asset, behaviour, radius, health, removeEnem
         if (enemyRef.current && !enemy) {
             setEnemy(enemyRef.current);
         }
-        if (!enemy || !positionID) return;
+        if (!enemy || !positionID || globalActorRefs.enemies[positionID].dead) return;
 
         const enemyWorldPosition = enemy.getAbsolutePosition();
 

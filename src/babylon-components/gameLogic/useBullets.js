@@ -1,4 +1,4 @@
-import { useCallback, useContext, useRef } from 'react';
+import { useCallback, useContext } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { globals, GlobalsContext } from '../../components/GlobalsContainer';
 import { enemyDamage, itemGet } from '../../sounds/SFX';
@@ -18,7 +18,6 @@ let framesSincePlayHit = 0;
 export const useBullets = (assets, environmentCollision, addEffect) => {
     const scene = useScene();
     const { setGlobal } = useContext(GlobalsContext);
-    const frame = useRef(0);
 
     const disposeSingle = useCallback((id) => {
         allBullets[id].dispose();
@@ -74,7 +73,7 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
                 bulletGroup.behaviour.collisionTexture1.readPixels().then((buffer) => {
                     const collisions = convertPlayerBulletCollisions(buffer);
                     collisions.forEach((collision) => {
-                        if (collision.collisionID > MAX_ENEMIES && collision.collisionID < MAX_ENEMIES * 2.) {
+                        if (collision.collisionID >= MAX_ENEMIES && collision.collisionID < MAX_ENEMIES * 2.) {
                             const enemyID = collision.collisionID - MAX_ENEMIES;
                             globalActorRefs.enemies[enemyID].health--;
                             playHitSound = true;
@@ -93,17 +92,16 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
                 });
             } else {
                 bulletGroup.behaviour.collisionResult.readPixels().then((buffer) => {
-                    frame.current++;
-                    if (frame.current % 2 === 0) return;
                     const collisions = convertEnemyBulletCollisions(buffer);
                     if (collisions.length > 0) {
                         const collision = collisions[0];
                         if (collision.point) {
-                            setGlobal('POINT', globals.POINT + collision.point);
+                            setGlobal('POINT', globals.POINT + collision.point/8);
                             itemGet.play();
                         }
                         if (collision.power) {
-                            setGlobal('POWER', globals.POWER + collision.power);
+                            console.log(collision.power);
+                            setGlobal('POWER', Math.min(globals.POWER + collision.power/8, 120));
                             itemGet.play();
                         }
                     }
@@ -131,9 +129,9 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
 
         globalActorRefs.enemies.forEach((enemy, i) => {
             const offset = i * 3;
-            globalActorRefs.enemiesBuffer[offset + 0] = enemy.position.x
-            globalActorRefs.enemiesBuffer[offset + 1] = enemy.position.y
-            globalActorRefs.enemiesBuffer[offset + 2] = enemy.position.z
+            globalActorRefs.enemyPositionBuffer[offset + 0] = enemy.position.x
+            globalActorRefs.enemyPositionBuffer[offset + 1] = enemy.position.y
+            globalActorRefs.enemyPositionBuffer[offset + 2] = enemy.position.z
             globalActorRefs.enemyRadiiBuffer[i] = enemy.radius;
         })
     });

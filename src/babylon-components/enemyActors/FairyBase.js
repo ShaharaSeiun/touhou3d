@@ -26,7 +26,7 @@ export const FairyBase = React.forwardRef(({ assetName, radius, mesh, ...props }
         mesh.dressBone = mesh.animationSkeleton.bones.filter((bone) => bone.name === 'dress')[0];
     }, [mesh]);
 
-    useBeforeRender(() => {
+    useBeforeRender((scene) => {
         if (!mesh) return;
         if (!ref.current) return;
 
@@ -35,17 +35,20 @@ export const FairyBase = React.forwardRef(({ assetName, radius, mesh, ...props }
             return;
         }
 
+        if(scene.paused) return;
+
+        const deltaS = scene.paused ? 0 : scene.getEngine().getDeltaTime() / 1000;
         const curPosition = ref.current.getAbsolutePosition();
-        const dPosition = curPosition.subtract(ref.current.lastPosition);
+        const dPosition = curPosition.subtract(ref.current.lastPosition).scale(0.15/deltaS);
         ref.current.lastPosition = curPosition.clone();
 
         if (!mesh.animFly) return;
-        mesh.animFly.speedRatio = dPosition.length() * 15 + 0.5;
+        mesh.animFly.speedRatio = dPosition.length() * (0.01/deltaS) + 0.5;
 
         if (!mesh.dressBone) return;
 
-        const rotX = clamp(dPosition.z * -10, -Math.PI / 2, Math.PI / 2);
-        const rotZ = clamp(dPosition.x * 10, -Math.PI / 2, Math.PI / 2);
+        const rotX = clamp(dPosition.z * -1, -Math.PI / 2, Math.PI / 2);
+        const rotZ = clamp(dPosition.x * 1, -Math.PI / 2, Math.PI / 2);
 
         mesh.dressBone.rotation = new Vector3(Math.PI + rotX, 0, rotZ);
     });

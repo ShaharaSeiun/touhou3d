@@ -64,8 +64,6 @@ export const playerShotTrackingBehaviourVelocityPixelShader = glsl`
         vec3 closestPosition = vec3(-500., -500., -500.);
         float closestDistance = 500.;
 
-        position = clamp(position, vec3(-510., -510., -510.), vec3(510., 510., 510.));
-
         //mutate velocity
         for(int i = 0; i < ${MAX_ENEMIES}; i ++){
             int offset = i * 3;
@@ -79,10 +77,11 @@ export const playerShotTrackingBehaviourVelocityPixelShader = glsl`
             closestDistance = min(closestDistance, enemyBulletDistance);
         }
 
-        vec3 towardsEnemy = normalize(closestPosition - position);
-        vec3 mutatedVelocity = (velocity.xyz * (1. - delta * 10.)) + (towardsEnemy * delta * 100.);
+        vec3 towardsEnemy = (closestPosition - position) + vec3(0.01, 0.01, 0.01);
+        vec3 towardsEnemyN = normalize(towardsEnemy);
+        vec3 mutatedVelocity = (velocity.xyz * (1. - delta * 10.)) + (towardsEnemyN * delta * 100.);
 
-        float newClosest = float(closestPosition.x > -1000.);
+        float newClosest = float(closestPosition.x > -250.);
         float notNewClosest = 1. - newClosest;
 
         velocity = newClosest * mutatedVelocity + notNewClosest * velocity;
@@ -126,23 +125,24 @@ class PlayerShotTrackingBehaviour extends PlayerBulletBehaviour {
 
             const sourceOffset = this.parent.getAbsolutePosition();
 
-            this.positionTexture1.setFloat('frame', this.bulletFrame + 0.001);
-            this.velocityTexture1.setFloat('frame', this.bulletFrame + 0.001);
-            this.positionTexture2.setFloat('frame', this.bulletFrame + 0.001);
-            this.velocityTexture2.setFloat('frame', this.bulletFrame + 0.001);
+            this.positionTexture1.setFloat('frame', this.bulletFrame);
+            this.velocityTexture1.setFloat('frame', this.bulletFrame);
+            this.positionTexture2.setFloat('frame', this.bulletFrame);
+            this.velocityTexture2.setFloat('frame', this.bulletFrame);
 
-            this.positionTexture1.setFloat('firing', +this.firing);
-            this.velocityTexture1.setFloat('firing', +this.firing);
-            this.positionTexture2.setFloat('firing', +this.firing);
-            this.velocityTexture2.setFloat('firing', +this.firing);
+            this.positionTexture1.setFloat('firing', +(this.firing && !this.disabled));
+            this.velocityTexture1.setFloat('firing', +(this.firing && !this.disabled));
+            this.positionTexture2.setFloat('firing', +(this.firing && !this.disabled));
+            this.velocityTexture2.setFloat('firing', +(this.firing && !this.disabled));
 
             this.positionTexture1.setVector3('sourceOffset', sourceOffset);
             this.velocityTexture1.setVector3('sourceOffset', sourceOffset);
             this.positionTexture2.setVector3('sourceOffset', sourceOffset);
             this.velocityTexture2.setVector3('sourceOffset', sourceOffset);
         }
-
-        this.bulletFrame = (this.bulletFrame + 1) % PLAYER_BULLETS_WHEEL_LENGTH;
+        if(this.firing && !this.disabled){
+            this.bulletFrame = (this.bulletFrame + 1) % PLAYER_BULLETS_WHEEL_LENGTH;
+        }
     }
 }
 

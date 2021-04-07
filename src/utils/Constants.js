@@ -9,7 +9,7 @@ export const ARENA_DIMS = [ARENA_WIDTH, ARENA_HEIGHT, ARENA_LENGTH];
 export const ARENA_MAX = new Vector3(ARENA_WIDTH / 2, ARENA_HEIGHT, ARENA_LENGTH / 2);
 export const ARENA_MIN = new Vector3(-ARENA_WIDTH / 2, 0, -ARENA_LENGTH / 2);
 
-export const MAX_ENEMIES = 200;
+export const MAX_ENEMIES = 50;
 export const MAX_BULLETS_PER_GROUP = 10000;
 export const PLAYER_BULLETS_WHEEL_LENGTH = 100;
 

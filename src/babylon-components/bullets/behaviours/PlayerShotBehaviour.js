@@ -97,10 +97,10 @@ class PlayerShotBehaviour extends PlayerBulletBehaviour {
             this.positionTexture2.setFloat('frame', this.bulletFrame);
             this.velocityTexture2.setFloat('frame', this.bulletFrame);
 
-            this.positionTexture1.setFloat('firing', +this.firing);
-            this.velocityTexture1.setFloat('firing', +this.firing);
-            this.positionTexture2.setFloat('firing', +this.firing);
-            this.velocityTexture2.setFloat('firing', +this.firing);
+            this.positionTexture1.setFloat('firing', +(this.firing && !this.disabled));
+            this.velocityTexture1.setFloat('firing', +(this.firing && !this.disabled));
+            this.positionTexture2.setFloat('firing', +(this.firing && !this.disabled));
+            this.velocityTexture2.setFloat('firing', +(this.firing && !this.disabled));
 
             this.positionTexture1.setVector3('shotVector', shotVector);
             this.velocityTexture1.setVector3('shotVector', shotVector);
@@ -113,7 +113,9 @@ class PlayerShotBehaviour extends PlayerBulletBehaviour {
             this.velocityTexture2.setVector3('sourceOffset', sourceOffset);
         }
 
-        this.bulletFrame = (this.bulletFrame + 1) % (PLAYER_BULLETS_WHEEL_LENGTH);
+        if(this.firing && !this.disabled){
+            this.bulletFrame = (this.bulletFrame + 1) % (PLAYER_BULLETS_WHEEL_LENGTH);
+        }
     }
 }
 

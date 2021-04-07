@@ -8,11 +8,12 @@ import { allBullets } from '../../../../gameLogic/StaticRefs';
 import { useControl } from '../../../../hooks/useControl';
 import { useTarget } from '../../../../hooks/useTarget';
 import { useNormalizedFrameSkip } from '../../../../hooks/useNormalizedFrameSkip';
+import { useName } from '../../../../hooks/useName';
 
 //15 bullets per second
 let bulletFrameSkip = 5;
 
-const shotInstruction = (powerClass) => {
+const makeShotInstruction = (powerClass) => {
     let shotSources;
 
     switch(powerClass){
@@ -67,15 +68,16 @@ export const ReimuLinearBulletEmitter = ({powerClass, ...props}) => {
     const SHOOT = useControl('SHOOT');
     const target = useTarget();
     const frameSkip = useNormalizedFrameSkip(bulletFrameSkip)
+    const name = useName("LinearBulletEmitter")
 
     useEffect(() => {
         if (!transformNodeRef.current) return;
 
-        const id = addBulletGroup(transformNodeRef.current, shotInstruction(powerClass));
+        const id = addBulletGroup(transformNodeRef.current, makeShotInstruction(powerClass));
         setShotId(id);
 
         return () => {
-            allBullets[id].behaviour.firing = false;
+            allBullets[id].behaviour.disabled = true;
             window.setTimeout(() => {
                 disposeSingle(id);
             }, 5000);
@@ -105,6 +107,6 @@ export const ReimuLinearBulletEmitter = ({powerClass, ...props}) => {
     });
 
     return (
-        <transformNode ref={transformNodeRef} {...props}/>
+        <transformNode name={name} ref={transformNodeRef} {...props}/>
     )
 }
