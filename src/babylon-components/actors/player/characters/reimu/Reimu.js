@@ -12,6 +12,7 @@ import { PlayerUIRight } from '../PlayerUIRight';
 import { globals, GlobalsContext } from '../../../../../components/GlobalsContainer';
 import { calcPowerClass } from '../../PlayerUtils';
 import { ReimuLinearBulletEmitter } from './ReimuLinearBulletEmitter';
+import { ReimuTrackingBulletEmitter } from './ReimuTrackingBulletEmitter';
 
 const z = new Vector3(0, 0, 1);
 const focusPosition1 = new Vector3(0.5, 0, 0);
@@ -153,7 +154,8 @@ export const Reimu = () => {
             <transformNode name={name + 'sphereTransformNode'} position={new Vector3(0, 0, 1)} ref={sphereTransformNodeRef}>
                 <transformNode name={name + 'sphereTransform'} ref={sphereTransformRef1} position={new Vector3(1, 0, 0)}>
                     {!isBombing && <PlayerUIRight position={new Vector3(0, -0.6, 0)} />}
-                    <ReimuLinearBulletEmitter powerClass={powerClass}/>
+                    <ReimuLinearBulletEmitter position={new Vector3(0.15, 0, 0)} powerClass={powerClass}/>
+                    {powerClass > 0 && <ReimuTrackingBulletEmitter initialVelocity={[-6, 0, 4]}powerClass={powerClass}/>}
                     <sphere
                         name={name + 'sphere1'}
                         scaling={new Vector3(0.5, 0.5, 0.5)}
@@ -167,6 +169,8 @@ export const Reimu = () => {
                 </transformNode>
                 <transformNode name={name + 'sphereTransform'} ref={sphereTransformRef2} position={new Vector3(-1, 0, 0)}>
                     {!isBombing && <PlayerUILeft position={new Vector3(0, -0.6, 0)} />}
+                    <ReimuLinearBulletEmitter position={new Vector3(-0.15, 0, 0)} powerClass={powerClass}/>
+                    {powerClass > 0 && <ReimuTrackingBulletEmitter initialVelocity={[6, 0, 4]}powerClass={powerClass}/>}
                     <sphere
                         name={name + 'sphere2'}
                         scaling={new Vector3(0.5, 0.5, 0.5)}

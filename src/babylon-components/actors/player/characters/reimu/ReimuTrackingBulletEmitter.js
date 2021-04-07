@@ -1,5 +1,16 @@
-import React, { useContext, useRef, useState } from 'react'
+import { Vector3 } from '@babylonjs/core';
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { useBeforeRender } from 'react-babylonjs';
+import { playerShoot } from '../../../../../sounds/SFX';
+import { PLAYER_BULLETS_WHEEL_LENGTH } from '../../../../../utils/Constants';
 import { BulletsContext } from '../../../../gameLogic/GeneralContainer';
+import { allBullets } from '../../../../gameLogic/StaticRefs';
+import { useControl } from '../../../../hooks/useControl';
+import { useTarget } from '../../../../hooks/useTarget';
+import { useNormalizedFrameSkip } from '../../../../hooks/useNormalizedFrameSkip';
+
+//15 bullets per second
+let bulletFrameSkip = 5;
 
 const shotInstruction = (powerClass, initialVelocity) => {
     let shotSources;
@@ -49,17 +60,19 @@ const shotInstruction = (powerClass, initialVelocity) => {
     return instruction;
 };
 
-export const ReimuTrackingBulletEmitter = ({powerClass, ...props}) => {
+export const ReimuTrackingBulletEmitter = ({powerClass, initialVelocity, ...props}) => {
     const transformNodeRef = useRef();
     const { addBulletGroup, disposeSingle } = useContext(BulletsContext);
     const shotFrame = useRef(0)
-    const SHOOT = useControl('SHOOT');
     const [shotId, setShotId] = useState()
+    const SHOOT = useControl('SHOOT');
+    const target = useTarget();
+    const frameSkip = useNormalizedFrameSkip(bulletFrameSkip)
 
     useEffect(() => {
         if (!transformNodeRef.current) return;
 
-        const id = addBulletGroup(transformNodeRef.current, shotInstruction(powerClass));
+        const id = addBulletGroup(transformNodeRef.current, shotInstruction(powerClass, initialVelocity));
         setShotId(id);
 
         return () => {
@@ -68,7 +81,7 @@ export const ReimuTrackingBulletEmitter = ({powerClass, ...props}) => {
                 disposeSingle(id);
             }, 5000);
         };
-    }, [addBulletGroup, dispose, powerClass]);
+    }, [addBulletGroup, disposeSingle, powerClass]);
 
     useBeforeRender((scene) => {
         if (!transformNodeRef.current) return;
@@ -84,7 +97,7 @@ export const ReimuTrackingBulletEmitter = ({powerClass, ...props}) => {
             playerShoot.stop();
         }
 
-        if (transformNodeRef.current.shotFrame > frameSkip) {
+        if (shotFrame.current > frameSkip) {
             if (SHOOT && !scene.paused) {
                 allBullets[shotId].behaviour.firing = true;
             }
