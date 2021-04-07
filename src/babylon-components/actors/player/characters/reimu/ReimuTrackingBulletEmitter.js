@@ -1,5 +1,5 @@
 import { Vector3 } from '@babylonjs/core';
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
 import { playerShoot } from '../../../../../sounds/SFX';
 import { PLAYER_BULLETS_WHEEL_LENGTH } from '../../../../../utils/Constants';
@@ -16,7 +16,7 @@ let bulletFrameSkip = 5;
 const makeShotInstruction = (powerClass, initialVelocity) => {
     let shotSources;
 
-    switch(powerClass){
+    switch (powerClass) {
         case 0:
             throw new Error('Tracking bullets should not be enabled for a power class of 0');
         case 1:
@@ -26,10 +26,7 @@ const makeShotInstruction = (powerClass, initialVelocity) => {
             shotSources = [new Vector3(0, 0, 0.15)];
             break;
         case 3:
-            shotSources = [
-                new Vector3(0, 0.3, 0.15), 
-                new Vector3(0, -0.3, 0.15)
-            ];
+            shotSources = [new Vector3(0, 0.3, 0.15), new Vector3(0, -0.3, 0.15)];
             break;
         default:
             throw new Error('Unknown power class ' + powerClass);
@@ -64,15 +61,15 @@ const makeShotInstruction = (powerClass, initialVelocity) => {
     return instruction;
 };
 
-export const ReimuTrackingBulletEmitter = ({powerClass, initialVelocity, ...props}) => {
+export const ReimuTrackingBulletEmitter = ({ powerClass, initialVelocity, ...props }) => {
     const transformNodeRef = useRef();
     const { addBulletGroup, disposeSingle } = useContext(BulletsContext);
-    const shotFrame = useRef(0)
-    const [shotId, setShotId] = useState()
+    const shotFrame = useRef(0);
+    const [shotId, setShotId] = useState();
     const SHOOT = useControl('SHOOT');
     const target = useTarget();
-    const frameSkip = useNormalizedFrameSkip(bulletFrameSkip)
-    const name = useName("TrackingBulletEmitter")
+    const frameSkip = useNormalizedFrameSkip(bulletFrameSkip);
+    const name = useName('TrackingBulletEmitter');
 
     useEffect(() => {
         if (!transformNodeRef.current) return;
@@ -81,7 +78,6 @@ export const ReimuTrackingBulletEmitter = ({powerClass, initialVelocity, ...prop
         setShotId(id);
 
         return () => {
-
             allBullets[id].behaviour.disabled = true;
             window.setTimeout(() => {
                 disposeSingle(id);
@@ -111,7 +107,5 @@ export const ReimuTrackingBulletEmitter = ({powerClass, initialVelocity, ...prop
         }
     });
 
-    return (
-        <transformNode name={name} ref={transformNodeRef} {...props}/>
-    )
-}
+    return <transformNode name={name} ref={transformNodeRef} {...props} />;
+};

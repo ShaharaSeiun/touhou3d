@@ -9,7 +9,7 @@ export const makeEnemyDefaultVals = () => ({
     health: -510,
     radius: 0,
     onDeath: () => {},
-    dead: true
+    dead: true,
 });
 
 export const globalActorRefs = {
@@ -32,7 +32,7 @@ export const addEnemy = (position, radius, onDeath, health) => {
     };
     globalActorRefs.enemyIndex = (globalActorRefs.enemyIndex + 1) % MAX_ENEMIES;
     return indexToAdd;
-}
+};
 
 export const removeEnemy = (id) => {
     globalActorRefs.enemies[id] = makeEnemyDefaultVals();
@@ -43,7 +43,7 @@ export const killEnemy = (id) => {
         globalActorRefs.enemies[id].onDeath();
         removeEnemy(id);
     }
-}
+};
 
 export const bufferMatricesSource = new Float32Array(MAX_BULLETS_PER_GROUP * 16);
 for (let i = 0; i < MAX_BULLETS_PER_GROUP; i++) {

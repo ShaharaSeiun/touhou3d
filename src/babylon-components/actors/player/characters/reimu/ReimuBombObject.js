@@ -10,7 +10,6 @@ import { useName } from '../../../../hooks/useName';
 const initialVelocity = 4;
 
 export const ReimuBombObject = ({ color, delay, ...props }) => {
-
     const sphereRef = useRef();
     const timeDelta = useRef(0);
     const scene = useScene();
@@ -19,10 +18,7 @@ export const ReimuBombObject = ({ color, delay, ...props }) => {
     const { registerAnimation } = useContext(AnimationContext);
 
     const actionsTimings = useMemo(
-        () => [
-            0,
-            delay,
-        ],
+        () => [0, delay],
         //eslint-disable-next-line react-hooks/exhaustive-deps
         []
     );
@@ -134,7 +130,13 @@ export const ReimuBombObject = ({ color, delay, ...props }) => {
     return (
         <transformNode name={name + 'transformNode'} {...props}>
             <sphere name={name + 'sphere'} ref={sphereRef} scaling={new Vector3(0, 0, 0)}>
-                <standardMaterial name={name + 'material'} alpha={0.3} diffuseColor={color} emissiveColor={color} specularColor={new Color3(0, 0, 0)} />
+                <standardMaterial
+                    name={name + 'material'}
+                    alpha={0.3}
+                    diffuseColor={color}
+                    emissiveColor={color}
+                    specularColor={new Color3(0, 0, 0)}
+                />
             </sphere>
             <pointLight name={name + 'pointLight'} position={new Vector3(0, 0, 0)} />
         </transformNode>

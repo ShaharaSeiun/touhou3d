@@ -35,15 +35,15 @@ export const FairyBase = React.forwardRef(({ assetName, radius, mesh, ...props }
             return;
         }
 
-        if(scene.paused) return;
+        if (scene.paused) return;
 
         const deltaS = scene.paused ? 0 : scene.getEngine().getDeltaTime() / 1000;
         const curPosition = ref.current.getAbsolutePosition();
-        const dPosition = curPosition.subtract(ref.current.lastPosition).scale(0.15/deltaS);
+        const dPosition = curPosition.subtract(ref.current.lastPosition).scale(0.15 / deltaS);
         ref.current.lastPosition = curPosition.clone();
 
         if (!mesh.animFly) return;
-        mesh.animFly.speedRatio = dPosition.length() * (0.01/deltaS) + 0.5;
+        mesh.animFly.speedRatio = dPosition.length() * (0.01 / deltaS) + 0.5;
 
         if (!mesh.dressBone) return;
 

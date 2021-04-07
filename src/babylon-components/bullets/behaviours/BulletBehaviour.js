@@ -236,8 +236,7 @@ export class BulletBehaviour {
 
         if (this.isEnemyBullet) {
             this.reducerLayers[0].setTexture('source', outputCollisionTexture);
-        }
-        else{
+        } else {
             this.collisionResult = outputCollisionTexture;
         }
 

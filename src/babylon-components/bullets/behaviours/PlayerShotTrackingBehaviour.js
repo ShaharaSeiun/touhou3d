@@ -140,7 +140,7 @@ class PlayerShotTrackingBehaviour extends PlayerBulletBehaviour {
             this.positionTexture2.setVector3('sourceOffset', sourceOffset);
             this.velocityTexture2.setVector3('sourceOffset', sourceOffset);
         }
-        if(this.firing && !this.disabled){
+        if (this.firing && !this.disabled) {
             this.bulletFrame = (this.bulletFrame + 1) % PLAYER_BULLETS_WHEEL_LENGTH;
         }
     }

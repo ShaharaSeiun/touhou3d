@@ -1,5 +1,5 @@
 import { Vector3 } from '@babylonjs/core';
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
 import { playerShoot } from '../../../../../sounds/SFX';
 import { PLAYER_BULLETS_WHEEL_LENGTH } from '../../../../../utils/Constants';
@@ -16,7 +16,7 @@ let bulletFrameSkip = 5;
 const makeShotInstruction = (powerClass) => {
     let shotSources;
 
-    switch(powerClass){
+    switch (powerClass) {
         case 0:
         case 1:
             shotSources = [new Vector3(0, 0, 0.15)];
@@ -60,15 +60,15 @@ const makeShotInstruction = (powerClass) => {
     return instruction;
 };
 
-export const ReimuLinearBulletEmitter = ({powerClass, ...props}) => {
+export const ReimuLinearBulletEmitter = ({ powerClass, ...props }) => {
     const transformNodeRef = useRef();
     const { addBulletGroup, disposeSingle } = useContext(BulletsContext);
-    const shotFrame = useRef(0)
-    const [shotId, setShotId] = useState()
+    const shotFrame = useRef(0);
+    const [shotId, setShotId] = useState();
     const SHOOT = useControl('SHOOT');
     const target = useTarget();
-    const frameSkip = useNormalizedFrameSkip(bulletFrameSkip)
-    const name = useName("LinearBulletEmitter")
+    const frameSkip = useNormalizedFrameSkip(bulletFrameSkip);
+    const name = useName('LinearBulletEmitter');
 
     useEffect(() => {
         if (!transformNodeRef.current) return;
@@ -106,7 +106,5 @@ export const ReimuLinearBulletEmitter = ({powerClass, ...props}) => {
         }
     });
 
-    return (
-        <transformNode name={name} ref={transformNodeRef} {...props}/>
-    )
-}
+    return <transformNode name={name} ref={transformNodeRef} {...props} />;
+};

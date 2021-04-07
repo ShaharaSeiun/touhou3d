@@ -65,9 +65,7 @@ export const GeneralContainer = ({ children }) => {
                         <GlowContext.Provider value={glowLayer}>
                             <UIContext.Provider value={UIProps}>
                                 <PauseContext.Provider value={pauseProps}>
-                                    <AnimationContext.Provider value={{ registerAnimation }}>
-                                        {children}
-                                    </AnimationContext.Provider>
+                                    <AnimationContext.Provider value={{ registerAnimation }}>{children}</AnimationContext.Provider>
                                 </PauseContext.Provider>
                             </UIContext.Provider>
                         </GlowContext.Provider>

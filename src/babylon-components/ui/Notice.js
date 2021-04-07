@@ -20,8 +20,8 @@ export const Notice = () => {
     const [powerClass, setPowerClass] = useState(0);
     const lastPowerClass = usePrevious(powerClass);
     const matRef = useRef();
-    
-    const [notice, setNotice] = useState("");
+
+    const [notice, setNotice] = useState('');
     const [redrawTrigger, setRedrawTrigger] = useState(0);
 
     useEffect(() => {
@@ -47,21 +47,21 @@ export const Notice = () => {
     }, [notice, redrawTrigger, textTexture]);
 
     useEffect(() => {
-        if(powerClass > lastPowerClass){
-            playerPowerUp.play()
+        if (powerClass > lastPowerClass) {
+            playerPowerUp.play();
             matRef.current.alpha = 1;
-            setNotice("Power Up!")
+            setNotice('Power Up!');
         }
-    }, [powerClass, lastPowerClass])
+    }, [powerClass, lastPowerClass]);
 
     useBeforeRender(() => {
         const newPowerClass = calcPowerClass(globals.POWER);
         console.log(powerClass, newPowerClass);
-        if(powerClass !== newPowerClass){
-            setPowerClass(newPowerClass)
-            setRedrawTrigger(redrawTrigger => redrawTrigger + 1)
+        if (powerClass !== newPowerClass) {
+            setPowerClass(newPowerClass);
+            setRedrawTrigger((redrawTrigger) => redrawTrigger + 1);
         }
-    })
+    });
 
     return (
         <plane name="NoticePlane" position={new Vector3(0, 10, 3)} width={4} height={2}>

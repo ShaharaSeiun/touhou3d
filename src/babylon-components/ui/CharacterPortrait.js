@@ -7,13 +7,8 @@ export const CharacterPortrait = ({ name, side, active, emotion, index }) => {
     const camelEmotion = capFirst(emotion);
     const characterTexture = useTexture(name + 'Character' + camelEmotion);
     const position = useMemo(
-        () =>
-            new Vector3(
-                side === 'left' ? -5 : 4,
-                5,
-                active ? 0 : index + 1
-            ),
-    //eslint-disable-next-line react-hooks/exhaustive-deps
+        () => new Vector3(side === 'left' ? -5 : 4, 5, active ? 0 : index + 1),
+        //eslint-disable-next-line react-hooks/exhaustive-deps
         [side]
     );
 

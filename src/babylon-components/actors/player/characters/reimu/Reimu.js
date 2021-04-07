@@ -21,7 +21,7 @@ const unfocusPosition1 = new Vector3(1, 0, 0);
 const unfocusPosition2 = new Vector3(-1, 0, 0);
 
 const initialVelocityRight = [6, 0, 4];
-const initialVelocityLeft = [-6, 0, 4]
+const initialVelocityLeft = [-6, 0, 4];
 
 export const Reimu = () => {
     const transformNodeRef = useRef();
@@ -157,8 +157,10 @@ export const Reimu = () => {
             <transformNode name={name + 'sphereTransformNode'} position={new Vector3(0, 0, 1)} ref={sphereTransformNodeRef}>
                 <transformNode name={name + 'sphereTransform'} ref={sphereTransformRef1} position={new Vector3(1, 0, 0)}>
                     {!isBombing && <PlayerUIRight position={new Vector3(0, -0.6, 0)} />}
-                    <ReimuLinearBulletEmitter position={new Vector3(0.15, 0, 0)} powerClass={powerClass}/>
-                    {powerClass > 0 && <ReimuTrackingBulletEmitter initialVelocity={initialVelocityRight} powerClass={powerClass}/>}
+                    <ReimuLinearBulletEmitter position={new Vector3(0.15, 0, 0)} powerClass={powerClass} />
+                    {powerClass > 0 && (
+                        <ReimuTrackingBulletEmitter initialVelocity={initialVelocityRight} powerClass={powerClass} />
+                    )}
                     <sphere
                         name={name + 'sphere1'}
                         scaling={new Vector3(0.5, 0.5, 0.5)}
@@ -172,8 +174,8 @@ export const Reimu = () => {
                 </transformNode>
                 <transformNode name={name + 'sphereTransform'} ref={sphereTransformRef2} position={new Vector3(-1, 0, 0)}>
                     {!isBombing && <PlayerUILeft position={new Vector3(0, -0.6, 0)} />}
-                    <ReimuLinearBulletEmitter position={new Vector3(-0.15, 0, 0)} powerClass={powerClass}/>
-                    {powerClass > 0 && <ReimuTrackingBulletEmitter initialVelocity={initialVelocityLeft} powerClass={powerClass}/>}
+                    <ReimuLinearBulletEmitter position={new Vector3(-0.15, 0, 0)} powerClass={powerClass} />
+                    {powerClass > 0 && <ReimuTrackingBulletEmitter initialVelocity={initialVelocityLeft} powerClass={powerClass} />}
                     <sphere
                         name={name + 'sphere2'}
                         scaling={new Vector3(0.5, 0.5, 0.5)}

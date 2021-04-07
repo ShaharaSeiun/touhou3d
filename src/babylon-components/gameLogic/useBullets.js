@@ -73,15 +73,12 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
                 bulletGroup.behaviour.collisionTexture1.readPixels().then((buffer) => {
                     const collisions = convertPlayerBulletCollisions(buffer);
                     collisions.forEach((collision) => {
-                        if (collision.collisionID >= MAX_ENEMIES && collision.collisionID < MAX_ENEMIES * 2.) {
+                        if (collision.collisionID >= MAX_ENEMIES && collision.collisionID < MAX_ENEMIES * 2) {
                             const enemyID = collision.collisionID - MAX_ENEMIES;
                             globalActorRefs.enemies[enemyID].health--;
                             playHitSound = true;
                             if (globalActorRefs.enemies[enemyID]) {
-                                addEffect(
-                                    collision.hit,
-                                    'hitParticles'
-                                );
+                                addEffect(collision.hit, 'hitParticles');
                             }
 
                             if (globalActorRefs.enemies[enemyID].health <= 0) {
@@ -96,12 +93,12 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
                     if (collisions.length > 0) {
                         const collision = collisions[0];
                         if (collision.point) {
-                            setGlobal('POINT', globals.POINT + collision.point/8);
+                            setGlobal('POINT', globals.POINT + collision.point / 8);
                             itemGet.play();
                         }
                         if (collision.power) {
                             console.log(collision.power);
-                            setGlobal('POWER', Math.min(globals.POWER + collision.power/8, 120));
+                            setGlobal('POWER', Math.min(globals.POWER + collision.power / 8, 120));
                             itemGet.play();
                         }
                     }
@@ -129,11 +126,11 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
 
         globalActorRefs.enemies.forEach((enemy, i) => {
             const offset = i * 3;
-            globalActorRefs.enemyPositionBuffer[offset + 0] = enemy.position.x
-            globalActorRefs.enemyPositionBuffer[offset + 1] = enemy.position.y
-            globalActorRefs.enemyPositionBuffer[offset + 2] = enemy.position.z
+            globalActorRefs.enemyPositionBuffer[offset + 0] = enemy.position.x;
+            globalActorRefs.enemyPositionBuffer[offset + 1] = enemy.position.y;
+            globalActorRefs.enemyPositionBuffer[offset + 2] = enemy.position.z;
             globalActorRefs.enemyRadiiBuffer[i] = enemy.radius;
-        })
+        });
     });
 
     return { disposeSingle, dispose, addBulletGroup };

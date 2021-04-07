@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
 export const usePrevious = (value) => {
     // The ref object is a generic container whose current property is mutable ...
@@ -10,4 +10,4 @@ export const usePrevious = (value) => {
     }, [value]); // Only re-run if value changes
     // Return previous value (happens before update in useEffect above)
     return ref.current;
-}
+};
