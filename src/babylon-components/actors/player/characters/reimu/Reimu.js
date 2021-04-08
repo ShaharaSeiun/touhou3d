@@ -84,6 +84,7 @@ export const Reimu = () => {
             Animation.ANIMATIONLOOPMODE_CONSTANT
         );
     });
+    
     useKeydown('BOMB', () => {
         if (!globals.BOMB || isBombing) return;
         setGlobal('BOMB', globals.BOMB - 1);
