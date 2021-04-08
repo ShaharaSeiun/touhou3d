@@ -86,7 +86,7 @@ export const Reimu = () => {
     });
     useKeydown('BOMB', () => {
         if (!globals.BOMB || isBombing) return;
-        setGlobal('BOMB', 1);
+        setGlobal('BOMB', globals.BOMB - 1);
         setIsBombing(true);
     });
 
