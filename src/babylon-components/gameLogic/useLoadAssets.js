@@ -148,7 +148,7 @@ export const useLoadAssets = () => {
                         {
                             diameter: 2,
                             segments: 10,
-                            updatable: true,
+                            updatable: false,
                         },
                         scene
                     );

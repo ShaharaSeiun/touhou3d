@@ -5,6 +5,7 @@ import { AnimationContext } from '../gameLogic/GeneralContainer';
 import { globalActorRefs } from '../gameLogic/StaticRefs';
 import { useDoSequence } from '../hooks/useDoSequence';
 import { useAddBulletGroup } from '../hooks/useAddBulletGroup';
+import { BULLET_TYPE } from '../bullets/behaviours/EnemyBulletBehaviour';
 
 export const DefaultFairyBehaviour = ({ children, leaveScene, spawn }) => {
     const transformNodeRef = useRef();
@@ -12,7 +13,7 @@ export const DefaultFairyBehaviour = ({ children, leaveScene, spawn }) => {
     const { registerAnimation } = useContext(AnimationContext);
     const addBulletGroup = useAddBulletGroup();
 
-    const actionsTimings = useMemo(() => [0, 2, 5], []);
+    const actionsTimings = useMemo(() => [0, 2, 2, 5], []);
 
     const actions = useMemo(
         () => [
@@ -33,6 +34,32 @@ export const DefaultFairyBehaviour = ({ children, leaveScene, spawn }) => {
                         easingFunction
                     )
                 );
+            },
+            () => {
+                addBulletGroup(
+                    transformNodeRef.current,
+                    {
+                        type: 'shoot',
+                        materialOptions: {
+                            material: 'fresnel',
+                            texture: 'power',
+                            doubleSided: true,
+                            hasAlpha: true,
+                        },
+                        patternOptions: {
+                            pattern: 'burst',
+                        },
+                        meshOptions: {
+                            mesh: 'sphere',
+                            radius: 0.2
+                        },
+                        behaviourOptions: {
+                            behaviour: 'linear',
+                        },
+                        lifespan: 10000,
+                        wait: 0,
+                    }
+                )
             },
             () => {
                 const transform = transformNodeRef.current;

@@ -14,6 +14,7 @@ import {
     playerShotTrackingBehaviourPositionPixelShader,
     playerShotTrackingBehaviourVelocityPixelShader,
 } from './bullets/behaviours/PlayerShotTrackingBehaviour';
+import { debugFragmentShader, debugVertexShader } from './bullets/materials/Debug';
 
 Effect.ShadersStore['addReducerPixelShader'] = addReducerPixelShader;
 
@@ -34,6 +35,9 @@ Effect.ShadersStore['playerShotTrackingBehaviourVelocityPixelShader'] = playerSh
 
 Effect.ShadersStore['fresnelVertexShader'] = fresnelVertexShader;
 Effect.ShadersStore['fresnelFragmentShader'] = fresnelFragmentShader;
+
+Effect.ShadersStore['debugVertexShader'] = debugVertexShader;
+Effect.ShadersStore['debugFragmentShader'] = debugFragmentShader;
 
 Effect.ShadersStore['textureVertexShader'] = textureVertexShader;
 Effect.ShadersStore['textureFragmentShader'] = textureFragmentShader;

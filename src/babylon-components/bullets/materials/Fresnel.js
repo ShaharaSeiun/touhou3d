@@ -1,4 +1,4 @@
-import { ShaderMaterial } from '@babylonjs/core';
+import { Color3, ShaderMaterial } from '@babylonjs/core';
 import { v4 } from 'uuid';
 import { glsl } from '../../BabylonUtils';
 import { commonVertexShader } from './Common';
@@ -35,6 +35,8 @@ export const makeFresnelMaterial = (scene) => {
             uniforms: ['worldView', 'worldViewProjection', 'view', 'projection', 'direction', 'cameraPosition'],
         }
     );
+
+    _material.setColor3("toColor", new Color3(1.0, 0.0, 0.0))
 
     return _material;
 };

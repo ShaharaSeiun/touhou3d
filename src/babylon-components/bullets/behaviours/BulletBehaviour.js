@@ -62,7 +62,7 @@ export class BulletBehaviour {
 
     init(bulletMaterial, initialPositions, initialVelocities, scene) {
         const num = initialPositions.length;
-        const WIDTH = Math.max(nextPOT(Math.ceil(Math.sqrt(num))), 4);
+        const WIDTH = Math.max(nextPOT(Math.ceil(Math.sqrt(num))), 2);
 
         this.scene = scene;
 
@@ -125,7 +125,7 @@ export class BulletBehaviour {
             scene
         );
 
-        if (this.isEnemyBullet) {
+        if (false) {
             const [collisionResult, reducerLayers] = parallelReducer(this.collisionTexture1, WIDTH, scene);
             this.collisionResult = collisionResult;
             this.reducerLayers = reducerLayers;
@@ -153,7 +153,7 @@ export class BulletBehaviour {
         this.initialVelocityTexture.dispose();
         this.initialCollisionTexture.dispose();
 
-        if (this.isEnemyBullet) {
+        if (false) {
             this.collisionResult.dispose();
             this.reducerLayers.forEach((reducer) => {
                 reducer.dispose();
@@ -234,7 +234,7 @@ export class BulletBehaviour {
         outputCollisionTexture.setTexture('positionSampler', inputPositionTexture);
         outputCollisionTexture.setTexture('velocitySampler', inputVelocityTexture);
 
-        if (this.isEnemyBullet) {
+        if (false) {
             this.reducerLayers[0].setTexture('source', outputCollisionTexture);
         } else {
             this.collisionResult = outputCollisionTexture;

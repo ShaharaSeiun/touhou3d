@@ -56,7 +56,6 @@ export const Notice = () => {
 
     useBeforeRender(() => {
         const newPowerClass = calcPowerClass(globals.POWER);
-        console.log(powerClass, newPowerClass);
         if (powerClass !== newPowerClass) {
             setPowerClass(newPowerClass);
             setRedrawTrigger((redrawTrigger) => redrawTrigger + 1);

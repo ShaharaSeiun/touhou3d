@@ -67,7 +67,7 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
             framesSincePlayHit = 0;
         }
         framesSincePlayHit++;
-
+        
         Object.values(allBullets).forEach((bulletGroup) => {
             if (bulletGroup.behaviour.isPlayerBullet) {
                 bulletGroup.behaviour.collisionTexture1.readPixels().then((buffer) => {
@@ -88,6 +88,7 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
                     });
                 });
             } else {
+                bulletGroup.behaviour.positionTexture1.readPixels().then((buffer) => {console.log(buffer)})
                 bulletGroup.behaviour.collisionResult.readPixels().then((buffer) => {
                     const collisions = convertEnemyBulletCollisions(buffer);
                     if (collisions.length > 0) {
