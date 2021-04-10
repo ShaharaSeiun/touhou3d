@@ -2,6 +2,7 @@ import { isFunction } from 'lodash';
 import { makeBurstPattern } from './Burst';
 import { makeEmptyPattern } from './Empty';
 import { makeSinglePattern } from './Single';
+import { makeSprayPattern } from './Spray';
 
 export const makeBulletPattern = (patternOptions, parent) => {
     let _pattern;
@@ -19,6 +20,9 @@ export const makeBulletPattern = (patternOptions, parent) => {
             case 'burst':
                 _pattern = makeBurstPattern(patternOptions, parent);
                 break;
+            case 'spray':
+                _pattern = makeSprayPattern(patternOptions, parent);
+                break;
             default:
                 throw new Error('Pattern type not supported: ' + patternOptions.pattern);
         }
@@ -29,6 +33,10 @@ export const makeBulletPattern = (patternOptions, parent) => {
     _pattern.positions.forEach((position) => {
         position.addInPlace(parentPosition);
     });
+
+    if(!_pattern.timings){
+        _pattern.timings = new Float32Array(_pattern.positions.length)
+    }
 
     return _pattern;
 };

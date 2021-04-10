@@ -129,7 +129,42 @@ export const makeTextureFromVectors = (vectors, scene, w = 1, fill = -510) => {
     );
 };
 
-export const makeTextureFromBlank = (num, scene, w = 1, fill = -510) => {
+export const makeTextureFromVectorsAndArray = (vectors, array, scene, fill = -510) => {
+    const num = vectors.length;
+    const WIDTH = Math.max(nextPowerOfTwo(Math.ceil(Math.sqrt(num))), 2);
+    const data = new Float32Array(WIDTH * WIDTH * 4);
+
+    let offset;
+
+    vectors.forEach((vector, i) => {
+        offset = i * 4;
+        data[offset + 0] = vector.x;
+        data[offset + 1] = vector.y;
+        data[offset + 2] = vector.z;
+        data[offset + 3] = array[i];
+    });
+
+    for (let i = offset / 4 + 1; i < WIDTH * WIDTH; i++) {
+        offset = i * 4;
+        data[offset + 0] = fill;
+        data[offset + 1] = fill;
+        data[offset + 2] = fill;
+        data[offset + 3] = fill;
+    }
+
+    return new RawTexture.CreateRGBATexture(
+        data,
+        WIDTH,
+        WIDTH,
+        scene,
+        false,
+        false,
+        Constants.TEXTURE_NEAREST_NEAREST,
+        Constants.TEXTURETYPE_FLOAT
+    );
+};
+
+export const makeTextureFromBlank = (num, scene, w = 1, fill = -510, blankFill = 0) => {
     const WIDTH = Math.max(nextPowerOfTwo(Math.ceil(Math.sqrt(num))), 2);
     const data = new Float32Array(WIDTH * WIDTH * 4);
 
@@ -137,9 +172,9 @@ export const makeTextureFromBlank = (num, scene, w = 1, fill = -510) => {
 
     for (let i = 0; i < num; i++) {
         offset = i * 4;
-        data[offset + 0] = 0;
-        data[offset + 1] = 0;
-        data[offset + 2] = 0;
+        data[offset + 0] = blankFill;
+        data[offset + 1] = blankFill;
+        data[offset + 2] = blankFill;
         data[offset + 3] = w;
     }
 

@@ -2,12 +2,9 @@ import { makeItembehaviour } from './ItemBehaviour';
 import { makeLinearBehaviour } from './LinearBehaviour';
 import { makePlayerShotBehaviour } from './PlayerShotBehaviour';
 import { makePlayerShotTrackingBehaviour } from './PlayerShotTrackingBehaviour';
-import { makeDebugBehaviour } from './DebugBehaviour';
 
 export const makeBulletBehaviour = (behaviourOptions, environmentCollision, radius, parent) => {
     switch (behaviourOptions.behaviour) {
-        case 'debug':
-            return makeDebugBehaviour(environmentCollision, radius, parent);
         case 'linear':
             return makeLinearBehaviour(environmentCollision, radius, parent);
         case 'item':

@@ -1,5 +1,5 @@
 import { glsl } from '../../BabylonUtils';
-import { collisionSnippet, mainHeaderSnippet, uniformSnippet } from './Common';
+import { collisionSnippet, mainHeaderSnippet, postComputeSnippet, uniformSnippet } from './Common';
 import { EnemyBulletBehaviour } from './EnemyBulletBehaviour';
 
 export const linearBehaviourPositionPixelShader = glsl`
@@ -11,20 +11,23 @@ export const linearBehaviourPositionPixelShader = glsl`
         vec4 out_Position = vec4( position + (velocity * delta), 1.);
 
         ${collisionSnippet}
+        ${postComputeSnippet}
         
         gl_FragColor = out_Position;
     }
 `;
 
 export const linearBehaviourVelocityPixelShader = glsl`
-    uniform float delta;
-    uniform vec2 resolution;
-    uniform sampler2D positionSampler;
-    uniform sampler2D velocitySampler;
+${uniformSnippet}
 
     void main() {
-        vec2 uv = gl_FragCoord.xy / resolution;
-        gl_FragColor = texture2D( velocitySampler, uv );
+
+        ${mainHeaderSnippet}
+
+        ${postComputeSnippet}
+        vec4 out_Velocity = vec4( velocity, 1.);
+
+        gl_FragColor = out_Velocity;
     }
 `;
 

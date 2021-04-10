@@ -16,6 +16,8 @@ export const PLAYER_BULLETS_WHEEL_LENGTH = 100;
 export const GRAZE_DISTANCE = 0.3;
 export const TARGET_LENGTH = 15;
 
+export const BULLET_WARNING = 0.2;
+
 export const CHARACTER_CONSTS = {
     reimu: {
         color: '#FF0A33',

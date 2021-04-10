@@ -105,7 +105,7 @@ const stage1def = () => {
     //     wait: 7000
     // })
 
-    for (let i = 0; i < 500; i++) {
+    for (let i = 0; i < 1; i++) {
         map.epochs[0].push({
             type: 'spawn',
             enemy: DefaultFairy(

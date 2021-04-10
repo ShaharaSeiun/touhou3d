@@ -29,7 +29,7 @@ export const makeTextureMaterial = (materialOptions, assets, scene) => {
         }
     );
     _material.setTexture('textureSampler', assets[materialOptions.texture]);
-    _material.setFloat('alpha', materialOptions.alpha || (materialOptions.hasAlpha && 0.01) || 1);
+    _material.setFloat('alpha', materialOptions.alpha || (materialOptions.hasAlpha && 0.2) || 1);
 
     return _material;
 };

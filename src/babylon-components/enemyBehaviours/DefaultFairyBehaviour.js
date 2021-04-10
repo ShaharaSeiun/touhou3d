@@ -5,7 +5,6 @@ import { AnimationContext } from '../gameLogic/GeneralContainer';
 import { globalActorRefs } from '../gameLogic/StaticRefs';
 import { useDoSequence } from '../hooks/useDoSequence';
 import { useAddBulletGroup } from '../hooks/useAddBulletGroup';
-import { BULLET_TYPE } from '../bullets/behaviours/EnemyBulletBehaviour';
 
 export const DefaultFairyBehaviour = ({ children, leaveScene, spawn }) => {
     const transformNodeRef = useRef();
@@ -47,7 +46,9 @@ export const DefaultFairyBehaviour = ({ children, leaveScene, spawn }) => {
                             hasAlpha: true,
                         },
                         patternOptions: {
-                            pattern: 'burst',
+                            pattern: 'spray',
+                            speed: 5,
+                            num: 500,
                         },
                         meshOptions: {
                             mesh: 'sphere',

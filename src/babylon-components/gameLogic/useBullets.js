@@ -37,15 +37,15 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
 
             const preparedInstruction = prepareBulletInstruction(instruction);
 
-            const { positions, velocities } = makeBulletPattern(preparedInstruction.patternOptions, parent);
+            const { positions, velocities, timings } = makeBulletPattern(preparedInstruction.patternOptions, parent);
             const material = makeBulletMaterial(preparedInstruction.materialOptions, parent, assets, scene);
-            const { mesh, radius } = makeBulletMesh(preparedInstruction.meshOptions, assets, scene);
+            const {mesh, radius} = makeBulletMesh(preparedInstruction.meshOptions, assets, scene);
             const behaviour = makeBulletBehaviour(preparedInstruction.behaviourOptions, environmentCollision, radius, parent);
 
             mesh.makeInstances(positions.length);
             mesh.material = material;
 
-            behaviour.init(material, positions, velocities, scene);
+            behaviour.init(material, positions, velocities, timings, scene);
 
             const { lifespan } = preparedInstruction;
             const startTime = new Date();
@@ -88,18 +88,16 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
                     });
                 });
             } else {
-                bulletGroup.behaviour.positionTexture1.readPixels().then((buffer) => {console.log(buffer)})
                 bulletGroup.behaviour.collisionResult.readPixels().then((buffer) => {
                     const collisions = convertEnemyBulletCollisions(buffer);
                     if (collisions.length > 0) {
                         const collision = collisions[0];
                         if (collision.point) {
-                            setGlobal('POINT', globals.POINT + collision.point / 8);
+                            setGlobal('POINT', globals.POINT + collision.point / 2);
                             itemGet.play();
                         }
                         if (collision.power) {
-                            console.log(collision.power);
-                            setGlobal('POWER', Math.min(globals.POWER + collision.power / 8, 120));
+                            setGlobal('POWER', Math.min(globals.POWER + collision.power / 2, 120));
                             itemGet.play();
                         }
                     }

@@ -2,15 +2,17 @@ import { Constants, Vector2 } from '@babylonjs/core';
 import nextPOT from 'next-power-of-two';
 import { v4 } from 'uuid';
 import { CustomCustomProceduralTexture } from '../../CustomCustomProceduralTexture';
-import { makeTextureFromBlank, makeTextureFromVectors, parallelReducer } from '../BulletUtils';
+import { makeTextureFromBlank, makeTextureFromVectors, makeTextureFromVectorsAndArray, parallelReducer } from '../BulletUtils';
 import { ARENA_MAX, ARENA_MIN } from '../../../utils/Constants';
 import { globalActorRefs } from '../../gameLogic/StaticRefs';
 
 const makeComputeProceduralTexture = (
+    parent,
     shader,
     initialPositionTexture,
     initialVelocityTexture,
     initialCollisionTexture,
+    timingsTexture,
     initialValuesFunction,
     WIDTH,
     scene
@@ -28,9 +30,12 @@ const makeComputeProceduralTexture = (
     proceduralTexture.setTexture('velocitySampler', initialVelocityTexture);
     proceduralTexture.setTexture('positionSampler', initialPositionTexture);
     proceduralTexture.setTexture('collisionSampler', initialCollisionTexture);
+    proceduralTexture.setTexture('timingsSampler', timingsTexture);
     proceduralTexture.setVector3('playerPosition', globalActorRefs.player.position);
+    proceduralTexture.setVector3('parentPosition', parent.getAbsolutePosition());
     proceduralTexture.setVector2('resolution', new Vector2(WIDTH, WIDTH));
     proceduralTexture.setFloat('delta', 0.001);
+    proceduralTexture.setFloat('timeSinceStart', 0.001)
 
     if (initialValuesFunction) {
         initialValuesFunction(proceduralTexture);
@@ -60,66 +65,80 @@ export class BulletBehaviour {
         texture.setVector3('collideWithEnvironment', this.collideWithEnvironment);
     }
 
-    init(bulletMaterial, initialPositions, initialVelocities, scene) {
+    init(bulletMaterial, initialPositions, initialVelocities, timings, scene) {
         const num = initialPositions.length;
         const WIDTH = Math.max(nextPOT(Math.ceil(Math.sqrt(num))), 2);
 
         this.scene = scene;
 
-        this.initialPositionsTexture = makeTextureFromVectors(initialPositions, scene);
+        this.initialPositionsTexture = makeTextureFromBlank(initialPositions.length, scene, 1., -510., -510.);
         this.initialVelocityTexture = makeTextureFromVectors(initialVelocities, scene, 1, 0);
         this.initialCollisionTexture = makeTextureFromBlank(initialPositions.length, scene, 0, 0);
+        const timingsTexture = makeTextureFromVectorsAndArray(initialPositions, timings, scene);
+        
 
         this.positionTexture1 = makeComputeProceduralTexture(
+            this.parent,
             this.positionShader,
             this.initialPositionsTexture,
             this.initialVelocityTexture,
             this.initialCollisionTexture,
+            timingsTexture,
             this.initialValuesFunction,
             WIDTH,
             scene
         );
         this.velocityTexture1 = makeComputeProceduralTexture(
+            this.parent,
             this.velocityShader,
             this.initialPositionsTexture,
             this.initialVelocityTexture,
             this.initialCollisionTexture,
+            timingsTexture,
             this.initialValuesFunction,
             WIDTH,
             scene
         );
         this.collisionTexture1 = makeComputeProceduralTexture(
+            this.parent,
             this.collisionShader,
             this.initialPositionsTexture,
             this.initialVelocityTexture,
             this.initialCollisionTexture,
+            timingsTexture,
             this.bindCollisionVars,
             WIDTH,
             scene
         );
         this.positionTexture2 = makeComputeProceduralTexture(
+            this.parent,
             this.positionShader,
             this.initialPositionsTexture,
             this.initialVelocityTexture,
             this.initialCollisionTexture,
+            timingsTexture,
             this.initialValuesFunction,
             WIDTH,
             scene
         );
         this.velocityTexture2 = makeComputeProceduralTexture(
+            this.parent,
             this.velocityShader,
             this.initialPositionsTexture,
             this.initialVelocityTexture,
             this.initialCollisionTexture,
+            timingsTexture,
             this.initialValuesFunction,
             WIDTH,
             scene
         );
         this.collisionTexture2 = makeComputeProceduralTexture(
+            this.parent,
             this.collisionShader,
             this.initialPositionsTexture,
             this.initialVelocityTexture,
             this.initialCollisionTexture,
+            timingsTexture,
             this.bindCollisionVars,
             WIDTH,
             scene
@@ -136,7 +155,10 @@ export class BulletBehaviour {
         bulletMaterial.setTexture('positionSampler', this.initialPositionsTexture);
         bulletMaterial.setTexture('velocitySampler', this.initialVelocityTexture);
         bulletMaterial.setTexture('collisionSampler', this.initialVelocityTexture);
+        bulletMaterial.setTexture('timingsSampler', timingsTexture);
+        bulletMaterial.setFloat('timeSinceStart', 0.001);
 
+        this.startTime = new Date();
         this.justStarted = true;
         this.frame = 0;
         this.bulletMaterial = bulletMaterial;
@@ -220,15 +242,21 @@ export class BulletBehaviour {
         outputPositionTexture.sleep = true;
         outputCollisionTexture.sleep = true;
 
+        const timeSinceStart = (new Date() - this.startTime) / 1000;
+
         outputPositionTexture.setTexture('positionSampler', inputPositionTexture);
         outputPositionTexture.setTexture('velocitySampler', inputVelocityTexture);
         outputPositionTexture.setTexture('collisionSampler', inputCollisionTexture);
+        outputPositionTexture.setVector3('parentPosition', this.parent.getAbsolutePosition());
         outputPositionTexture.setFloat('delta', deltaS);
+        outputPositionTexture.setFloat('timeSinceStart', timeSinceStart);
         outputPositionTexture.setVector3('playerPosition', globalActorRefs.player.position);
         outputVelocityTexture.setTexture('positionSampler', inputPositionTexture);
         outputVelocityTexture.setTexture('velocitySampler', inputVelocityTexture);
         outputVelocityTexture.setTexture('collisionSampler', inputCollisionTexture);
+        outputVelocityTexture.setVector3('parentPosition', this.parent.getAbsolutePosition());
         outputVelocityTexture.setFloat('delta', deltaS);
+        outputVelocityTexture.setFloat('timeSinceStart', timeSinceStart);
         outputVelocityTexture.setVector3('playerPosition', globalActorRefs.player.position);
 
         outputCollisionTexture.setTexture('positionSampler', inputPositionTexture);
@@ -243,6 +271,7 @@ export class BulletBehaviour {
         this.bulletMaterial.setTexture('collisionSampler', inputCollisionTexture);
         this.bulletMaterial.setTexture('positionSampler', inputPositionTexture);
         this.bulletMaterial.setTexture('velocitySampler', inputVelocityTexture);
+        this.bulletMaterial.setFloat('timeSinceStart', timeSinceStart);
 
         return [outputPositionTexture, outputVelocityTexture];
     }

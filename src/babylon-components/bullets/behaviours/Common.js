@@ -1,23 +1,39 @@
-import { GRAZE_DISTANCE, MAX_BULLETS_PER_GROUP, MAX_ENEMIES } from '../../../utils/Constants';
+import { BULLET_WARNING, GRAZE_DISTANCE, MAX_BULLETS_PER_GROUP, MAX_ENEMIES } from '../../../utils/Constants';
 import { glsl } from '../../BabylonUtils';
 
 export const uniformSnippet = glsl`
     uniform float delta;
+    uniform float timeSinceStart;
     uniform vec2 resolution;
     uniform sampler2D positionSampler;
     uniform sampler2D velocitySampler;
     uniform sampler2D collisionSampler;
+    uniform sampler2D timingsSampler;
 `;
 
 export const mainHeaderSnippet = glsl`
     vec2 uv = gl_FragCoord.xy / resolution.xy;
     float id = (gl_FragCoord.x - 0.5) + ((gl_FragCoord.y - 0.5) * resolution.x);
 
+    vec4 timingPosition = texture2D( timingsSampler, uv );
     vec3 position = texture2D( positionSampler, uv ).xyz;
     vec3 velocity = texture2D( velocitySampler, uv ).xyz;
     vec4 collision = texture2D( collisionSampler, uv );
 
+    float timing = timingPosition.w;
+    vec3 initialPosition = timingPosition.xyz;
+
+    float dTiming = timeSinceStart - timing;
+    float shouldPositionReset = float(dTiming > 0. && dTiming < ${BULLET_WARNING});
+
+    position = mix(position, initialPosition, shouldPositionReset);
+
     vec3 startPosition = position;
+    vec3 startVelocity = velocity;
+`;
+
+export const postComputeSnippet = glsl`
+    velocity = mix(velocity, startVelocity, shouldPositionReset);
 `;
 
 export const collisionSnippet = glsl`

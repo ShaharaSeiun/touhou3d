@@ -38,7 +38,6 @@ const makeShotInstruction = (powerClass, initialVelocity) => {
             material: 'texture',
             texture: 'reimu_ofuda_blue',
             hasAlpha: true,
-            alpha: 0.003,
             doubleSided: true,
         },
         patternOptions: {

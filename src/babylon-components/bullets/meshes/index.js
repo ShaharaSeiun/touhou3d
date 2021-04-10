@@ -2,7 +2,6 @@ import { Matrix } from '@babylonjs/core';
 import { makeSphereMesh } from './Sphere';
 import { makeCardMesh } from './Card';
 import { makeKnifeMesh } from './Knife';
-import { bufferMatricesSource } from '../../gameLogic/StaticRefs';
 import { makeItemMesh } from './Item';
 
 export const makeBulletMesh = (meshOptions, assets) => {
@@ -35,10 +34,14 @@ export const makeBulletMesh = (meshOptions, assets) => {
     _mesh.isVisible = true;
 
     _mesh.makeInstances = (num) => {
-        const bufferMatrices = bufferMatricesSource.slice(num * 16);
+        const bufferMatrices = new Float32Array(num * 16);
+        for(let i = 0; i < num; i++){
+            const matrix = Matrix.Identity();
+            matrix.copyToArray(bufferMatrices, i * 16);
+        };
 
-        _mesh.thinInstanceSetBuffer('matrix', bufferMatrices, 16);
-    };
+        _mesh.thinInstanceSetBuffer("matrix", bufferMatrices, 16);
+    }
 
-    return { mesh: _mesh, radius };
+    return {mesh: _mesh, radius};
 };
