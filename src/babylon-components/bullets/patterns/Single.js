@@ -1,11 +1,13 @@
 import { RandVector3 } from '../../BabylonUtils';
+import { globalActorRefs } from '../../gameLogic/StaticRefs';
 
-export const makeSinglePattern = (patternOptions) => {
-    let velocity = new RandVector3(...patternOptions.velocity);
-    let position = new RandVector3(...patternOptions.position);
+export const makeSinglePattern = (patternOptions, parent) => {
+    let velocity;
+    let position;
 
     if (patternOptions.towardsPlayer) {
-        velocity = new RandVector3(...patternOptions.velocity);
+        const speed = patternOptions.speed || 1;
+        velocity = globalActorRefs.player.position.subtract(parent.getAbsolutePosition()).normalize().scale(speed);
         position = new RandVector3(...patternOptions.position);
     } else {
         velocity = new RandVector3(...patternOptions.velocity);

@@ -106,7 +106,9 @@ export const commonVertexShaderWithWarning = glsl`
 
         dTiming = timeSinceStart - timing;
 
-        rotatedVert *= clamp(dTiming, 0.0, ${BULLET_WARNING}) / ${BULLET_WARNING};
+        float size = (${BULLET_WARNING} - clamp(dTiming, 0.0, ${BULLET_WARNING})) / ${BULLET_WARNING};
+
+        rotatedVert *= size * 3. + 1.;
 
         vec4 totalPos = rotatedVert + instPos;
         totalPos.w = 1.;

@@ -1,6 +1,7 @@
 import { isFunction } from 'lodash';
 import { makeBurstPattern } from './Burst';
 import { makeEmptyPattern } from './Empty';
+import { makeMultiBurstPattern } from './MultiBurst';
 import { makeSinglePattern } from './Single';
 import { makeSprayPattern } from './Spray';
 
@@ -20,6 +21,9 @@ export const makeBulletPattern = (patternOptions, parent) => {
             case 'burst':
                 _pattern = makeBurstPattern(patternOptions, parent);
                 break;
+            case 'multiBurst':
+                _pattern = makeMultiBurstPattern(patternOptions, parent);
+                break;
             case 'spray':
                 _pattern = makeSprayPattern(patternOptions, parent);
                 break;
@@ -28,14 +32,20 @@ export const makeBulletPattern = (patternOptions, parent) => {
         }
     }
 
-    const parentPosition = parent.getAbsolutePosition();
-
-    _pattern.positions.forEach((position) => {
-        position.addInPlace(parentPosition);
-    });
-
     if(!_pattern.timings){
-        _pattern.timings = new Float32Array(_pattern.positions.length)
+        _pattern.timings = new Array(_pattern.positions.length); 
+        for (let i = 0; i < _pattern.positions.length; ++i) 
+            _pattern.timings[i] = 0;
+    }
+
+    if(patternOptions.repeat){
+        for(let i = 1; i < patternOptions.repeat.times; i++){
+            _pattern.positions.push(..._pattern.positions)
+            _pattern.velocities.push(..._pattern.velocities)
+            _pattern.timings.push(..._pattern.timings.map(timing => (
+                timing + i * patternOptions.repeat.delay
+            )))
+        }
     }
 
     return _pattern;

@@ -53,6 +53,7 @@ const makeShotInstruction = (powerClass) => {
             shotSources: shotSources,
             shotSpeed: 20,
         },
+        soundOptions: false,
         lifespan: Infinity,
         wait: 0,
     };

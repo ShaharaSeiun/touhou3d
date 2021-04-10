@@ -2,6 +2,7 @@ import {
     AssetsManager,
     DracoCompression,
     Matrix,
+    Mesh,
     MeshBuilder,
     ParticleHelper,
     ParticleSystemSet,
@@ -77,6 +78,48 @@ export const useLoadAssets = () => {
                 type: 'model',
             },
             {
+                rootUrl: '/assets/enemies/fairies/',
+                sceneFilename: 'salmonFairy.glb',
+                name: 'salmonFairy',
+                type: 'model',
+            },
+            {
+                rootUrl: '/assets/enemies/fairies/',
+                sceneFilename: 'greenFairy.glb',
+                name: 'greenFairy',
+                type: 'model',
+            },
+            {
+                rootUrl: '/assets/enemies/fairies/',
+                sceneFilename: 'yellowFairy.glb',
+                name: 'yellowFairy',
+                type: 'model',
+            },
+            {
+                rootUrl: '/assets/enemies/fairies/',
+                sceneFilename: 'blueHatFairy.glb',
+                name: 'blueHatFairy',
+                type: 'model',
+            },
+            {
+                rootUrl: '/assets/enemies/fairies/',
+                sceneFilename: 'salmonHatFairy.glb',
+                name: 'salmonHatFairy',
+                type: 'model',
+            },
+            {
+                rootUrl: '/assets/enemies/fairies/',
+                sceneFilename: 'greenHatFairy.glb',
+                name: 'greenHatFairy',
+                type: 'model',
+            },
+            {
+                rootUrl: '/assets/enemies/fairies/',
+                sceneFilename: 'yellowHatFairy.glb',
+                name: 'yellowHatFairy',
+                type: 'model',
+            },
+            {
                 rootUrl: '/assets/landscapes/stage1/',
                 sceneFilename: 'landscapeTileAdraco.glb',
                 name: 'stage1TileA',
@@ -141,6 +184,36 @@ export const useLoadAssets = () => {
             },
             {
                 type: 'function',
+                name: 'egg',
+                generator: () => {
+                    const segments = 10
+                    const length = 4
+                    const width = 2
+
+                    const y = (x) => width * (x) * (x - length) / ((length*length)/2)
+
+                    const myShape = [];
+                
+                    for(let i = 0; i <= segments; i++){
+                        myShape.push(new Vector3(y(i*length/segments), i*length/segments, 0))
+                    }
+
+                    const mesh = MeshBuilder.CreateLathe(
+                        "egg", 
+                        {
+                            shape: myShape,
+                            tessellation: segments * 2
+                        }
+                    );
+
+                    const rotationMatrix = Matrix.RotationX(Math.PI/2);
+                    mesh.bakeTransformIntoVertices(rotationMatrix);
+                    mesh.isVisible = false;
+                    return mesh;
+                },
+            },
+            {
+                type: 'function',
                 name: 'sphere',
                 generator: () => {
                     const mesh = MeshBuilder.CreateSphere(
@@ -152,6 +225,37 @@ export const useLoadAssets = () => {
                         },
                         scene
                     );
+                    mesh.isVisible = false;
+                    return mesh;
+                },
+            },
+            {
+                type: 'function',
+                name: 'sphereWithHalo',
+                generator: () => {
+                    const meshInner = MeshBuilder.CreateSphere(
+                        'sphereWithHaloInner',
+                        {
+                            diameter: 1.5,
+                            segments: 10,
+                        },
+                        scene
+                    );
+                    const meshOuter = MeshBuilder.CreateTorus(
+                        'sphereWithHaloOuter',
+                        {
+                            diameter: 2.0,
+                            thickness: 0.1,
+                            tessellation: 20,
+                        },
+                        scene
+                    );
+
+                    const rotationMatrix = Matrix.RotationX(Math.PI/2);
+                    meshOuter.bakeTransformIntoVertices(rotationMatrix);
+
+                    const mesh = Mesh.MergeMeshes([meshInner, meshOuter], true);
+
                     mesh.isVisible = false;
                     return mesh;
                 },

@@ -53,6 +53,7 @@ const makeShotInstruction = (powerClass, initialVelocity) => {
             shotSources: shotSources,
             shotSpeed: 20,
         },
+        soundOptions: false,
         lifespan: Infinity,
         wait: 0,
     };
@@ -85,7 +86,7 @@ export const ReimuTrackingBulletEmitter = ({ powerClass, initialVelocity, ...pro
     }, [addBulletGroup, disposeSingle, powerClass, initialVelocity]);
 
     useBeforeRender((scene) => {
-        if (!transformNodeRef.current) return;
+        if (!transformNodeRef.current || !shotId) return;
 
         shotFrame.current += 1;
 

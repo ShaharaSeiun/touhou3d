@@ -6,37 +6,11 @@ import { FairyBase } from '../enemyActors/FairyBase';
 import { useAssets } from '../hooks/useAssets';
 import { RandomEnemyBehaviour } from '../enemyBehaviours/RandomEnemyBehaviour';
 import { DefaultFairyBehaviour } from '../enemyBehaviours/DefaultFairyBehaviour';
-import { BULLET_TYPE } from '../bullets/behaviours/EnemyBulletBehaviour';
+import { StrongStage1FairyBehaviour } from '../enemyBehaviours/StrongStage1FairyBehaviour';
+import { FairyBaseWithMagicCircle } from '../enemyActors/FairyBaseWithMagicCircle';
 
-const deathInstruction = {
-    type: 'shoot',
-    materialOptions: {
-        material: 'item',
-        texture: 'power',
-        doubleSided: true,
-        hasAlpha: true,
-    },
-    patternOptions: {
-        pattern: 'single',
-        position: [0, 0, 0],
-        velocity: [
-            [-1, 1],
-            [-1, 1],
-            [-1, 1],
-        ],
-    },
-    meshOptions: {
-        mesh: 'item',
-    },
-    behaviourOptions: {
-        behaviour: 'item',
-        bulletType: BULLET_TYPE.POWER,
-    },
-    lifespan: 10000,
-    wait: 0,
-};
 
-export const Enemy = ({ type, name, asset, behaviour, radius, health, removeEnemyFromScene, spawn }) => {
+export const Enemy = ({ type, name, asset, behaviour, radius, health, deathInstruction, removeEnemyFromScene, spawn, target }) => {
     const enemyRef = useRef();
     const [enemy, setEnemy] = useState();
     const mesh = useAssets(asset);
@@ -54,13 +28,18 @@ export const Enemy = ({ type, name, asset, behaviour, radius, health, removeEnem
             enemy.getAbsolutePosition(),
             radius,
             () => {
-                addBulletGroup(enemy, deathInstruction);
-                removeEnemyFromScene(name, enemy.getAbsolutePosition());
+                const deathPosition = enemy.getAbsolutePosition()
+                addBulletGroup({
+                    getAbsolutePosition: () => {
+                        return deathPosition;
+                    }
+                }, deathInstruction);
+                removeEnemyFromScene(name, deathPosition);
             },
             health
         );
         setPositionID(id);
-    }, [enemy, radius, name, removeEnemyFromScene, health, addBulletGroup]);
+    }, [enemy, radius, name, removeEnemyFromScene, health, deathInstruction, addBulletGroup]);
 
     useBeforeRender(() => {
         if (enemyRef.current && !enemy) {
@@ -79,6 +58,9 @@ export const Enemy = ({ type, name, asset, behaviour, radius, health, removeEnem
         case 'fairy':
             enemyMesh = <FairyBase mesh={mesh} radius={radius} assetName={asset} ref={enemyRef} />;
             break;
+        case 'fairyWithMagicCircle':
+            enemyMesh = <FairyBaseWithMagicCircle mesh={mesh} radius={radius} assetName={asset} ref={enemyRef} />;
+            break;
         default:
             throw new Error('Unknown Enemy type: ' + type);
     }
@@ -92,12 +74,15 @@ export const Enemy = ({ type, name, asset, behaviour, radius, health, removeEnem
         case 'defaultFairy':
             BehaviourClass = DefaultFairyBehaviour;
             break;
+        case 'strongStage1Fairy':
+            BehaviourClass = StrongStage1FairyBehaviour;
+            break;
         default:
-            throw new Error('Unknown Behaviour type: ' + type);
+            throw new Error('Unknown Behaviour type: ' + behaviour);
     }
 
     return (
-        <BehaviourClass leaveScene={leaveScene} spawn={spawn}>
+        <BehaviourClass leaveScene={leaveScene} spawn={spawn} target={target}>
             {enemyMesh}
         </BehaviourClass>
     );

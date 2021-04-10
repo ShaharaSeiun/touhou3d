@@ -1,9 +1,13 @@
+import { times } from 'lodash';
 import { SETTINGS } from '../utils/Settings';
 
 export default class MultiSound {
-    constructor(url, volume = 0.1) {
+    constructor(url, volume = 0.1, num = 1) {
         this.url = url;
         this.volume = volume;
+        this.curSource = 0;
+        this.num = num;
+        this.playing = times(num, () => false)
 
         this.initFunc = (...args) => this.init(args);
 
@@ -26,15 +30,15 @@ export default class MultiSound {
         this.gainNode.gain.value = this.volume;
         this.gainNode.connect(this.audioContext.destination);
 
-        this.source = this.audioContext.createBufferSource();
+        this.sources = times(this.num, () => this.audioContext.createBufferSource());
 
         fetch(this.url)
             .then((resp) => resp.arrayBuffer())
             .then((buf) => this.audioContext.decodeAudioData(buf)) // can be callback as well
             .then((decoded) => {
-                this.source.buffer = this.buf = decoded;
-                this.source.loop = false;
-                this.source.connect(this.gainNode);
+                this.sources.forEach(source => {source.buffer = this.buf = decoded});
+                this.sources.forEach(source => {source.loop = false});
+                this.sources.forEach(source => {source.connect(this.gainNode)});
 
                 this.ready = true;
             })
@@ -43,23 +47,27 @@ export default class MultiSound {
 
     play() {
         if (!this.ready) return;
+        if(this.startTime && new Date() - this.startTime < 100) return;
         if (SETTINGS.SFX === 'OFF') return;
 
-        this.stop();
+        this.stop(this.curSource);
 
-        this.source.start(0);
-        this.playing = true;
+        this.sources[this.curSource].start(0);
+        this.playing[this.curSource] = true;
+        this.startTime = new Date();
+
+        this.curSource = (this.curSource + 1) % this.num
     }
 
-    stop() {
-        if (!this.ready || !this.playing) return;
+    stop(source) {
+        if (!this.ready || !this.playing[source]) return;
 
-        this.source.stop(0); // this destroys the buffer source
+        this.sources[source].stop(0); // this destroys the buffer source
         const newSource = this.audioContext.createBufferSource(); // so we need to create a new one
         newSource.buffer = this.buf;
         newSource.loop = false;
         newSource.connect(this.gainNode);
-        this.source = newSource;
-        this.playing = false;
+        this.sources[source] = newSource;
+        this.playing[source] = false;
     }
 }

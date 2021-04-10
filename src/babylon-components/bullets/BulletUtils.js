@@ -86,6 +86,9 @@ export const prepareBulletInstruction = (instruction) => {
         behaviourOptions: {
             behaviour: 'linear',
         },
+        soundOptions: {
+            sound: 'enemyShoot'
+        },
         lifespan: 10000,
     };
 

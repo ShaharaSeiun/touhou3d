@@ -1,25 +1,23 @@
-import { Animation, BezierCurveEase } from '@babylonjs/core';
+import { Animation, BezierCurveEase, Vector3 } from '@babylonjs/core';
 import React, { useContext, useMemo, useRef } from 'react';
 import { randVectorToPosition } from '../BabylonUtils';
 import { AnimationContext } from '../gameLogic/GeneralContainer';
-import { globalActorRefs } from '../gameLogic/StaticRefs';
 import { useDoSequence } from '../hooks/useDoSequence';
 import { useAddBulletGroup } from '../hooks/useAddBulletGroup';
 
-const smallTowardsPlayer = {
+const multiBurst = {
     type: 'shoot',
     materialOptions: {
         material: 'fresnel',
-        color: [0, 0, 1]
+        color: [1, 0, 0]
     },
     patternOptions: {
-        pattern: 'single',
-        towardsPlayer: true,
-        speed: 8,
-        position: [0, 0, 0]
+        pattern: 'multiBurst',
+        speeds: [4, 8],
+        num: 1000
     },
     meshOptions: {
-        mesh: 'sphere',
+        mesh: 'egg',
         radius: 0.1
     },
     behaviourOptions: {
@@ -29,42 +27,20 @@ const smallTowardsPlayer = {
     wait: 0,
 }
 
-const mediumTowardsPlayer = {
-    type: 'shoot',
-    materialOptions: {
-        material: 'fresnel',
-        color: [1, 0, 0]
-    },
-    patternOptions: {
-        pattern: 'single',
-        towardsPlayer: true,
-        speed: 8,
-        position: [0, 0, 0]
-    },
-    meshOptions: {
-        mesh: 'sphereWithHalo',
-        radius: 0.2
-    },
-    behaviourOptions: {
-        behaviour: 'linear',
-    },
-    lifespan: 10000,
-    wait: 0,
-}
-
-export const DefaultFairyBehaviour = ({ children, leaveScene, spawn }) => {
+export const StrongStage1FairyBehaviour = ({ children, leaveScene, spawn, target }) => {
     const transformNodeRef = useRef();
     const startPosition = useMemo(() => randVectorToPosition(spawn), [spawn]);
+    const targetPosition = useMemo(() => randVectorToPosition(target), [target]);
     const { registerAnimation } = useContext(AnimationContext);
     const addBulletGroup = useAddBulletGroup();
 
-    const actionsTimings = useMemo(() => [0, 2, 2, 3.2, 4.1, 5.5, 6.3, 7], []);
+    const actionsTimings = useMemo(() => [0, 2, 2, 2.5, 7], []);
 
     const actions = useMemo(
         () => [
             () => {
                 const transform = transformNodeRef.current;
-                const target = globalActorRefs.player.position.scale(1.2).add(startPosition.scale(0.8)).scale(0.5);
+                const target = startPosition.add(new Vector3(0, 0, -4));
                 let easingFunction = new BezierCurveEase(0.03, 0.66, 0.72, 0.98);
                 registerAnimation(
                     Animation.CreateAndStartAnimation(
@@ -83,16 +59,12 @@ export const DefaultFairyBehaviour = ({ children, leaveScene, spawn }) => {
             () => {
                 addBulletGroup(
                     transformNodeRef.current,
-                    smallTowardsPlayer
+                    multiBurst
                 )
             },
             () => {
                 const transform = transformNodeRef.current;
-                const target = transform.position.add(
-                    transform.position.subtract(globalActorRefs.player.position).normalize().scale(20)
-                );
-                target.y = transform.position.y;
-                const easingFunction = new BezierCurveEase(0.64, 0.24, 0.87, 0.41);
+                const target = targetPosition
                 registerAnimation(
                     Animation.CreateAndStartAnimation(
                         'anim',
@@ -103,33 +75,11 @@ export const DefaultFairyBehaviour = ({ children, leaveScene, spawn }) => {
                         transform.position,
                         target,
                         0,
-                        easingFunction
                     )
                 );
             },
             () => {
-                addBulletGroup(
-                    transformNodeRef.current,
-                    mediumTowardsPlayer
-                )
-            },
-            () => {
-                addBulletGroup(
-                    transformNodeRef.current,
-                    mediumTowardsPlayer
-                )
-            },
-            () => {
-                addBulletGroup(
-                    transformNodeRef.current,
-                    mediumTowardsPlayer
-                )
-            },
-            () => {
-                addBulletGroup(
-                    transformNodeRef.current,
-                    mediumTowardsPlayer
-                )
+
             },
             leaveScene,
         ],

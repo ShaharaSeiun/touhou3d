@@ -158,11 +158,11 @@ export class BulletBehaviour {
         bulletMaterial.setTexture('timingsSampler', timingsTexture);
         bulletMaterial.setFloat('timeSinceStart', 0.001);
 
-        this.startTime = new Date();
         this.justStarted = true;
         this.frame = 0;
         this.bulletMaterial = bulletMaterial;
         this.ready = true;
+        this.timeSinceStart = 0.001;
     }
     dispose() {
         this.positionTexture1.dispose();
@@ -242,21 +242,21 @@ export class BulletBehaviour {
         outputPositionTexture.sleep = true;
         outputCollisionTexture.sleep = true;
 
-        const timeSinceStart = (new Date() - this.startTime) / 1000;
+        this.timeSinceStart += deltaS
 
         outputPositionTexture.setTexture('positionSampler', inputPositionTexture);
         outputPositionTexture.setTexture('velocitySampler', inputVelocityTexture);
         outputPositionTexture.setTexture('collisionSampler', inputCollisionTexture);
         outputPositionTexture.setVector3('parentPosition', this.parent.getAbsolutePosition());
         outputPositionTexture.setFloat('delta', deltaS);
-        outputPositionTexture.setFloat('timeSinceStart', timeSinceStart);
+        outputPositionTexture.setFloat('timeSinceStart', this.timeSinceStart);
         outputPositionTexture.setVector3('playerPosition', globalActorRefs.player.position);
         outputVelocityTexture.setTexture('positionSampler', inputPositionTexture);
         outputVelocityTexture.setTexture('velocitySampler', inputVelocityTexture);
         outputVelocityTexture.setTexture('collisionSampler', inputCollisionTexture);
         outputVelocityTexture.setVector3('parentPosition', this.parent.getAbsolutePosition());
         outputVelocityTexture.setFloat('delta', deltaS);
-        outputVelocityTexture.setFloat('timeSinceStart', timeSinceStart);
+        outputVelocityTexture.setFloat('timeSinceStart', this.timeSinceStart);
         outputVelocityTexture.setVector3('playerPosition', globalActorRefs.player.position);
 
         outputCollisionTexture.setTexture('positionSampler', inputPositionTexture);
@@ -271,7 +271,7 @@ export class BulletBehaviour {
         this.bulletMaterial.setTexture('collisionSampler', inputCollisionTexture);
         this.bulletMaterial.setTexture('positionSampler', inputPositionTexture);
         this.bulletMaterial.setTexture('velocitySampler', inputVelocityTexture);
-        this.bulletMaterial.setFloat('timeSinceStart', timeSinceStart);
+        this.bulletMaterial.setFloat('timeSinceStart', this.timeSinceStart);
 
         return [outputPositionTexture, outputVelocityTexture];
     }

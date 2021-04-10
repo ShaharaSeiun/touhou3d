@@ -5,6 +5,7 @@ export const uniformSnippet = glsl`
     uniform float delta;
     uniform float timeSinceStart;
     uniform vec2 resolution;
+    uniform vec3 parentPosition;
     uniform sampler2D positionSampler;
     uniform sampler2D velocitySampler;
     uniform sampler2D collisionSampler;
@@ -21,7 +22,7 @@ export const mainHeaderSnippet = glsl`
     vec4 collision = texture2D( collisionSampler, uv );
 
     float timing = timingPosition.w;
-    vec3 initialPosition = timingPosition.xyz;
+    vec3 initialPosition = timingPosition.xyz + parentPosition;
 
     float dTiming = timeSinceStart - timing;
     float shouldPositionReset = float(dTiming > 0. && dTiming < ${BULLET_WARNING});

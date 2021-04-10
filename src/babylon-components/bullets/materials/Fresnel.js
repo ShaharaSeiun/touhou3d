@@ -27,7 +27,7 @@ export const fresnelFragmentShader = glsl`
     }
 `;
 
-export const makeFresnelMaterial = (scene) => {
+export const makeFresnelMaterial = (materialOptions, scene) => {
     const _material = new ShaderMaterial(
         v4() + 'fresnel',
         scene,
@@ -40,8 +40,9 @@ export const makeFresnelMaterial = (scene) => {
             uniforms: ['worldView', 'worldViewProjection', 'view', 'projection', 'direction', 'cameraPosition']
         }
     );
-
-    _material.setColor3("toColor", new Color3(1.0, 0.0, 0.0))
+    
+    const color = materialOptions.color || [1.0, 0.0, 0.0]
+    _material.setColor3("toColor", new Color3(...color))
 
     return _material;
 };

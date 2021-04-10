@@ -8,7 +8,7 @@ export const makeBulletMaterial = (materialOptions, parent, assets, scene) => {
 
     switch (materialOptions.material) {
         case 'fresnel':
-            _material = makeFresnelMaterial(scene);
+            _material = makeFresnelMaterial(materialOptions, scene);
             break;
         case 'texture':
             _material = makeTextureMaterial(materialOptions, assets, scene);

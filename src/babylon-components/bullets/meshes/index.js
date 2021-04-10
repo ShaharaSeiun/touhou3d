@@ -1,8 +1,10 @@
 import { Matrix } from '@babylonjs/core';
 import { makeSphereMesh } from './Sphere';
+import { makeSphereWithHaloMesh } from './SphereWithHalo';
 import { makeCardMesh } from './Card';
 import { makeKnifeMesh } from './Knife';
 import { makeItemMesh } from './Item';
+import { makeEggMesh } from './Egg';
 
 export const makeBulletMesh = (meshOptions, assets) => {
     const { mesh, radius } = meshOptions;
@@ -12,6 +14,12 @@ export const makeBulletMesh = (meshOptions, assets) => {
     switch (mesh) {
         case 'sphere':
             _mesh = makeSphereMesh(assets);
+            break;
+        case 'sphereWithHalo':
+            _mesh = makeSphereWithHaloMesh(assets);
+            break;
+        case 'egg':
+            _mesh = makeEggMesh(assets);
             break;
         case 'card':
             _mesh = makeCardMesh(assets);

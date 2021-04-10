@@ -1,5 +1,5 @@
 export class BulletGroup {
-    constructor(material, mesh, behaviour, positions, velocities, lifespan, startTime) {
+    constructor(material, mesh, behaviour, sounds, positions, velocities, lifespan, startTime) {
         this.material = material;
         this.mesh = mesh;
         this.behaviour = behaviour;
@@ -7,6 +7,7 @@ export class BulletGroup {
         this.velocities = velocities;
         this.lifespan = lifespan;
         this.startTime = startTime;
+        this.sounds = sounds;
     }
 
     dispose() {

@@ -1,4 +1,4 @@
-import { CustomProceduralTexture, Scalar, Vector3 } from '@babylonjs/core';
+import { CustomProceduralTexture, Node, Scalar, Vector3 } from '@babylonjs/core';
 import { ARENA_HEIGHT, ARENA_LENGTH, ARENA_WIDTH } from '../utils/Constants';
 
 export const makeSpriteSheetAnimation = ({
@@ -27,6 +27,7 @@ export const makeSpriteSheetAnimation = ({
 
 export class RandVector3 extends Vector3 {
     constructor(x, y, z = 0) {
+
         if (x === 'rand') {
             x = Scalar.RandomRange(-1, 1);
         } else if (Array.isArray(x)) {

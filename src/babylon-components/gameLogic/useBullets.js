@@ -9,6 +9,7 @@ import { convertPlayerBulletCollisions, convertEnemyBulletCollisions, prepareBul
 import { makeBulletMaterial } from '../bullets/materials';
 import { makeBulletMesh } from '../bullets/meshes';
 import { makeBulletPattern } from '../bullets/patterns';
+import { makeBulletSound } from '../bullets/sounds';
 import { makeName } from '../hooks/useName';
 import { globalActorRefs, allBullets, killEnemy } from './StaticRefs';
 
@@ -41,6 +42,7 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
             const material = makeBulletMaterial(preparedInstruction.materialOptions, parent, assets, scene);
             const {mesh, radius} = makeBulletMesh(preparedInstruction.meshOptions, assets, scene);
             const behaviour = makeBulletBehaviour(preparedInstruction.behaviourOptions, environmentCollision, radius, parent);
+            const sounds = preparedInstruction.soundOptions && makeBulletSound(preparedInstruction.soundOptions, timings);
 
             mesh.makeInstances(positions.length);
             mesh.material = material;
@@ -48,9 +50,9 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
             behaviour.init(material, positions, velocities, timings, scene);
 
             const { lifespan } = preparedInstruction;
-            const startTime = new Date();
+            const timeSinceStart = 0;
 
-            const bulletGroup = new BulletGroup(material, mesh, behaviour, positions, velocities, lifespan, startTime);
+            const bulletGroup = new BulletGroup(material, mesh, behaviour, sounds, positions, velocities, lifespan, timeSinceStart);
 
             const newID = makeName('bulletGroup');
             allBullets[newID] = bulletGroup;
@@ -106,18 +108,19 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
         });
 
         //Lifespans
-
-        let now = new Date();
         const deltaS = scene.paused ? 0 : scene.getEngine().getDeltaTime() / 1000;
 
         const toRemove = [];
 
         Object.keys(allBullets).forEach((bulletGroupIndex) => {
             const bulletGroup = allBullets[bulletGroupIndex];
-            if (now - bulletGroup.startTime > bulletGroup.lifespan) {
+            bulletGroup.timeSinceStart += deltaS;
+            if (bulletGroup.timeSinceStart > bulletGroup.lifespan) {
                 toRemove.push(bulletGroupIndex);
             } else {
                 bulletGroup.behaviour.update(deltaS);
+                if(bulletGroup.sounds)
+                    bulletGroup.sounds.update(deltaS);
             }
         });
 
