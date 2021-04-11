@@ -1,8 +1,8 @@
-export const InertMinionDef = () => {
+export const InertMinionDef = (radius = 0.5) => {
     const map = {
         type: 'minion',
         behaviour: 'inertMinion',
-        radius: 0.5,
+        radius,
         health: 10,
     };
 

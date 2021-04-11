@@ -13,7 +13,7 @@ const multiBurst = {
     type: 'shoot',
     materialOptions: {
         material: 'fresnel',
-        color: [1, 0, 0]
+        color: [0, 0, 1]
     },
     patternOptions: {
         pattern: 'multiBurst',
@@ -58,7 +58,7 @@ const area = {
 const inertMinion1 = InertMinionDef();
 const inertMinion2 = InertMinionDef();
 
-export const StrongStage1FairyBehaviour = ({ children, leaveScene, spawn, target }) => {
+export const StrongerStage1FairyBehaviour = ({ children, leaveScene, spawn, target }) => {
     const transformNodeRef = useRef();
     const minionRootTransformNodeRef = useRef();
     const minion1TransformNodeRef = useRef();
@@ -73,7 +73,7 @@ export const StrongStage1FairyBehaviour = ({ children, leaveScene, spawn, target
     const [minion1InScene, setMinion1InScene] = useState(false);
     const [minion2InScene, setMinion2InScene] = useState(false);
 
-    const actionsTimings = useMemo(() => [0, 2, 2, 2.5, 3, 4, 5, 6, 7], []);
+    const actionsTimings = useMemo(() => [0, 2, 2, 2.5, 7], []);
 
     const actions = useMemo(
         () => [
@@ -150,30 +150,6 @@ export const StrongStage1FairyBehaviour = ({ children, leaveScene, spawn, target
                     new Vector3(0, 0, 0),
                     new Vector3(0, 0, Math.PI * 2),
                     Animation.ANIMATIONLOOPMODE_CYCLE,
-                )
-            },
-            () => {
-                addBulletGroup(
-                    transformNodeRef.current,
-                    area
-                )
-            },
-            () => {
-                addBulletGroup(
-                    transformNodeRef.current,
-                    area
-                )
-            },
-            () => {
-                addBulletGroup(
-                    transformNodeRef.current,
-                    area
-                )
-            },
-            () => {
-                addBulletGroup(
-                    transformNodeRef.current,
-                    area
                 )
             },
             leaveScene,

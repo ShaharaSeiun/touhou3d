@@ -1,4 +1,5 @@
 import { isFunction } from 'lodash';
+import { makeAreaPattern } from './Area';
 import { makeBurstPattern } from './Burst';
 import { makeEmptyPattern } from './Empty';
 import { makeMultiBurstPattern } from './MultiBurst';
@@ -23,6 +24,9 @@ export const makeBulletPattern = (patternOptions, parent) => {
                 break;
             case 'multiBurst':
                 _pattern = makeMultiBurstPattern(patternOptions, parent);
+                break;
+            case 'area':
+                _pattern = makeAreaPattern(patternOptions, parent);
                 break;
             case 'spray':
                 _pattern = makeSprayPattern(patternOptions, parent);

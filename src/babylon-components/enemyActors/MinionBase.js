@@ -14,7 +14,6 @@ export const MinionBase = React.forwardRef(({ radius, ...props }, ref) => {
     const texture = useTexture("blueMagicCircle")
     const scaling = useMemo(() => new Vector3(radius, radius, radius), [radius]);
     const scene = useScene();
-    const { registerAnimation, unregisterAnimation } = useContext(AnimationContext);
     
     useEffect(() => {
         const trail = new TrailMesh(name + 'Trail', ref.current, scene, 0.25, 30, true);
@@ -39,7 +38,7 @@ export const MinionBase = React.forwardRef(({ radius, ...props }, ref) => {
             sourceMat.dispose();
             trail.dispose();
         }
-    }, [])
+    }, [name, ref, scene])
 
     return (
         <transformNode ref={ref} scaling={scaling} name={name} {...props}>

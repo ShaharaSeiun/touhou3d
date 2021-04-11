@@ -31,7 +31,7 @@ var TrailMesh = /** @class */ (function (_super) {
         _this._length = length;
         _this._sectionVectors = [];
         _this._sectionNormalVectors = [];
-        for (var i = 0; i < _this._sectionPolygonPointsCount; i++) {
+        for (let i = 0; i < _this._sectionPolygonPointsCount; i++) {
             _this._sectionVectors[i] = Vector3.Zero();
             _this._sectionNormalVectors[i] = Vector3.Zero();
         }
@@ -49,18 +49,18 @@ var TrailMesh = /** @class */ (function (_super) {
         var data = new VertexData();
         var positions = [];
         var normals = [];
-        var indices = [];
+        let indices = [];
         var meshCenter = this._generator.getAbsolutePosition();
         var alpha = 2 * Math.PI / this._sectionPolygonPointsCount;
-        for (var i = 0; i < this._sectionPolygonPointsCount; i++) {
+        for (let i = 0; i < this._sectionPolygonPointsCount; i++) {
             positions.push(meshCenter.x + Math.cos(i * alpha) * this._diameter, meshCenter.y + Math.sin(i * alpha) * this._diameter, meshCenter.z);
         }
-        for (var i = 1; i <= this._length; i++) {
-            for (var j = 0; j < this._sectionPolygonPointsCount; j++) {
+        for (let i = 1; i <= this._length; i++) {
+            for (let j = 0; j < this._sectionPolygonPointsCount; j++) {
                 positions.push(meshCenter.x + Math.cos(j * alpha) * this._diameter, meshCenter.y + Math.sin(j * alpha) * this._diameter, meshCenter.z);
             }
             var l = positions.length / 3 - 2 * this._sectionPolygonPointsCount;
-            for (var j = 0; j < this._sectionPolygonPointsCount - 1; j++) {
+            for (let j = 0; j < this._sectionPolygonPointsCount - 1; j++) {
                 indices.push(l + j, l + j + this._sectionPolygonPointsCount, l + j + this._sectionPolygonPointsCount + 1);
                 indices.push(l + j, l + j + this._sectionPolygonPointsCount + 1, l + j + 1);
             }
@@ -104,22 +104,23 @@ var TrailMesh = /** @class */ (function (_super) {
         var positions = this.getVerticesData(VertexBuffer.PositionKind);
         var normals = this.getVerticesData(VertexBuffer.NormalKind);
         var wm = this._generator.getWorldMatrix();
+        if(wm.getTranslation().equals(Vector3.Zero())) return;
         if (positions && normals) {
-            for (var i = 3 * this._sectionPolygonPointsCount; i < positions.length; i++) {
+            for (let i = 3 * this._sectionPolygonPointsCount; i < positions.length; i++) {
                 positions[i - 3 * this._sectionPolygonPointsCount] = positions[i] - normals[i] / this._length * this._diameter;
             }
-            for (var i = 3 * this._sectionPolygonPointsCount; i < normals.length; i++) {
+            for (let i = 3 * this._sectionPolygonPointsCount; i < normals.length; i++) {
                 normals[i - 3 * this._sectionPolygonPointsCount] = normals[i];
             }
             var l = positions.length - 3 * this._sectionPolygonPointsCount;
             var alpha = 2 * Math.PI / this._sectionPolygonPointsCount;
-            for (var i = 0; i < this._sectionPolygonPointsCount; i++) {
+            for (let i = 0; i < this._sectionPolygonPointsCount; i++) {
                 this._sectionVectors[i].copyFromFloats(Math.cos(i * alpha) * this._diameter, Math.sin(i * alpha) * this._diameter, 0);
                 this._sectionNormalVectors[i].copyFromFloats(Math.cos(i * alpha), Math.sin(i * alpha), 0);
                 Vector3.TransformCoordinatesToRef(this._sectionVectors[i], wm, this._sectionVectors[i]);
                 Vector3.TransformNormalToRef(this._sectionNormalVectors[i], wm, this._sectionNormalVectors[i]);
             }
-            for (var i = 0; i < this._sectionPolygonPointsCount; i++) {
+            for (let i = 0; i < this._sectionPolygonPointsCount; i++) {
                 positions[l + 3 * i] = this._sectionVectors[i].x;
                 positions[l + 3 * i + 1] = this._sectionVectors[i].y;
                 positions[l + 3 * i + 2] = this._sectionVectors[i].z;

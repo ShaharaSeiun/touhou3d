@@ -10,6 +10,7 @@ import { StrongStage1FairyBehaviour } from '../enemyBehaviours/StrongStage1Fairy
 import { FairyBaseWithMagicCircle } from '../enemyActors/FairyBaseWithMagicCircle';
 import { MinionBase } from '../enemyActors/MinionBase';
 import { InertMinionBehaviour } from '../enemyBehaviours/InertMinionBehaviour';
+import { StrongerStage1FairyBehaviour } from '../enemyBehaviours/StrongerStage1FairyBehaviour';
 
 
 export const Enemy = ({ type, name, asset, behaviour, radius, health, deathInstruction, removeEnemyFromScene, spawn, target }) => {
@@ -85,6 +86,9 @@ export const Enemy = ({ type, name, asset, behaviour, radius, health, deathInstr
             break;
         case 'strongStage1Fairy':
             BehaviourClass = StrongStage1FairyBehaviour;
+            break;
+        case 'strongerStage1Fairy':
+            BehaviourClass = StrongerStage1FairyBehaviour;
             break;
         default:
             throw new Error('Unknown Behaviour type: ' + behaviour);
