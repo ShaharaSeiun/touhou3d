@@ -1,14 +1,16 @@
-import { Animation, BezierCurveEase } from '@babylonjs/core';
-import React, { useContext, useMemo, useRef } from 'react';
+import { Vector3 } from '@babylonjs/core';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { randVectorToPosition } from '../BabylonUtils';
-import { AnimationContext } from '../gameLogic/GeneralContainer';
-import { globalActorRefs } from '../gameLogic/StaticRefs';
-import { useDoSequence } from '../hooks/useDoSequence';
-import { useTexture } from '../hooks/useTexture';
 
 export const InertMinionBehaviour = ({ children, leaveScene, spawn}) => {
     const transformNodeRef = useRef();
-    const startPosition = useMemo(() => randVectorToPosition(spawn), [spawn]);
+    const startPosition = useMemo(() => spawn ? randVectorToPosition(spawn) : new Vector3(0, 0, 0), [spawn]);
+
+    useEffect(() => {
+        return () => {
+            leaveScene();
+        }
+    }, [leaveScene])
 
     return (
         <transformNode name position={startPosition} ref={transformNodeRef}>

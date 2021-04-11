@@ -12,14 +12,16 @@ export const usePause = () => {
         if (paused) {
             Music.pause();
             scene.paused = true;
-            animations.forEach((animation) => {
+            animations = animations.filter((animation) => {
                 animation.pause();
+                return (animation._runtimeAnimations[0]._maxFrame - animation._runtimeAnimations[0]._currentFrame) > 0.2;
             });
         } else {
             Music.play();
             scene.paused = false;
-            animations.forEach((animation) => {
+            animations = animations.filter((animation) => {
                 animation._paused = false;
+                return (animation._runtimeAnimations[0]._maxFrame - animation._runtimeAnimations[0]._currentFrame) > 0.2;
             });
         }
     }, [paused, scene]);
@@ -28,5 +30,9 @@ export const usePause = () => {
         animations = [animation, ...animations];
     }, []);
 
-    return { paused, setPaused, registerAnimation };
+    const unregisterAnimation = useCallback((animation) => {
+        animations = animations.filter(animationInst => animationInst !== animation);
+    }, []);
+
+    return { paused, setPaused, registerAnimation, unregisterAnimation };
 };

@@ -13,6 +13,10 @@ export const useAssets = (...names) => {
         }
 
         if (names.length === 1) {
+            if(!names[0]){
+                setResults(false);
+                return;
+            }
             containers = [assets[names[0]]];
         }
 

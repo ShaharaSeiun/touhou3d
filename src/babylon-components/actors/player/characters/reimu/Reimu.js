@@ -1,4 +1,4 @@
-import { Animation, BezierCurveEase, Color3, Space, StandardMaterial, TrailMesh, Vector3 } from '@babylonjs/core';
+import { Animation, BezierCurveEase, Color3, Space, StandardMaterial, Vector3 } from '@babylonjs/core';
 import React, { useContext, useMemo, useRef, useState } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { useName } from '../../../../hooks/useName';
@@ -13,6 +13,7 @@ import { globals, GlobalsContext } from '../../../../../components/GlobalsContai
 import { calcPowerClass } from '../../PlayerUtils';
 import { ReimuLinearBulletEmitter } from './ReimuLinearBulletEmitter';
 import { ReimuTrackingBulletEmitter } from './ReimuTrackingBulletEmitter';
+import { TrailMesh } from '../../../../TrailMesh';
 
 const z = new Vector3(0, 0, 1);
 const focusPosition1 = new Vector3(0.5, 0, 0);
@@ -96,6 +97,7 @@ export const Reimu = () => {
     const actions = useMemo(
         () => [
             () => {
+                sphereTransformRef1.current.computeWorldMatrix();
                 trail1.current = new TrailMesh('sphere1Trail', sphereTransformRef1.current, scene, 0.25, 30, true);
                 const sourceMat1 = new StandardMaterial('sourceMat1', scene);
                 const color1 = new Color3.Red();
@@ -103,6 +105,7 @@ export const Reimu = () => {
                 sourceMat1.specularColor = new Color3.Black();
                 trail1.current.material = sourceMat1;
 
+                sphereTransformRef2.current.computeWorldMatrix();
                 trail2.current = new TrailMesh('sphere2Trail', sphereTransformRef2.current, scene, 0.25, 30, true);
                 const sourceMat2 = new StandardMaterial('sourceMat2', scene);
                 const color2 = new Color3.White();

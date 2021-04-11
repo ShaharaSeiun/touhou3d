@@ -13,7 +13,7 @@ export const FairyBaseWithMagicCircle = React.forwardRef(({ ...props }, ref) => 
     const name = useName("fairyBaseWithMagicCircle")
     const texture = useTexture("blueMagicCircle")
     const scene = useScene();
-    const { registerAnimation } = useContext(AnimationContext);
+    const { registerAnimation,unregisterAnimation } = useContext(AnimationContext);
     
     useEffect(() => {
         const sineAnimation = new Animation(name + "sineAnimation", "scaling", 30, Animation.ANIMATIONTYPE_VECTOR3, Animation.ANIMATIONLOOPMODE_CYCLE);
@@ -29,7 +29,6 @@ export const FairyBaseWithMagicCircle = React.forwardRef(({ ...props }, ref) => 
 
         planeRef.current.animations.push(sineAnimation);
         scene.beginAnimation(planeRef.current, 0, 60, true);
-        registerAnimation(sineAnimation);
     }, [])
 
     return (

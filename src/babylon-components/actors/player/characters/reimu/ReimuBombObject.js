@@ -1,4 +1,4 @@
-import { Animation, Color3, StandardMaterial, TrailMesh, Vector3 } from '@babylonjs/core';
+import { Animation, Color3, StandardMaterial, Vector3 } from '@babylonjs/core';
 import { useContext, useEffect, useMemo, useRef } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { playerBombShoot } from '../../../../../sounds/SFX';
@@ -6,6 +6,7 @@ import { AnimationContext } from '../../../../gameLogic/GeneralContainer';
 import { globalActorRefs, killEnemy } from '../../../../gameLogic/StaticRefs';
 import { useDoSequence } from '../../../../hooks/useDoSequence';
 import { useName } from '../../../../hooks/useName';
+import { TrailMesh } from '../../../../TrailMesh';
 
 const initialVelocity = 4;
 

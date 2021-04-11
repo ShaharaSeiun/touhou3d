@@ -8,6 +8,8 @@ import { RandomEnemyBehaviour } from '../enemyBehaviours/RandomEnemyBehaviour';
 import { DefaultFairyBehaviour } from '../enemyBehaviours/DefaultFairyBehaviour';
 import { StrongStage1FairyBehaviour } from '../enemyBehaviours/StrongStage1FairyBehaviour';
 import { FairyBaseWithMagicCircle } from '../enemyActors/FairyBaseWithMagicCircle';
+import { MinionBase } from '../enemyActors/MinionBase';
+import { InertMinionBehaviour } from '../enemyBehaviours/InertMinionBehaviour';
 
 
 export const Enemy = ({ type, name, asset, behaviour, radius, health, deathInstruction, removeEnemyFromScene, spawn, target }) => {
@@ -18,6 +20,7 @@ export const Enemy = ({ type, name, asset, behaviour, radius, health, deathInstr
     const addBulletGroup = useAddBulletGroup();
 
     const leaveScene = useCallback(() => {
+        if(positionID === undefined || positionID === null) return;
         removeEnemy(positionID);
         removeEnemyFromScene(name);
     }, [removeEnemyFromScene, name, positionID]);
@@ -29,7 +32,7 @@ export const Enemy = ({ type, name, asset, behaviour, radius, health, deathInstr
             radius,
             () => {
                 const deathPosition = enemy.getAbsolutePosition()
-                addBulletGroup({
+                if(deathInstruction) addBulletGroup({
                     getAbsolutePosition: () => {
                         return deathPosition;
                     }
@@ -61,6 +64,9 @@ export const Enemy = ({ type, name, asset, behaviour, radius, health, deathInstr
         case 'fairyWithMagicCircle':
             enemyMesh = <FairyBaseWithMagicCircle mesh={mesh} radius={radius} assetName={asset} ref={enemyRef} />;
             break;
+        case 'minion':
+            enemyMesh = <MinionBase mesh={mesh} radius={radius} ref={enemyRef} />;
+            break;
         default:
             throw new Error('Unknown Enemy type: ' + type);
     }
@@ -70,6 +76,9 @@ export const Enemy = ({ type, name, asset, behaviour, radius, health, deathInstr
     switch (behaviour) {
         case 'random':
             BehaviourClass = RandomEnemyBehaviour;
+            break;
+        case 'inertMinion':
+            BehaviourClass = InertMinionBehaviour;
             break;
         case 'defaultFairy':
             BehaviourClass = DefaultFairyBehaviour;

@@ -159,12 +159,6 @@ const stage1def = () => {
         wait: 250
     })
 
-    map.epochs[0].push({
-        type: 'spawn',
-        enemy: StrongStage1Fairy([1, 0, 1], [-1, 0, 0]),
-        wait: 250
-    })
-
     
 
     

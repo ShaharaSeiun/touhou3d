@@ -115,7 +115,7 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
         Object.keys(allBullets).forEach((bulletGroupIndex) => {
             const bulletGroup = allBullets[bulletGroupIndex];
             bulletGroup.timeSinceStart += deltaS;
-            if (bulletGroup.timeSinceStart > bulletGroup.lifespan) {
+            if (bulletGroup.timeSinceStart * 1000 > bulletGroup.lifespan) {
                 toRemove.push(bulletGroupIndex);
             } else {
                 bulletGroup.behaviour.update(deltaS);
@@ -123,7 +123,7 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
                     bulletGroup.sounds.update(deltaS);
             }
         });
-
+        
         if (toRemove.length > 0) dispose(toRemove);
 
         globalActorRefs.enemies.forEach((enemy, i) => {
