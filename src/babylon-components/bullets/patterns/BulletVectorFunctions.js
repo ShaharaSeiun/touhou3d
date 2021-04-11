@@ -1,6 +1,6 @@
 import { Vector3 } from '@babylonjs/core';
 
-export function burst(samples, totalRadius, startTheta = 0) {
+export function burst(samples, totalRadius, startTheta = 0, thetaLength = 2 * Math.PI) {
     const points = [];
     const phi = Math.PI * (3 - Math.sqrt(5)); //golden angle in radians
 
@@ -8,7 +8,7 @@ export function burst(samples, totalRadius, startTheta = 0) {
         const y = 1 - (i / (samples - 1)) * 2; //y goes from 1 to -1
         const radius = Math.sqrt(1 - y * y); //radius at y
 
-        const theta = phi * i + startTheta; //golden angle increment
+        const theta = (phi * i % thetaLength) + startTheta; //golden angle increment
 
         const x = Math.cos(theta) * radius;
         const z = Math.sin(theta) * radius;

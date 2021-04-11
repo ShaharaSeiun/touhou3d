@@ -1,5 +1,4 @@
 import { __extends } from "tslib";
-import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { VertexBuffer } from "@babylonjs/core/Meshes/buffer";

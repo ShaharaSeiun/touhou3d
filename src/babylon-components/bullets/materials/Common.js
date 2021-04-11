@@ -1,6 +1,8 @@
 import { BULLET_WARNING } from "../../../utils/Constants";
 import { glsl } from "../../BabylonUtils";
 
+import "@babylonjs/core/Shaders/ShadersInclude/instancesDeclaration";
+
 export const commonVertexShader = glsl`
     #include<instancesDeclaration>
     attribute vec3 position;
@@ -68,7 +70,9 @@ export const commonVertexShaderWithWarning = glsl`
     uniform sampler2D positionSampler;
     uniform sampler2D velocitySampler;
     uniform sampler2D timingsSampler;
+    uniform sampler2D endTimingsSampler;
     uniform float timeSinceStart;
+    uniform float disableWarning;
 
     varying vec3 vPositionW;
     varying vec3 vNormalW;
@@ -98,6 +102,7 @@ export const commonVertexShaderWithWarning = glsl`
         vec4 instPos = texture(positionSampler, vec2(u, v));
         vec4 instVel = texture(velocitySampler, vec2(u, v));
         vec4 timingPosition = texture2D( timingsSampler, vec2(u, v));
+        vec4 endTimingPosition = texture2D( endTimingsSampler, vec2(u, v) );
         float timing = timingPosition.w;
 
         mat3 rotation;
@@ -107,8 +112,11 @@ export const commonVertexShaderWithWarning = glsl`
         dTiming = timeSinceStart - timing;
 
         float size = (${BULLET_WARNING} - clamp(dTiming, 0.0, ${BULLET_WARNING})) / ${BULLET_WARNING};
+        size *= (1. - disableWarning);
+        float hasEnded = float(dTiming > endTimingPosition.w);
 
         rotatedVert *= size * 3. + 1.;
+        rotatedVert *= (1. - hasEnded);
 
         vec4 totalPos = rotatedVert + instPos;
         totalPos.w = 1.;

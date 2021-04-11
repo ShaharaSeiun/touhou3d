@@ -1,6 +1,8 @@
 import { DefaultFairy } from './DefaultFairy';
 import { StrongStage1Fairy } from './StrongStage1Fairy';
 import { StrongerStage1Fairy } from './StrongerStage1Fairy';
+import { Tumbleweed } from './Tumbleweed';
+import { Wriggle1 } from './Wriggle1';
 
 const stage1def = () => {
     const map = {
@@ -104,26 +106,27 @@ const stage1def = () => {
     //         'Where the Fireflies Fly',
     //         'Are the fireflies brighter than usual, or is it just your imagination? Tonight will be a long night'
     //     ],
-    //     wait: 7000
+    //     wait: 7.000
     // })
 
     // for(let i = 0; i < 12; i++){
     //     map.epochs[0].push({
     //         type: 'spawn',
     //         enemy: DefaultFairy([[-1, -0.9], [1, 0.9], [1, 0.9]], [0, 0, 0]),
-    //         wait: 250
+    //         wait: .250
     //     })
     // }
 
     // map.epochs[0].push({
-    //     type: 'empty',
-    //     wait: 4000
+    //     type: 'spawn',
+    //     enemy: StrongerStage1Fairy([1, 0, 1], [-1, 0, 0]),
+    //     wait: .800
     // })
 
     // map.epochs[0].push({
     //     type: 'spawn',
     //     enemy: StrongStage1Fairy([-1, 0, 1], [1, 0, 0]),
-    //     wait: 250
+    //     wait: .250
     // })
 
 
@@ -131,34 +134,69 @@ const stage1def = () => {
     //     map.epochs[0].push({
     //         type: 'spawn',
     //         enemy: DefaultFairy([[-1, -0.9], [1, 0.9], [1, 0.9]], [0, 0, 0]),
-    //         wait: 250
+    //         wait: .250
     //     })
     // }
 
     // map.epochs[0].push({
     //     type: 'spawn',
     //     enemy: StrongStage1Fairy([1, 0, 1], [-1, 0, 0]),
-    //     wait: 250
+    //     wait: .250
     // })
 
     // map.epochs[0].push({
-    //     type: 'empty',
-    //     wait: 4000
+    //     type: 'spawn',
+    //     enemy: StrongerStage1Fairy([1, 0, 1], [-1, 0, 0]),
+    //     wait: .800
     // })
 
     // for(let i = 0; i < 12; i++){
     //     map.epochs[0].push({
     //         type: 'spawn',
     //         enemy: DefaultFairy([[1, 0.9], [1, 0.9], [1, 0.9]], [0, 0, 0]),
-    //         wait: 250
+    //         wait: .250
     //     })
     // }
 
+    // map.epochs[0].push({
+    //     type: 'spawn',
+    //     enemy: DefaultFairy([[1, 0.9], [1, 0.9], [1, 0.9]], [0, 0, 0]),
+    //     wait: .250
+    // })
+
+    // for(let i = 0; i < 12; i++){
+    //     map.epochs[0].push({
+    //         type: 'spawn',
+    //         enemy: DefaultFairy([[1, 0.9], [1, 0.9], [1, 0.9]], [0, 0, 0]),
+    //         wait: .250
+    //     })
+    // }
+
+    // map.epochs[0].push({
+    //     type: 'spawn',
+    //     enemy: StrongerStage1Fairy([[1, 0.9], [1, 0.9], [1, 0.9]], [0, 0, 0]),
+    //     wait: .250
+    // })
+
     map.epochs[0].push({
         type: 'spawn',
-        enemy: StrongerStage1Fairy([1, 0, 1], [-1, 0, 0]),
-        wait: 250
+        enemy: Wriggle1(),
+        wait: .800
     })
+
+    // map.epochs[0].push({
+    //     type: 'spawn',
+    //     enemy: StrongStage1Fairy([1, 0, 1], [-1, 0, 0]),
+    //     wait: .800
+    // })
+
+    
+
+    // map.epochs[0].push({
+    //     type: 'spawn',
+    //     enemy: Tumbleweed([1, 0, 0], [-1, 0, 0]),
+    //     wait: .8000
+    // })
 
     
 

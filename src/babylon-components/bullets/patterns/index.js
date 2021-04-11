@@ -5,6 +5,8 @@ import { makeEmptyPattern } from './Empty';
 import { makeMultiBurstPattern } from './MultiBurst';
 import { makeSinglePattern } from './Single';
 import { makeSprayPattern } from './Spray';
+import { makeRandomConePattern } from './RandomCone';
+import { Texture } from '@babylonjs/core';
 
 export const makeBulletPattern = (patternOptions, parent) => {
     let _pattern;
@@ -28,8 +30,14 @@ export const makeBulletPattern = (patternOptions, parent) => {
             case 'area':
                 _pattern = makeAreaPattern(patternOptions, parent);
                 break;
+            case 'randomCone':
+                _pattern = makeRandomConePattern(patternOptions, parent);
+                break;
             case 'spray':
                 _pattern = makeSprayPattern(patternOptions, parent);
+                break;
+            case 'explicit':
+                _pattern = patternOptions;
                 break;
             default:
                 throw new Error('Pattern type not supported: ' + patternOptions.pattern);
@@ -37,19 +45,28 @@ export const makeBulletPattern = (patternOptions, parent) => {
     }
 
     if(!_pattern.timings){
+        if(_pattern.positions instanceof Texture){
+            throw new Error('when timings are not specified, positions must not be texture')
+        }
         _pattern.timings = new Array(_pattern.positions.length); 
         for (let i = 0; i < _pattern.positions.length; ++i) 
             _pattern.timings[i] = 0;
     }
 
     if(patternOptions.repeat){
-        for(let i = 1; i < patternOptions.repeat.times; i++){
-            _pattern.positions.push(..._pattern.positions)
-            _pattern.velocities.push(..._pattern.velocities)
-            _pattern.timings.push(..._pattern.timings.map(timing => (
+        const newPositions = []
+        const newVelocities = []
+        const newTimings = []
+        for(let i = 0; i < patternOptions.repeat.times; i++){
+            newPositions.push(..._pattern.positions)
+            newVelocities.push(..._pattern.velocities)
+            newTimings.push(..._pattern.timings.map(timing => (
                 timing + i * patternOptions.repeat.delay
             )))
         }
+        _pattern.positions = newPositions;
+        _pattern.velocities = newVelocities;
+        _pattern.timings = newTimings;
     }
 
     return _pattern;

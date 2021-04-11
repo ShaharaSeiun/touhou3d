@@ -7,7 +7,7 @@ import { useAddBulletGroup } from '../hooks/useAddBulletGroup';
 import { useName } from '../hooks/useName';
 import { InertMinionDef } from "../../stages/common/InertMinionDef"
 import { Enemy } from "../enemyLogic/Enemy"
-import { enemyDeath, minionSpawn } from '../../sounds/SFX';
+import { minionSpawn } from '../../sounds/SFX';
 
 const multiBurst = {
     type: 'shoot',
@@ -27,7 +27,7 @@ const multiBurst = {
     behaviourOptions: {
         behaviour: 'linear',
     },
-    lifespan: 10000,
+    lifespan: 10,
     wait: 0,
 }
 
@@ -51,7 +51,7 @@ const area = {
     behaviourOptions: {
         behaviour: 'linear',
     },
-    lifespan: 10000,
+    lifespan: 10,
     wait: 0,
 }
 

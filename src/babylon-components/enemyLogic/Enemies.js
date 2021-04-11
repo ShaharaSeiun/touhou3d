@@ -46,7 +46,7 @@ export const Enemies = ({ currentActionList }) => {
 
     useBeforeRender((scene) => {
         const deltaS = scene.paused ? 0 : scene.getEngine().getDeltaTime() / 1000;
-        timeSinceStart.current += deltaS * 1000;
+        timeSinceStart.current += deltaS;
 
         currentActionList.some((action) => {
             if (action.timeline < timeSinceStart.current) {

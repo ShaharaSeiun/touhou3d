@@ -5,9 +5,9 @@ import { AnimationContext } from '../gameLogic/GeneralContainer';
 import { useDoSequence } from '../hooks/useDoSequence';
 import { useAddBulletGroup } from '../hooks/useAddBulletGroup';
 import { useName } from '../hooks/useName';
-import { InertMinionDef } from "../../stages/common/InertMinionDef"
+import { Stage1MinionDef } from "../../stages/common/Stage1MinionDef"
 import { Enemy } from "../enemyLogic/Enemy"
-import { enemyDeath, minionSpawn } from '../../sounds/SFX';
+import { minionSpawn } from '../../sounds/SFX';
 
 const multiBurst = {
     type: 'shoot',
@@ -27,53 +27,66 @@ const multiBurst = {
     behaviourOptions: {
         behaviour: 'linear',
     },
-    lifespan: 10000,
+    lifespan: 10,
     wait: 0,
 }
 
-const area = {
+const cone = {
     type: 'shoot',
     materialOptions: {
         material: 'fresnel',
-        color: [1, 0, 0]
+        color: [0, 0, 1]
     },
     patternOptions: {
-        pattern: 'area',
-        speed: 4,
-        num: 5,
-        radialAngle: Math.PI/4,
-        towardsPlayer: true
+        pattern: 'randomCone',
+        speed: 8,
+        num: 100,
+        radialAngle: Math.PI,
+        forwardVectors: [
+            [0, 0, -1],
+            [0.866, -0.25, 0.25],
+            [-0.866, -0.25, 0.25],
+            [0, 0.866, 0.25],
+        ]
     },
     meshOptions: {
-        mesh: 'egg',
+        mesh: 'sphere',
         radius: 0.1
     },
     behaviourOptions: {
         behaviour: 'linear',
     },
-    lifespan: 10000,
+    soundOptions:{
+        mute: true
+    },
+    lifespan: 10,
     wait: 0,
 }
 
-const inertMinion1 = InertMinionDef();
-const inertMinion2 = InertMinionDef();
+const stage1Minion = Stage1MinionDef();
 
 export const StrongerStage1FairyBehaviour = ({ children, leaveScene, spawn, target }) => {
     const transformNodeRef = useRef();
     const minionRootTransformNodeRef = useRef();
     const minion1TransformNodeRef = useRef();
     const minion2TransformNodeRef = useRef();
+    const minion3TransformNodeRef = useRef();
+    const minion4TransformNodeRef = useRef();
     const startPosition = useMemo(() => randVectorToPosition(spawn), [spawn]);
     const targetPosition = useMemo(() => randVectorToPosition(target), [target]);
     const minion1Position = useMemo(() => new Vector3(0.1, 0, 0), []);
     const minion2Position = useMemo(() => new Vector3(-0.1, 0, 0), []);
+    const minion3Position = useMemo(() => new Vector3(0, 0.1, 0), []);
+    const minion4Position = useMemo(() => new Vector3(0, -0.1, 0), []);
     const { registerAnimation } = useContext(AnimationContext);
     const addBulletGroup = useAddBulletGroup();
     const name = useName("strongStage1Fairy");
     const [minion1InScene, setMinion1InScene] = useState(false);
     const [minion2InScene, setMinion2InScene] = useState(false);
+    const [minion3InScene, setMinion3InScene] = useState(false);
+    const [minion4InScene, setMinion4InScene] = useState(false);
 
-    const actionsTimings = useMemo(() => [0, 2, 2, 2.5, 7], []);
+    const actionsTimings = useMemo(() => [0, 2, 2, 2.5, 4, 7], []);
 
     const actions = useMemo(
         () => [
@@ -121,6 +134,8 @@ export const StrongerStage1FairyBehaviour = ({ children, leaveScene, spawn, targ
                 minionSpawn.play()
                 setMinion1InScene(true);
                 setMinion2InScene(true);
+                setMinion3InScene(true);
+                setMinion4InScene(true)
                 Animation.CreateAndStartAnimation(
                     'anim',
                     minion1TransformNodeRef.current,
@@ -142,6 +157,26 @@ export const StrongerStage1FairyBehaviour = ({ children, leaveScene, spawn, targ
                     0,
                 )
                 Animation.CreateAndStartAnimation(
+                    'anim',
+                    minion3TransformNodeRef.current,
+                    'position',
+                    1,
+                    1,
+                    new Vector3(0, 0.1, 0),
+                    minion3TransformNodeRef.current.position.normalize(),
+                    0,
+                )
+                Animation.CreateAndStartAnimation(
+                    'anim',
+                    minion4TransformNodeRef.current,
+                    'position',
+                    1,
+                    1,
+                    new Vector3(0, -0.1, 0),
+                    minion4TransformNodeRef.current.position.normalize(),
+                    0,
+                )
+                Animation.CreateAndStartAnimation(
                     name + "anim",
                     minionRootTransformNodeRef.current,
                     'rotation',
@@ -150,6 +185,12 @@ export const StrongerStage1FairyBehaviour = ({ children, leaveScene, spawn, targ
                     new Vector3(0, 0, 0),
                     new Vector3(0, 0, Math.PI * 2),
                     Animation.ANIMATIONLOOPMODE_CYCLE,
+                )
+            },
+            () => {
+                addBulletGroup(
+                    transformNodeRef.current,
+                    cone
                 )
             },
             leaveScene,
@@ -167,6 +208,12 @@ export const StrongerStage1FairyBehaviour = ({ children, leaveScene, spawn, targ
         if(instName === name + 'minion2'){
             setMinion2InScene(false);
         }
+        if(instName === name + 'minion3'){
+            setMinion3InScene(false);
+        }
+        if(instName === name + 'minion4'){
+            setMinion4InScene(false);
+        }
     }, [name])
 
     return (
@@ -177,7 +224,7 @@ export const StrongerStage1FairyBehaviour = ({ children, leaveScene, spawn, targ
                         <Enemy 
                             removeEnemyFromScene={removeFromScene} 
                             name={name + 'minion1'} 
-                            {...inertMinion1} 
+                            {...stage1Minion} 
                         />
                     )}
                 </transformNode>
@@ -186,7 +233,25 @@ export const StrongerStage1FairyBehaviour = ({ children, leaveScene, spawn, targ
                         <Enemy 
                             removeEnemyFromScene={removeFromScene} 
                             name={name + 'minion2'} 
-                            {...inertMinion2} 
+                            {...stage1Minion} 
+                        />
+                    )}
+                </transformNode>
+                <transformNode position={minion3Position} name={name + 'minion3Transform'} ref={minion3TransformNodeRef}>
+                    {minion3InScene && (
+                        <Enemy 
+                            removeEnemyFromScene={removeFromScene} 
+                            name={name + 'minion3'} 
+                            {...stage1Minion} 
+                        />
+                    )}
+                </transformNode>
+                <transformNode position={minion4Position} name={name + 'minion4Transform'} ref={minion4TransformNodeRef}>
+                    {minion4InScene && (
+                        <Enemy 
+                            removeEnemyFromScene={removeFromScene} 
+                            name={name + 'minion4'} 
+                            {...stage1Minion} 
                         />
                     )}
                 </transformNode>

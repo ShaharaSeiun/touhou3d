@@ -7,11 +7,12 @@ import { StageStartQuote } from './StageStartQuote';
 import { IngameMenu } from './IngameMenu';
 import { selectSound } from '../../sounds/SFX';
 import { Notice } from './Notice';
+import { BossUI } from './BossUI';
 
 const mainCharacters = ['reimu'];
 
 export const UI = () => {
-    const { charactersInDialogue, activeCharacter, activeCharacterEmotion, activeCharacterText, stageStartQuote } = useContext(
+    const { charactersInDialogue, activeCharacter, activeCharacterEmotion, activeCharacterText, stageStartQuote, bossUI } = useContext(
         UIContext
     );
     const { paused, setPaused } = useContext(PauseContext);
@@ -61,6 +62,7 @@ export const UI = () => {
             {activeCharacter && <CharacterDialogueText character={activeCharacter} text={activeCharacterText} />}
             {stageStartQuote && <StageStartQuote text={stageStartQuote} />}
             {paused && <IngameMenu />}
+            {bossUI && <BossUI bossUIProps={bossUI}/>}
             <Notice />
         </>
     );

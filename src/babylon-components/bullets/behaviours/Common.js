@@ -4,12 +4,16 @@ import { glsl } from '../../BabylonUtils';
 export const uniformSnippet = glsl`
     uniform float delta;
     uniform float timeSinceStart;
+    uniform float spawning;
+    uniform float reliesOnParent;
     uniform vec2 resolution;
     uniform vec3 parentPosition;
     uniform sampler2D positionSampler;
     uniform sampler2D velocitySampler;
     uniform sampler2D collisionSampler;
+    uniform sampler2D initialPositionSampler;
     uniform sampler2D timingsSampler;
+    uniform sampler2D endTimingsSampler;
 `;
 
 export const mainHeaderSnippet = glsl`
@@ -17,15 +21,16 @@ export const mainHeaderSnippet = glsl`
     float id = (gl_FragCoord.x - 0.5) + ((gl_FragCoord.y - 0.5) * resolution.x);
 
     vec4 timingPosition = texture2D( timingsSampler, uv );
+    vec3 initialPosition = texture2D( initialPositionSampler, uv ).xyz;
     vec3 position = texture2D( positionSampler, uv ).xyz;
     vec3 velocity = texture2D( velocitySampler, uv ).xyz;
     vec4 collision = texture2D( collisionSampler, uv );
 
     float timing = timingPosition.w;
-    vec3 initialPosition = timingPosition.xyz + parentPosition;
+    initialPosition = initialPosition + reliesOnParent * parentPosition;
 
     float dTiming = timeSinceStart - timing;
-    float shouldPositionReset = float(dTiming > 0. && dTiming < ${BULLET_WARNING});
+    float shouldPositionReset = float(dTiming > 0. && dTiming < ${BULLET_WARNING}) * spawning * float(parentPosition != vec3(0.,0.,0.));
 
     position = mix(position, initialPosition, shouldPositionReset);
 
@@ -90,8 +95,11 @@ export const playerBulletCollisionPixelShader = glsl`
 
 export const enemyBulletCollisionPixelShader = glsl`
     uniform float bulletRadius;
+    uniform float timeSinceStart;
     uniform vec2 resolution;
     uniform sampler2D positionSampler;
+    uniform sampler2D timingsSampler;
+    uniform sampler2D endTimingsSampler;
     uniform vec3 bulletTypePack1;
     uniform vec3 bulletTypePack2;
     uniform vec3 collideWithEnvironment;
@@ -102,6 +110,8 @@ export const enemyBulletCollisionPixelShader = glsl`
     void main(){
         vec2 uv = gl_FragCoord.xy / resolution;
         vec3 position = texture2D( positionSampler, uv ).xyz;
+        vec4 timingPosition = texture2D( timingsSampler, uv);
+        vec4 endTimingPosition = texture2D( endTimingsSampler, uv );
 
         //Bullet colliding with floor?
         float collidingWithEnvironment = collideWithEnvironment.x * float(position.y < arenaMin.y);
@@ -130,6 +140,12 @@ export const enemyBulletCollisionPixelShader = glsl`
 
         //Bullet exists in scene?
         collision = collision * float(position.y > -500.);
+
+        //Bullet hasn't gone past it's end timing
+        float timing = timingPosition.w;
+        float dTiming = timeSinceStart - timing;
+        float hasEnded = float(dTiming > endTimingPosition.w);
+        collision = collision * (1. - hasEnded);
 
         gl_FragColor = collision;
     }

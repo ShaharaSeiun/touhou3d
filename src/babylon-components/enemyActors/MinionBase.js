@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Animation, Color3, StandardMaterial, Vector3 } from '@babylonjs/core';
 import { useName } from '../hooks/useName';
 import { useTexture } from '../hooks/useTexture';
-import { AnimationContext } from '../gameLogic/GeneralContainer';
 import { useScene } from 'react-babylonjs';
 import { TrailMesh } from '../TrailMesh';
 

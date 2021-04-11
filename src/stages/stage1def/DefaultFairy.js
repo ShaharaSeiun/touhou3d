@@ -8,7 +8,6 @@ export const DefaultFairy = (spawn, target) => {
         radius: 0.5,
         health: 10,
         spawn: spawn,
-        actionList: [],
         deathInstruction: {
             type: 'shoot',
             materialOptions: {
@@ -33,7 +32,7 @@ export const DefaultFairy = (spawn, target) => {
                 behaviour: 'item',
                 bulletType: BULLET_TYPE.POWER,
             },
-            lifespan: 10000,
+            lifespan: 10,
             wait: 0,
         }
     };

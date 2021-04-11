@@ -64,3 +64,30 @@ export const staticReplace = (obj, prop, index, value) => {
     newArray[index] = value;
     obj[prop] = newArray;
 };
+
+export const rerange = (oldValue, oldMin, oldMax, newMin, newMax) => {
+    const oldRange = (oldMax - oldMin)  
+    const newRange = (newMax - newMin)  
+    return (((oldValue - oldMin) * newRange) / oldRange) + newMin
+}
+
+export const determineOrder = arr => {
+    if(arr.length < 2){
+       return 'not enough items';
+    };
+    let ascending = null;
+    let nextArr = arr.slice(1);
+    for(var i = 0; i < nextArr.length; i++) {
+       if(nextArr[i] === arr[i]){
+          continue;
+       }else if(ascending === null) {
+          ascending = nextArr[i] > arr[i];
+       }else if (ascending !== (nextArr[i] > arr[i])){
+          return 'unsorted';
+       };
+    }
+    if(ascending === null){
+       return 'all items are equal';
+    };
+    return ascending ? 'ascending' : 'descending';
+ };

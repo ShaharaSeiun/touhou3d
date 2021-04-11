@@ -47,7 +47,7 @@ export default class MultiSound {
 
     play() {
         if (!this.ready) return;
-        if(this.startTime && new Date() - this.startTime < 100) return;
+        if(this.startTime && new Date() - this.startTime < 50/this.num) return;
         if (SETTINGS.SFX === 'OFF') return;
 
         this.stop(this.curSource);

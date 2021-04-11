@@ -6,6 +6,7 @@ import { MAX_ENEMIES } from '../../utils/Constants';
 import { makeBulletBehaviour } from '../bullets/behaviours';
 import { BulletGroup } from '../bullets/BulletGroup';
 import { convertPlayerBulletCollisions, convertEnemyBulletCollisions, prepareBulletInstruction } from '../bullets/BulletUtils';
+import { makeEndTimings } from '../bullets/endTimings';
 import { makeBulletMaterial } from '../bullets/materials';
 import { makeBulletMesh } from '../bullets/meshes';
 import { makeBulletPattern } from '../bullets/patterns';
@@ -42,17 +43,20 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
             const material = makeBulletMaterial(preparedInstruction.materialOptions, parent, assets, scene);
             const {mesh, radius} = makeBulletMesh(preparedInstruction.meshOptions, assets, scene);
             const behaviour = makeBulletBehaviour(preparedInstruction.behaviourOptions, environmentCollision, radius, parent);
-            const sounds = preparedInstruction.soundOptions && makeBulletSound(preparedInstruction.soundOptions, timings);
+            const endTimings = makeEndTimings(preparedInstruction.endTimings, preparedInstruction.lifespan, timings.length)
+            const sounds = preparedInstruction.soundOptions && !preparedInstruction.soundOptions.mute && makeBulletSound(preparedInstruction.soundOptions, timings);
 
-            mesh.makeInstances(positions.length);
+            mesh.makeInstances(timings.length);
             mesh.material = material;
 
-            behaviour.init(material, positions, velocities, timings, scene);
+            const reliesOnParent = preparedInstruction.behaviourOptions.reliesOnParent;
+            const disableWarning = preparedInstruction.behaviourOptions.disableWarning || false;
+            behaviour.init(material, positions, velocities, timings, endTimings, reliesOnParent, disableWarning, scene);
 
             const { lifespan } = preparedInstruction;
             const timeSinceStart = 0;
 
-            const bulletGroup = new BulletGroup(material, mesh, behaviour, sounds, positions, velocities, lifespan, timeSinceStart);
+            const bulletGroup = new BulletGroup(material, mesh, behaviour, sounds, positions, velocities, timings, endTimings, lifespan, timeSinceStart);
 
             const newID = makeName('bulletGroup');
             allBullets[newID] = bulletGroup;
@@ -115,7 +119,7 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
         Object.keys(allBullets).forEach((bulletGroupIndex) => {
             const bulletGroup = allBullets[bulletGroupIndex];
             bulletGroup.timeSinceStart += deltaS;
-            if (bulletGroup.timeSinceStart * 1000 > bulletGroup.lifespan) {
+            if (bulletGroup.timeSinceStart > bulletGroup.lifespan) {
                 toRemove.push(bulletGroupIndex);
             } else {
                 bulletGroup.behaviour.update(deltaS);

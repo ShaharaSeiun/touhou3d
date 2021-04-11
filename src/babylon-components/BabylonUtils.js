@@ -1,4 +1,4 @@
-import { CustomProceduralTexture, Node, Scalar, Vector3 } from '@babylonjs/core';
+import { CustomProceduralTexture, Scalar, Vector3 } from '@babylonjs/core';
 import { ARENA_HEIGHT, ARENA_LENGTH, ARENA_WIDTH } from '../utils/Constants';
 
 export const makeSpriteSheetAnimation = ({
@@ -26,7 +26,7 @@ export const makeSpriteSheetAnimation = ({
 };
 
 export class RandVector3 extends Vector3 {
-    constructor(x, y, z = 0) {
+    constructor(x, y, z = 0, normalizeToLength = false) {
 
         if (x === 'rand') {
             x = Scalar.RandomRange(-1, 1);
@@ -58,6 +58,10 @@ export class RandVector3 extends Vector3 {
         }
 
         super(x, y, z);
+
+        if(normalizeToLength) {
+            this.normalize().scaleInPlace(normalizeToLength);
+        }
     }
 }
 
@@ -80,8 +84,8 @@ export const unnormalizePosition = (position) => {
     return position.add(new Vector3(0, 1, 0)).multiplyByFloats(ARENA_WIDTH / 2, ARENA_HEIGHT / 2, ARENA_LENGTH / 2);
 };
 
-export const randVectorToPosition = (randVector) => {
-    const position = new RandVector3(...randVector);
+export const randVectorToPosition = (arrayVector) => {
+    const position = new RandVector3(...arrayVector);
     return unnormalizePosition(position);
 };
 
@@ -112,9 +116,9 @@ const getLines = (ctx, text, maxWidth) => {
     return lines;
 };
 
-export const textOnCtx = (ctx, text, size, x, y, fill, stroke = 'black', strokeWidth = 8) => {
+export const textOnCtx = (ctx, text, size, x, y, fill, stroke = 'black', strokeWidth = 8, centered = false) => {
     ctx.font = `${size * ctx.canvas.height}px tuhu`;
-    ctx.textAlign = 'left';
+    ctx.textAlign = centered ? 'center' : 'left';
 
     const lines = getLines(ctx, text, (1 - x * 2) * ctx.canvas.width);
 
@@ -126,4 +130,11 @@ export const textOnCtx = (ctx, text, size, x, y, fill, stroke = 'black', strokeW
         ctx.fillStyle = fill;
         ctx.fillText(line, x * ctx.canvas.width, y * ctx.canvas.height + i * (size * ctx.canvas.height * 1.1));
     });
+};
+
+export const arcOnCtx = (ctx, from, to, color = '#FF0000') => {
+    ctx.beginPath();
+    ctx.arc(ctx.canvas.width/2, ctx.canvas.height/2, ctx.canvas.width/4, Math.PI * 3/2 + Math.PI * 2 * from, Math.PI * 3/2 + Math.PI * 2 * to);
+    ctx.strokeStyle = color;
+    ctx.stroke();
 };

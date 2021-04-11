@@ -22,6 +22,7 @@ export const ControlsContainer = ({ children, outsideOfRenderer }) => {
         16: 'SLOW', //shift
         32: 'BOMB', //space
         1: 'SHOOT', //click
+        80: 'DIALOGUE', //p
     });
 
     const keyDownHandler = useCallback(

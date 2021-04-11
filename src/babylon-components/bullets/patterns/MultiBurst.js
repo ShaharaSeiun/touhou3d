@@ -7,10 +7,10 @@ export const makeMultiBurstPattern = (patternOptions) => {
 
     patternOptions.speeds.forEach(speedInst => {
         const speed = randScalar(speedInst);
-        velocities.push(...BulletVectorFunctions.burst(patternOptions.num, speed, patternOptions.startTheta));
+        velocities.push(...BulletVectorFunctions.burst(patternOptions.num, speed, patternOptions.thetaStart, patternOptions.thetaLength));
 
         const radius = patternOptions.radius || 0;
-        positions.push(...BulletVectorFunctions.burst(patternOptions.num, radius, patternOptions.startTheta));
+        positions.push(...BulletVectorFunctions.burst(patternOptions.num, radius, patternOptions.thetaStart, patternOptions.thetaLength));
     })
 
     return {

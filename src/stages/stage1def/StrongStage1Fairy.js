@@ -9,7 +9,6 @@ export const StrongStage1Fairy = (spawn, target) => {
         health: 10,
         spawn: spawn,
         target: target,
-        actionList: [],
         deathInstruction: {
             type: 'shoot',
             materialOptions: {
@@ -34,7 +33,7 @@ export const StrongStage1Fairy = (spawn, target) => {
                 behaviour: 'item',
                 bulletType: BULLET_TYPE.POWER,
             },
-            lifespan: 10000,
+            lifespan: 10,
             wait: 0,
         }
     };

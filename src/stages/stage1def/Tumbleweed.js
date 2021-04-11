@@ -1,10 +1,9 @@
 import { BULLET_TYPE } from "../../babylon-components/bullets/behaviours/EnemyBulletBehaviour";
 
-export const StrongerStage1Fairy = (spawn, target) => {
+export const Tumbleweed = (spawn, target) => {
     const map = {
-        type: 'fairyWithMagicCircle',
-        asset: 'greenHatFairy',
-        behaviour: 'strongerStage1Fairy',
+        type: 'tempActor',
+        behaviour: 'tumbleweed',
         radius: 0.5,
         health: 10,
         spawn: spawn,

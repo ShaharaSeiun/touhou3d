@@ -72,6 +72,12 @@ export const useLoadAssets = () => {
                 type: 'particles',
             },
             {
+                rootUrl: '/assets/enemies/bosses/',
+                sceneFilename: 'wriggle.glb',
+                name: 'wriggle',
+                type: 'model',
+            },
+            {
                 rootUrl: '/assets/enemies/fairies/',
                 sceneFilename: 'blueFairy.glb',
                 name: 'blueFairy',

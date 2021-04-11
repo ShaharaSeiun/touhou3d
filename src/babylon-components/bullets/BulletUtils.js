@@ -79,17 +79,22 @@ export const prepareBulletInstruction = (instruction) => {
             speed: 1,
             radius: 1,
         },
+        endTimings: {
+            timing: 'lifespan',
+        },
         meshOptions: {
             mesh: 'sphere',
             radius: 1,
         },
         behaviourOptions: {
             behaviour: 'linear',
+            reliesOnParent: true
         },
         soundOptions: {
+            mute: false,
             sound: 'enemyShoot'
         },
-        lifespan: 10000,
+        lifespan: 10,
     };
 
     _.merge(defaultInstruction, instruction);
@@ -132,19 +137,19 @@ export const makeTextureFromVectors = (vectors, scene, w = 1, fill = -510) => {
     );
 };
 
-export const makeTextureFromVectorsAndArray = (vectors, array, scene, fill = -510) => {
-    const num = vectors.length;
+export const makeTextureFromArray = (array, scene, fill = -510) => {
+    const num = array.length;
     const WIDTH = Math.max(nextPowerOfTwo(Math.ceil(Math.sqrt(num))), 2);
     const data = new Float32Array(WIDTH * WIDTH * 4);
 
     let offset;
 
-    vectors.forEach((vector, i) => {
+    array.forEach((num, i) => {
         offset = i * 4;
-        data[offset + 0] = vector.x;
-        data[offset + 1] = vector.y;
-        data[offset + 2] = vector.z;
-        data[offset + 3] = array[i];
+        data[offset + 0] = fill;
+        data[offset + 1] = fill;
+        data[offset + 2] = fill;
+        data[offset + 3] = num;
     });
 
     for (let i = offset / 4 + 1; i < WIDTH * WIDTH; i++) {

@@ -25,7 +25,7 @@ const smallTowardsPlayer = {
     behaviourOptions: {
         behaviour: 'linear',
     },
-    lifespan: 10000,
+    lifespan: 10,
     wait: 0,
 }
 
@@ -48,7 +48,7 @@ const mediumTowardsPlayer = {
     behaviourOptions: {
         behaviour: 'linear',
     },
-    lifespan: 10000,
+    lifespan: 10,
     wait: 0,
 }
 

@@ -21,8 +21,6 @@ export const fresnelFragmentShader = glsl`
         float fresnelTerm = dot(viewDirectionW, vNormalW);
         fresnelTerm = clamp(1. - fresnelTerm, 0., 1.0);
 
-        float alpha = fresnelTerm;// + float(dTiming > ${BULLET_WARNING});
-
         gl_FragColor = vec4(mix(color, toColor, fresnelTerm), 1.0);
     }
 `;

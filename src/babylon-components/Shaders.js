@@ -15,6 +15,7 @@ import {
     playerShotTrackingBehaviourVelocityPixelShader,
 } from './bullets/behaviours/PlayerShotTrackingBehaviour';
 import { debugFragmentShader, debugVertexShader } from './bullets/materials/Debug';
+import { slowToStopBehaviourPositionPixelShader, slowToStopBehaviourVelocityPixelShader } from './bullets/behaviours/SlowToStop';
 
 Effect.ShadersStore['addReducerPixelShader'] = addReducerPixelShader;
 
@@ -23,6 +24,9 @@ Effect.ShadersStore['enemyBulletCollisionPixelShader'] = enemyBulletCollisionPix
 
 Effect.ShadersStore['linearBehaviourPositionPixelShader'] = linearBehaviourPositionPixelShader;
 Effect.ShadersStore['linearBehaviourVelocityPixelShader'] = linearBehaviourVelocityPixelShader;
+
+Effect.ShadersStore['slowToStopBehaviourPositionPixelShader'] = slowToStopBehaviourPositionPixelShader;
+Effect.ShadersStore['slowToStopBehaviourVelocityPixelShader'] = slowToStopBehaviourVelocityPixelShader;
 
 Effect.ShadersStore['itemBehaviourPositionPixelShader'] = itemBehaviourPositionPixelShader;
 Effect.ShadersStore['itemBehaviourVelocityPixelShader'] = itemBehaviourVelocityPixelShader;

@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useRef } from 'react';
-import { Animation, CubicEase, EasingFunction, SineEase, Vector3 } from '@babylonjs/core';
+import React, { useEffect, useRef } from 'react';
+import { Animation, EasingFunction, SineEase, Vector3 } from '@babylonjs/core';
 import { useName } from '../hooks/useName';
 import { useTexture } from '../hooks/useTexture';
 import { FairyBase } from './FairyBase';
-import { AnimationContext } from '../gameLogic/GeneralContainer';
 import { useScene } from 'react-babylonjs';
 
 const planePosition = new Vector3(0, 0, 0.5);
@@ -13,7 +12,6 @@ export const FairyBaseWithMagicCircle = React.forwardRef(({ ...props }, ref) => 
     const name = useName("fairyBaseWithMagicCircle")
     const texture = useTexture("blueMagicCircle")
     const scene = useScene();
-    const { registerAnimation,unregisterAnimation } = useContext(AnimationContext);
     
     useEffect(() => {
         const sineAnimation = new Animation(name + "sineAnimation", "scaling", 30, Animation.ANIMATIONTYPE_VECTOR3, Animation.ANIMATIONLOOPMODE_CYCLE);
@@ -29,7 +27,7 @@ export const FairyBaseWithMagicCircle = React.forwardRef(({ ...props }, ref) => 
 
         planeRef.current.animations.push(sineAnimation);
         scene.beginAnimation(planeRef.current, 0, 60, true);
-    }, [])
+    }, [name, scene])
 
     return (
         <transformNode name={name}>
