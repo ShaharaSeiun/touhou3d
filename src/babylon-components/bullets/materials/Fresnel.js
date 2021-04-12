@@ -1,6 +1,5 @@
 import { Color3, ShaderMaterial } from '@babylonjs/core';
 import { v4 } from 'uuid';
-import { BULLET_WARNING } from '../../../utils/Constants';
 import { glsl } from '../../BabylonUtils';
 import { commonVertexShaderWithWarning } from './Common';
 

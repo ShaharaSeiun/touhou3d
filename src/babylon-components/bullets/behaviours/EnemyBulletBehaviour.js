@@ -13,7 +13,13 @@ export const BULLET_TYPE = {
 
 export class EnemyBulletBehaviour extends BulletBehaviour {
     constructor(positionShader, velocityShader, parent, collideWithEnvironment, initialValuesFunction, radius, bulletType = 0) {
-        super(positionShader, velocityShader, parent, collideWithEnvironment, initialValuesFunction, radius);
+        const enemyInitialValuesFunction = (texture) => {
+            if (initialValuesFunction) initialValuesFunction(texture);
+            texture.setFloats('bombPositions', globalActorRefs.bombPositionBuffer);
+            texture.setFloats('bombRadii', globalActorRefs.bombRadiiBuffer);
+        }
+
+        super(positionShader, velocityShader, parent, collideWithEnvironment, enemyInitialValuesFunction, radius);
         this.collisionShader = 'enemyBulletCollision';
         this.isEnemyBullet = true;
         this.isPlayerBullet = false;
@@ -21,12 +27,7 @@ export class EnemyBulletBehaviour extends BulletBehaviour {
     }
 
     update(deltaS) {
-        const ready = super.update(deltaS);
-        if (ready) {
-            this.collisionTexture1.setVector3('playerPosition', globalActorRefs.player.position);
-            this.collisionTexture2.setVector3('playerPosition', globalActorRefs.player.position);
-        }
-        return ready;
+        return super.update(deltaS);
     }
 
     bindCollisionVars = (texture) => {
@@ -62,5 +63,7 @@ export class EnemyBulletBehaviour extends BulletBehaviour {
         texture.setVector3('bulletTypePack2', typeVector2);
         texture.setFloat('bulletRadius', radius);
         texture.setVector3('playerPosition', globalActorRefs.player.position);
+        texture.setFloats('bombPositions', globalActorRefs.bombPositionBuffer);
+        texture.setFloats('bombRadii', globalActorRefs.bombRadiiBuffer);
     };
 }

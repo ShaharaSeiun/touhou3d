@@ -14,3 +14,5 @@ export const playerShoot = new LoopingSound('/sfx/plst00.wav', 0.1, 2);
 export const playerBombCharge = new MultiSound('/sfx/se_power0.wav', 0.5);
 export const playerBombShoot = new MultiSound('/sfx/se_tan00.wav', 0.1);
 export const playerPowerUp = new MultiSound('/sfx/se_powerup.wav', 0.3);
+export const playerGraze = new MultiSound('/sfx/se_graze.wav', 0.1);
+export const playerDeath = new MultiSound('/sfx/se_pldead00.wav', 0.1);

@@ -83,39 +83,31 @@ class PlayerShotBehaviour extends PlayerBulletBehaviour {
     }
 
     update(deltaS) {
-        const ready = super.update(deltaS);
-        if (ready) {
+        const updateResult = super.update(deltaS);
+        if (updateResult) {
             if (!this.target) {
                 return false;
             }
 
+            const [newPositions, newVelocities] = updateResult;
+
             const sourceOffset = this.parent.getAbsolutePosition();
             const shotVector = this.target.subtract(sourceOffset).normalize().scale(this.shotSpeed);
 
-            this.positionTexture1.setFloat('frame', this.bulletFrame);
-            this.velocityTexture1.setFloat('frame', this.bulletFrame);
-            this.positionTexture2.setFloat('frame', this.bulletFrame);
-            this.velocityTexture2.setFloat('frame', this.bulletFrame);
-
-            this.positionTexture1.setFloat('firing', +(this.firing && !this.disabled));
-            this.velocityTexture1.setFloat('firing', +(this.firing && !this.disabled));
-            this.positionTexture2.setFloat('firing', +(this.firing && !this.disabled));
-            this.velocityTexture2.setFloat('firing', +(this.firing && !this.disabled));
-
-            this.positionTexture1.setVector3('shotVector', shotVector);
-            this.velocityTexture1.setVector3('shotVector', shotVector);
-            this.positionTexture2.setVector3('shotVector', shotVector);
-            this.velocityTexture2.setVector3('shotVector', shotVector);
-
-            this.positionTexture1.setVector3('sourceOffset', sourceOffset);
-            this.velocityTexture1.setVector3('sourceOffset', sourceOffset);
-            this.positionTexture2.setVector3('sourceOffset', sourceOffset);
-            this.velocityTexture2.setVector3('sourceOffset', sourceOffset);
+            newPositions.setFloat('frame', this.bulletFrame);
+            newVelocities.setFloat('frame', this.bulletFrame);
+            newPositions.setFloat('firing', +(this.firing && !this.disabled));
+            newVelocities.setFloat('firing', +(this.firing && !this.disabled));
+            newPositions.setVector3('shotVector', shotVector);
+            newVelocities.setVector3('shotVector', shotVector);
+            newPositions.setVector3('sourceOffset', sourceOffset);
+            newVelocities.setVector3('sourceOffset', sourceOffset);
         }
 
         if (this.firing && !this.disabled) {
             this.bulletFrame = (this.bulletFrame + 1) % PLAYER_BULLETS_WHEEL_LENGTH;
         }
+        return updateResult;
     }
 }
 

@@ -4,6 +4,8 @@ import { StrongerStage1Fairy } from './StrongerStage1Fairy';
 import { Tumbleweed } from './Tumbleweed';
 import { Wriggle1 } from './Wriggle1';
 
+/* eslint no-unused-vars: 0 */
+
 const stage1def = () => {
     const map = {
         epochs: [[]],
@@ -164,11 +166,11 @@ const stage1def = () => {
     //     wait: .250
     // })
 
-    // for(let i = 0; i < 12; i++){
+    // for(let i = 0; i < 500; i++){
     //     map.epochs[0].push({
     //         type: 'spawn',
     //         enemy: DefaultFairy([[1, 0.9], [1, 0.9], [1, 0.9]], [0, 0, 0]),
-    //         wait: .250
+    //         wait: .100
     //     })
     // }
 

@@ -3,20 +3,28 @@ import { useContext, useEffect, useMemo, useRef } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { playerBombShoot } from '../../../../../sounds/SFX';
 import { AnimationContext } from '../../../../gameLogic/GeneralContainer';
-import { globalActorRefs, killEnemy } from '../../../../gameLogic/StaticRefs';
+import { addBomb, globalActorRefs, killEnemy, removeBomb, setBombPosition, setBombRadius } from '../../../../gameLogic/StaticRefs';
 import { useDoSequence } from '../../../../hooks/useDoSequence';
 import { useName } from '../../../../hooks/useName';
 import { TrailMesh } from '../../../../TrailMesh';
 
 const initialVelocity = 4;
 
-export const ReimuBombObject = ({ color, delay, ...props }) => {
+export const ReimuBombObject = ({ id, color, delay, ...props }) => {
     const sphereRef = useRef();
     const timeDelta = useRef(0);
     const scene = useScene();
     const trail = useRef();
     const name = useName('bombObject');
     const { registerAnimation } = useContext(AnimationContext);
+
+    useEffect(() => {
+        addBomb(id, sphereRef.current.getAbsolutePosition(), sphereRef.current.scaling.x/2)
+
+        return () => {
+            removeBomb(id)
+        }
+    }, [])
 
     const actionsTimings = useMemo(
         () => [0, delay],
@@ -126,6 +134,9 @@ export const ReimuBombObject = ({ color, delay, ...props }) => {
             camera.position.x = 0;
             camera.position.y = 0;
         }
+
+        setBombPosition(id, sphereRef.current.getAbsolutePosition())
+        setBombRadius(id, sphereRef.current.scaling.x/2);
     });
 
     return (

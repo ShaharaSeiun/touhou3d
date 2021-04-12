@@ -2,20 +2,17 @@ import { globalActorRefs } from '../../gameLogic/StaticRefs';
 import { BulletBehaviour } from './BulletBehaviour';
 
 export class PlayerBulletBehaviour extends BulletBehaviour {
-    constructor(positionShader, velocityShader, parent, collideWithEnvironment, initialValuesFunction, needsEnemies) {
-        const playerInitialValuesFunction = needsEnemies
-            ? (texture) => {
-                  if (initialValuesFunction) initialValuesFunction(texture);
-                  texture.setFloats('enemyPositions', globalActorRefs.enemyPositionBuffer);
-                  texture.setFloats('enemyRadii', globalActorRefs.enemyRadiiBuffer);
-              }
-            : initialValuesFunction;
+    constructor(positionShader, velocityShader, parent, collideWithEnvironment, initialValuesFunction) {
+        const playerInitialValuesFunction = (texture) => {
+            if (initialValuesFunction) initialValuesFunction(texture);
+            texture.setFloats('enemyPositions', globalActorRefs.enemyPositionBuffer);
+            texture.setFloats('enemyRadii', globalActorRefs.enemyRadiiBuffer);
+        }
 
         super(positionShader, velocityShader, parent, collideWithEnvironment, playerInitialValuesFunction);
         this.collisionShader = 'playerBulletCollision';
         this.isEnemyBullet = false;
         this.isPlayerBullet = true;
-        this.needsEnemies = needsEnemies;
     }
 
     bindCollisionVars = (texture) => {
@@ -25,21 +22,13 @@ export class PlayerBulletBehaviour extends BulletBehaviour {
     };
 
     update(deltaS) {
-        const ready = super.update(deltaS);
-
-        if (ready) {
-            this.collisionTexture1.setFloats('enemyPositions', globalActorRefs.enemyPositionBuffer);
-            this.collisionTexture2.setFloats('enemyPositions', globalActorRefs.enemyPositionBuffer);
-            this.collisionTexture1.setFloats('enemyRadii', globalActorRefs.enemyRadiiBuffer);
-            this.collisionTexture2.setFloats('enemyRadii', globalActorRefs.enemyRadiiBuffer);
-
-            if (this.needsEnemies) {
-                ready.forEach((texture) => {
-                    texture.setFloats('enemyPositions', globalActorRefs.enemyPositionBuffer);
-                    texture.setFloats('enemyRadii', globalActorRefs.enemyRadiiBuffer);
-                });
-            }
+        const updateResult = super.update(deltaS);
+        if (updateResult) {
+            updateResult.forEach((texture) => {
+                texture.setFloats('enemyPositions', globalActorRefs.enemyPositionBuffer);
+                texture.setFloats('enemyRadii', globalActorRefs.enemyRadiiBuffer);
+            });
         }
-        return ready;
+        return updateResult;
     }
 }

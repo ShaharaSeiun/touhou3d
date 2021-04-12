@@ -1,5 +1,5 @@
 import { Animation, BezierCurveEase, Color3, Space, StandardMaterial, Vector3 } from '@babylonjs/core';
-import React, { useContext, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { useName } from '../../../../hooks/useName';
 import { useKeydown, useKeyup } from '../../../../../hooks/useKeydown';
@@ -14,6 +14,8 @@ import { calcPowerClass } from '../../PlayerUtils';
 import { ReimuLinearBulletEmitter } from './ReimuLinearBulletEmitter';
 import { ReimuTrackingBulletEmitter } from './ReimuTrackingBulletEmitter';
 import { TrailMesh } from '../../../../TrailMesh';
+import { InvulnerabilityField } from '../../InvulnerabilityField';
+import { PLAYER_INVULNERABLE_COOLDOWN } from '../../../../../utils/Constants';
 
 const z = new Vector3(0, 0, 1);
 const focusPosition1 = new Vector3(0.5, 0, 0);
@@ -33,11 +35,14 @@ export const Reimu = () => {
     const sphereRef2 = useRef();
     const trail1 = useRef();
     const trail2 = useRef();
+    const startPlayer = useMemo(() => globals.PLAYER, [])
+    const [player, setPlayer] = useState(globals.PLAYER)
     const name = useName('reimu');
     const [isBombing, setIsBombing] = useState(false);
     const { registerAnimation } = useContext(AnimationContext);
     const { setGlobal } = useContext(GlobalsContext);
     const [powerClass, setPowerClass] = useState(0);
+    const [isInvulnerable, setIsInvulnerable] = useState(false);
     const addEffect = useEffects();
     const scene = useScene();
 
@@ -92,9 +97,9 @@ export const Reimu = () => {
         setIsBombing(true);
     });
 
-    const actionsTimings = useMemo(() => [0, 5, 10], []);
+    const bombingTimings = useMemo(() => [0, 5, 10], []);
 
-    const actions = useMemo(
+    const bombingActions = useMemo(
         () => [
             () => {
                 sphereTransformRef1.current.computeWorldMatrix();
@@ -142,7 +147,23 @@ export const Reimu = () => {
         []
     );
 
-    useDoSequence(isBombing, actionsTimings, actions);
+    useDoSequence(isBombing, bombingTimings, bombingActions);
+    
+    useEffect(() => {
+        if(player !== startPlayer){
+            setIsInvulnerable(true);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [player])
+
+    const invulnerableTimings = useMemo(() => [PLAYER_INVULNERABLE_COOLDOWN], []);
+    const invulnerableActions = useMemo(() => [
+        () => {
+            setIsInvulnerable(false);
+        }
+    ], []);
+
+    useDoSequence(isInvulnerable, invulnerableTimings, invulnerableActions);
 
     useBeforeRender((scene) => {
         if (!sphereTransformRef1.current || !sphereTransformRef2.current) return;
@@ -154,6 +175,9 @@ export const Reimu = () => {
 
         const curPowerClass = calcPowerClass(globals.POWER);
         if (curPowerClass !== powerClass) setPowerClass(curPowerClass);
+
+        const curPlayer = globals.PLAYER;
+        if (curPlayer !== player) setPlayer(curPlayer);
     });
 
     return (
@@ -193,39 +217,47 @@ export const Reimu = () => {
                 </transformNode>
             </transformNode>
             <transformNode name="bombObjectTransformNode" position={new Vector3(0, 0, 1)}>
+                {(isInvulnerable || isBombing) && <InvulnerabilityField radius={5}/>}
                 {isBombing && (
                     <>
                         <ReimuBombObject
+                            id={0}
                             color={new Color3(0, 0, 1)}
                             delay={2.0}
                             position={new Vector3(0.3 * Math.cos(0.897 * 0), 0.3 * Math.sin(0.897 * 0), 0)}
                         />
                         <ReimuBombObject
+                            id={1}
                             color={new Color3(0, 1, 0)}
                             delay={2.133}
                             position={new Vector3(0.3 * Math.cos(0.897 * 1), 0.3 * Math.sin(0.897 * 1), 0)}
                         />
                         <ReimuBombObject
+                            id={2}
                             color={new Color3(0, 1, 1)}
                             delay={2.332}
                             position={new Vector3(0.3 * Math.cos(0.897 * 2), 0.3 * Math.sin(0.897 * 2), 0)}
                         />
                         <ReimuBombObject
+                            id={3}
                             color={new Color3(1, 0, 0)}
                             delay={2.634}
                             position={new Vector3(0.3 * Math.cos(0.897 * 3), 0.3 * Math.sin(0.897 * 3), 0)}
                         />
                         <ReimuBombObject
+                            id={4}
                             color={new Color3(1, 0, 1)}
                             delay={2.889}
                             position={new Vector3(0.3 * Math.cos(0.897 * 4), 0.3 * Math.sin(0.897 * 4), 0)}
                         />
                         <ReimuBombObject
+                            id={5}
                             color={new Color3(1, 1, 0)}
                             delay={3.128}
                             position={new Vector3(0.3 * Math.cos(0.897 * 5), 0.3 * Math.sin(0.897 * 5), 0)}
                         />
                         <ReimuBombObject
+                            id={6}
                             color={new Color3(1, 0.5, 0)}
                             delay={3.322}
                             position={new Vector3(0.3 * Math.cos(0.897 * 6), 0.3 * Math.sin(0.897 * 6), 0)}

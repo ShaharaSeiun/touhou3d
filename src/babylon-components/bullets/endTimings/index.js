@@ -12,6 +12,8 @@ export const makeEndTimings = (endTimingsInstruction, lifespan, num) => {
                 endTimings.push(...times(num/endTimingsInstruction.times.length, () => time))
             })
             return endTimings;
+        case "uniform":
+            return times(num, () => endTimingsInstruction.time)
         default:
             throw new Error('invalid end timing type ' + endTimingsInstruction.timing)
     }

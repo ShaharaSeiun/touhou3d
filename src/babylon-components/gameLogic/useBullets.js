@@ -1,8 +1,8 @@
 import { useCallback, useContext } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { globals, GlobalsContext } from '../../components/GlobalsContainer';
-import { enemyDamage, itemGet } from '../../sounds/SFX';
-import { MAX_ENEMIES } from '../../utils/Constants';
+import { enemyDamage, itemGet, playerGraze, playerDeath } from '../../sounds/SFX';
+import { MAX_ENEMIES, PLAYER_INVULNERABLE_COOLDOWN } from '../../utils/Constants';
 import { makeBulletBehaviour } from '../bullets/behaviours';
 import { BulletGroup } from '../bullets/BulletGroup';
 import { convertPlayerBulletCollisions, convertEnemyBulletCollisions, prepareBulletInstruction } from '../bullets/BulletUtils';
@@ -16,6 +16,7 @@ import { globalActorRefs, allBullets, killEnemy } from './StaticRefs';
 
 let playHitSound = false;
 let framesSincePlayHit = 0;
+let playerInvulnerable = false
 
 export const useBullets = (assets, environmentCollision, addEffect) => {
     const scene = useScene();
@@ -76,7 +77,7 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
         
         Object.values(allBullets).forEach((bulletGroup) => {
             if (bulletGroup.behaviour.isPlayerBullet) {
-                bulletGroup.behaviour.collisionTexture1.readPixels().then((buffer) => {
+                bulletGroup.behaviour.diffSystem.collisionResult.readPixels().then((buffer) => {
                     const collisions = convertPlayerBulletCollisions(buffer);
                     collisions.forEach((collision) => {
                         if (collision.collisionID >= MAX_ENEMIES && collision.collisionID < MAX_ENEMIES * 2) {
@@ -94,7 +95,7 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
                     });
                 });
             } else {
-                bulletGroup.behaviour.collisionResult.readPixels().then((buffer) => {
+                bulletGroup.behaviour.diffSystem.collisionResult.readPixels().then((buffer) => {
                     const collisions = convertEnemyBulletCollisions(buffer);
                     if (collisions.length > 0) {
                         const collision = collisions[0];
@@ -105,6 +106,19 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
                         if (collision.power) {
                             setGlobal('POWER', Math.min(globals.POWER + collision.power / 2, 120));
                             itemGet.play();
+                        }
+                        if (collision.player) {
+                            if(!playerInvulnerable)
+                            setGlobal('PLAYER', globals.PLAYER - 1);
+                            playerInvulnerable = true;
+                            window.setTimeout(() => {
+                                playerInvulnerable = false;
+                            }, PLAYER_INVULNERABLE_COOLDOWN * 1000)
+                            playerDeath.play()
+                        }
+                        if (collision.graze) {
+                            setGlobal('GRAZE', globals.GRAZE + collision.graze / 2);
+                            playerGraze.play()
                         }
                     }
                 });
@@ -136,6 +150,14 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
             globalActorRefs.enemyPositionBuffer[offset + 1] = enemy.position.y;
             globalActorRefs.enemyPositionBuffer[offset + 2] = enemy.position.z;
             globalActorRefs.enemyRadiiBuffer[i] = enemy.radius;
+        });
+
+        globalActorRefs.bombs.forEach((bomb, i) => {
+            const offset = i * 3;
+            globalActorRefs.bombPositionBuffer[offset + 0] = bomb.position.x;
+            globalActorRefs.bombPositionBuffer[offset + 1] = bomb.position.y;
+            globalActorRefs.bombPositionBuffer[offset + 2] = bomb.position.z;
+            globalActorRefs.bombRadiiBuffer[i] = bomb.radius;
         });
     });
 

@@ -27,10 +27,9 @@ export const Enemies = ({ currentActionList }) => {
 
     const doSpawnAction = (enemy) => {
         const enemyName = makeName(enemy.asset);
-        const enemyComponent = <Enemy removeEnemyFromScene={removeEnemyFromScene} key={enemyName} name={enemyName} {...enemy} />;
         metaEnemies = {
             ...metaEnemies,
-            [enemyName]: enemyComponent,
+            [enemyName]: enemy,
         };
     };
 
@@ -63,5 +62,13 @@ export const Enemies = ({ currentActionList }) => {
         }
     });
 
-    return Object.values(enemies);
+    return Object.keys(enemies).map((enemyName) => {
+        const enemyObj = enemies[enemyName];
+        return <Enemy 
+            removeEnemyFromScene={removeEnemyFromScene} 
+            key={enemyName} 
+            name={enemyName} 
+            {...enemyObj}
+        />
+    });
 };

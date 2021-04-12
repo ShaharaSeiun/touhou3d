@@ -1,8 +1,8 @@
-import { Animation, BezierCurveEase, Matrix, Quaternion, Vector3 } from '@babylonjs/core';
+import { Matrix, Quaternion, Vector3 } from '@babylonjs/core';
 import React, { useContext, useMemo, useRef } from 'react';
 import { randVectorToPosition } from '../BabylonUtils';
-import { AnimationContext, UIContext } from '../gameLogic/GeneralContainer';
-import { allBullets, globalActorRefs } from '../gameLogic/StaticRefs';
+import { UIContext } from '../gameLogic/GeneralContainer';
+import { allBullets } from '../gameLogic/StaticRefs';
 import { useDoSequence } from '../hooks/useDoSequence';
 import { useAddBulletGroup } from '../hooks/useAddBulletGroup';
 
@@ -14,8 +14,8 @@ const burst1 = {
     },
     patternOptions: {
         pattern: 'multiBurst',
-        num: 1000,
-        speeds: [2, 3, 4, 5],
+        num: 5000,
+        speeds: [4, 5, 6, 7],
         thetaLength: Math.PI * 1.1,
         thetaStart: -Math.PI/2.5
     },
@@ -25,7 +25,7 @@ const burst1 = {
     },
     meshOptions: {
         mesh: 'egg',
-        radius: 0.1
+        radius: 0.5
     },
     behaviourOptions: {
         behaviour: 'slowToStop',
@@ -35,7 +35,7 @@ const burst1 = {
 }
 
 const burst1_replace1 = (sourceId) => {
-    const positions = allBullets[sourceId].behaviour.positionTexture1;
+    const positions = allBullets[sourceId].behaviour.diffSystem.positionTextures[0];
     const velocities = allBullets[sourceId].velocities.map(velocity => {
         const rotationQuaternion = Quaternion.RotationYawPitchRoll(Math.PI/2, 0, 0)
         const rotationMatrix = new Matrix();
@@ -58,7 +58,7 @@ const burst1_replace1 = (sourceId) => {
         },
         meshOptions: {
             mesh: 'egg',
-            radius: 0.1
+            radius: 0.5
         },
         behaviourOptions: {
             behaviour: 'linear',
@@ -81,8 +81,8 @@ const burst2 = {
     },
     patternOptions: {
         pattern: 'multiBurst',
-        num: 1000,
-        speeds: [2, 3, 4, 5],
+        num: 5000,
+        speeds: [4, 5, 6, 7],
         thetaLength: Math.PI * 1.1,
         thetaStart: Math.PI - 0.5
     },
@@ -92,7 +92,7 @@ const burst2 = {
     },
     meshOptions: {
         mesh: 'egg',
-        radius: 0.1
+        radius: 0.5
     },
     behaviourOptions: {
         behaviour: 'slowToStop',
@@ -102,7 +102,7 @@ const burst2 = {
 }
 
 const burst2_replace1 = (sourceId) => {
-    const positions = allBullets[sourceId].behaviour.positionTexture1;
+    const positions = allBullets[sourceId].behaviour.diffSystem.positionTextures[0];
     const velocities = allBullets[sourceId].velocities.map(velocity => {
         const rotationQuaternion = Quaternion.RotationYawPitchRoll(Math.PI/2, 0, 0)
         const rotationMatrix = new Matrix();
@@ -125,7 +125,7 @@ const burst2_replace1 = (sourceId) => {
         },
         meshOptions: {
             mesh: 'egg',
-            radius: 0.1
+            radius: 0.5
         },
         behaviourOptions: {
             behaviour: 'linear',
@@ -140,15 +140,43 @@ const burst2_replace1 = (sourceId) => {
     }
 }
 
+const pincer1 = {
+    type: 'shoot',
+    materialOptions: {
+        material: 'fresnel',
+        color: [0, 1, 1]
+    },
+    patternOptions: {
+        pattern: 'multiArea',
+        speeds: [2, 3, 4, 5, 6, 7],
+        num: 5,
+        radialAngle: Math.PI/4,
+        offset: [-0.1, 0, 0],
+        towardsPlayer: true
+    },
+    endTimings: {
+        timing: 'uniform',
+        time: 1
+    },
+    meshOptions: {
+        mesh: 'sphere',
+        radius: 0.5
+    },
+    behaviourOptions: {
+        behaviour: 'slowToStop',
+    },
+    lifespan: 10,
+    wait: 0,
+}
+
 const wriggle1StartPosition = randVectorToPosition([0, 0, 1])
 
 export const BOSS_WriggleBehaviour1 = ({ children, leaveScene, spawn }) => {
     const transformNodeRef = useRef();
-    const { registerAnimation } = useContext(AnimationContext);
     const addBulletGroup = useAddBulletGroup();
     const { setBossUI } = useContext(UIContext)
 
-    const actionsTimings = useMemo(() => [0, 2, 3], []);
+    const actionsTimings = useMemo(() => [0, 2, 3, 6], []);
 
     const actions = useMemo(() =>
         [
@@ -184,8 +212,15 @@ export const BOSS_WriggleBehaviour1 = ({ children, leaveScene, spawn }) => {
                     transformNodeRef.current,
                     burst2_replace1(id)
                 )
+            },
+            () => {
+                addBulletGroup(
+                    transformNodeRef.current,
+                    pincer1
+                )
             }
         ],
+        //eslint-disable-next-line react-hooks/exhaustive-deps
         []
     );
 

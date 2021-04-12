@@ -1,5 +1,6 @@
 import { isFunction } from 'lodash';
 import { makeAreaPattern } from './Area';
+import { makeMultiAreaPattern } from './MultiArea';
 import { makeBurstPattern } from './Burst';
 import { makeEmptyPattern } from './Empty';
 import { makeMultiBurstPattern } from './MultiBurst';
@@ -7,6 +8,7 @@ import { makeSinglePattern } from './Single';
 import { makeSprayPattern } from './Spray';
 import { makeRandomConePattern } from './RandomCone';
 import { Texture } from '@babylonjs/core';
+import { RandVector3 } from '../../BabylonUtils';
 
 export const makeBulletPattern = (patternOptions, parent) => {
     let _pattern;
@@ -30,6 +32,9 @@ export const makeBulletPattern = (patternOptions, parent) => {
             case 'area':
                 _pattern = makeAreaPattern(patternOptions, parent);
                 break;
+            case 'multiArea':
+                _pattern = makeMultiAreaPattern(patternOptions, parent);
+                break;
             case 'randomCone':
                 _pattern = makeRandomConePattern(patternOptions, parent);
                 break;
@@ -42,6 +47,11 @@ export const makeBulletPattern = (patternOptions, parent) => {
             default:
                 throw new Error('Pattern type not supported: ' + patternOptions.pattern);
         }
+    }
+
+    if(patternOptions.offset){
+        const offset = new RandVector3(...patternOptions.offset)
+        _pattern.positions.forEach(position => position.addInPlace(offset))
     }
 
     if(!_pattern.timings){

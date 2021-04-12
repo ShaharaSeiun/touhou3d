@@ -1,10 +1,9 @@
-import { BULLET_WARNING, GRAZE_DISTANCE, MAX_BULLETS_PER_GROUP, MAX_ENEMIES } from '../../../utils/Constants';
+import { BULLET_WARNING, GRAZE_DISTANCE, MAX_BOMBS, MAX_BULLETS_PER_GROUP, MAX_ENEMIES } from '../../../utils/Constants';
 import { glsl } from '../../BabylonUtils';
 
 export const uniformSnippet = glsl`
     uniform float delta;
     uniform float timeSinceStart;
-    uniform float spawning;
     uniform float reliesOnParent;
     uniform vec2 resolution;
     uniform vec3 parentPosition;
@@ -30,7 +29,7 @@ export const mainHeaderSnippet = glsl`
     initialPosition = initialPosition + reliesOnParent * parentPosition;
 
     float dTiming = timeSinceStart - timing;
-    float shouldPositionReset = float(dTiming > 0. && dTiming < ${BULLET_WARNING}) * spawning * float(parentPosition != vec3(0.,0.,0.));
+    float shouldPositionReset = float(dTiming > 0. && dTiming < ${BULLET_WARNING}) * float(parentPosition != vec3(0.,0.,0.));
 
     position = mix(position, initialPosition, shouldPositionReset);
 
@@ -100,6 +99,8 @@ export const enemyBulletCollisionPixelShader = glsl`
     uniform sampler2D positionSampler;
     uniform sampler2D timingsSampler;
     uniform sampler2D endTimingsSampler;
+    uniform float bombPositions[${MAX_BOMBS * 3}];
+    uniform float bombRadii[${MAX_BOMBS}];
     uniform vec3 bulletTypePack1;
     uniform vec3 bulletTypePack2;
     uniform vec3 collideWithEnvironment;
@@ -119,6 +120,14 @@ export const enemyBulletCollisionPixelShader = glsl`
         collidingWithEnvironment = max(collidingWithEnvironment, collideWithEnvironment.y * float(position.x < arenaMin.x || position.x > arenaMax.x));
         //Bullet colliding with ceiling?
         collidingWithEnvironment = max(collidingWithEnvironment, collideWithEnvironment.z * float(position.y > arenaMax.y));
+
+        for(int i = 0; i < ${MAX_BOMBS}; i ++){
+            int offset = i * 3;
+            vec3 bombPosition = vec3(bombPositions[offset], bombPositions[offset + 1], bombPositions[offset + 2]);
+            float bombBulletDistance = distance(position, bombPosition);
+            float close = float(bombBulletDistance < bombRadii[i]);
+            collidingWithEnvironment = max(collidingWithEnvironment, close);
+        }
 
         float isBullet = bulletTypePack1.x;
         float isLife = bulletTypePack1.y;

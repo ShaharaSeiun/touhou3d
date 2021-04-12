@@ -2,12 +2,13 @@ import { times } from 'lodash';
 import { SETTINGS } from '../utils/Settings';
 
 export default class MultiSound {
-    constructor(url, volume = 0.1, num = 1) {
+    constructor(url, volume = 0.1, num = 1, disableCooldown = false) {
         this.url = url;
         this.volume = volume;
         this.curSource = 0;
         this.num = num;
         this.playing = times(num, () => false)
+        this.disableCooldown = disableCooldown;
 
         this.initFunc = (...args) => this.init(args);
 
@@ -47,7 +48,7 @@ export default class MultiSound {
 
     play() {
         if (!this.ready) return;
-        if(this.startTime && new Date() - this.startTime < 50/this.num) return;
+        if(this.startTime && (new Date() - this.startTime < 50/this.num && !this.disableCooldown)) return;
         if (SETTINGS.SFX === 'OFF') return;
 
         this.stop(this.curSource);

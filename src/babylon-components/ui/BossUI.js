@@ -1,6 +1,6 @@
 import { DynamicTexture, Vector3 } from '@babylonjs/core';
 import { clamp } from 'lodash';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
 import { CHARACTER_CONSTS } from '../../utils/Constants';
 import { capFirst, rerange } from '../../utils/Utils';

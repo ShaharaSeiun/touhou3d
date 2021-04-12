@@ -97,8 +97,15 @@ export const prepareBulletInstruction = (instruction) => {
         lifespan: 10,
     };
 
-    _.merge(defaultInstruction, instruction);
-
+    for(let key in instruction){
+        let mergeTarget = {}
+        if(key in defaultInstruction){
+            mergeTarget = defaultInstruction[key];
+        }
+        const newValue = Object.assign(mergeTarget, instruction[key]);
+        defaultInstruction[key] = newValue;
+    }
+    
     return defaultInstruction;
 };
 
