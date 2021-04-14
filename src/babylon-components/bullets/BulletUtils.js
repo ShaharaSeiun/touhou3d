@@ -102,7 +102,9 @@ export const prepareBulletInstruction = (instruction) => {
         if(key in defaultInstruction){
             mergeTarget = defaultInstruction[key];
         }
-        const newValue = Object.assign(mergeTarget, instruction[key]);
+        const newValue = instruction[key] instanceof Object ? 
+            Object.assign(mergeTarget, instruction[key]) : 
+            instruction[key];
         defaultInstruction[key] = newValue;
     }
     

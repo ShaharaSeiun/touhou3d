@@ -25,7 +25,7 @@ const burst1 = {
     },
     meshOptions: {
         mesh: 'egg',
-        radius: 0.5
+        radius: 0.2
     },
     behaviourOptions: {
         behaviour: 'slowToStop',
@@ -58,7 +58,7 @@ const burst1_replace1 = (sourceId) => {
         },
         meshOptions: {
             mesh: 'egg',
-            radius: 0.5
+            radius: 0.2
         },
         behaviourOptions: {
             behaviour: 'linear',
@@ -92,7 +92,7 @@ const burst2 = {
     },
     meshOptions: {
         mesh: 'egg',
-        radius: 0.5
+        radius: 0.2
     },
     behaviourOptions: {
         behaviour: 'slowToStop',
@@ -125,7 +125,7 @@ const burst2_replace1 = (sourceId) => {
         },
         meshOptions: {
             mesh: 'egg',
-            radius: 0.5
+            radius: 0.2
         },
         behaviourOptions: {
             behaviour: 'linear',
@@ -160,7 +160,7 @@ const pincer1 = {
     },
     meshOptions: {
         mesh: 'sphere',
-        radius: 0.5
+        radius: 0.2
     },
     behaviourOptions: {
         behaviour: 'slowToStop',

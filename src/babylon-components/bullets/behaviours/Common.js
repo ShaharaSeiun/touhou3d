@@ -121,20 +121,20 @@ export const enemyBulletCollisionPixelShader = glsl`
         //Bullet colliding with ceiling?
         collidingWithEnvironment = max(collidingWithEnvironment, collideWithEnvironment.z * float(position.y > arenaMax.y));
 
-        for(int i = 0; i < ${MAX_BOMBS}; i ++){
-            int offset = i * 3;
-            vec3 bombPosition = vec3(bombPositions[offset], bombPositions[offset + 1], bombPositions[offset + 2]);
-            float bombBulletDistance = distance(position, bombPosition);
-            float close = float(bombBulletDistance < bombRadii[i]);
-            collidingWithEnvironment = max(collidingWithEnvironment, close);
-        }
-
         float isBullet = bulletTypePack1.x;
         float isLife = bulletTypePack1.y;
         float isBomb = bulletTypePack1.z;
         float isPower = bulletTypePack2.x;
         float isPoint = bulletTypePack2.y;
         float isSpecial = bulletTypePack2.z;
+
+        for(int i = 0; i < ${MAX_BOMBS}; i ++){
+            int offset = i * 3;
+            vec3 bombPosition = vec3(bombPositions[offset], bombPositions[offset + 1], bombPositions[offset + 2]);
+            float bombBulletDistance = distance(position, bombPosition);
+            float close = isBullet * float(bombBulletDistance < bombRadii[i]);
+            collidingWithEnvironment = max(collidingWithEnvironment, close);
+        }
 
         float graze = (bulletRadius + ${GRAZE_DISTANCE}) - distance(playerPosition, position);
         float isGraze = float(graze > 0.);

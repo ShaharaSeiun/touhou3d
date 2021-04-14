@@ -9,6 +9,7 @@ import { makeSprayPattern } from './Spray';
 import { makeRandomConePattern } from './RandomCone';
 import { Texture } from '@babylonjs/core';
 import { RandVector3 } from '../../BabylonUtils';
+import { makeArcPattern } from './Arc';
 
 export const makeBulletPattern = (patternOptions, parent) => {
     let _pattern;
@@ -31,6 +32,9 @@ export const makeBulletPattern = (patternOptions, parent) => {
                 break;
             case 'area':
                 _pattern = makeAreaPattern(patternOptions, parent);
+                break;
+            case 'arc':
+                _pattern = makeArcPattern(patternOptions, parent);
                 break;
             case 'multiArea':
                 _pattern = makeMultiAreaPattern(patternOptions, parent);

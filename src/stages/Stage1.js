@@ -17,7 +17,6 @@ export const Stage1 = () => {
     const currentActionList = useMemo(() => makeActionListTimeline(stageSource.epochs[epochIndex]), [stageSource, epochIndex]);
     const enemyActionList = currentActionList.filter((action) => action.type === 'spawn');
     const UIActionList = currentActionList.filter((action) => action.type === 'UI');
-    const { resetGlobals } = useContext(GlobalsContext);
 
     useEffect(() => {
         scene.fogMode = Scene.FOGMODE_LINEAR;
@@ -28,8 +27,7 @@ export const Stage1 = () => {
 
     useEffect(() => {
         Music.play('stage1Theme');
-        resetGlobals();
-    }, [resetGlobals]);
+    }, []);
 
     return (
         <>

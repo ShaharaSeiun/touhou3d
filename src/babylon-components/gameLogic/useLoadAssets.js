@@ -158,6 +158,11 @@ export const useLoadAssets = () => {
                 type: 'texture',
             },
             {
+                url: '/assets/player/reimu/reimuDeath.png',
+                name: 'reimuDeath',
+                type: 'texture',
+            },
+            {
                 url: '/assets/items/point.png',
                 name: 'point',
                 type: 'texture',

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import ls from 'local-storage';
 import { SETTINGS } from '../utils/Settings';
 
@@ -15,23 +15,16 @@ const defaults = {
     TIME: 0,
 };
 
-export const globals = ls('globals') ? Object.assign({}, defaults, JSON.parse(ls('globals'))) : defaults;
+export const globals = {...defaults};
 
 export const GlobalsContainer = ({ children }) => {
     const setGlobal = (key, value) => {
         globals[key] = value;
     };
 
-    const resetGlobals = () => {
-        Object.assign(globals, defaults, JSON.parse(ls('globals')), {
-            PLAYER: SETTINGS.PLAYER,
-            BOMB: SETTINGS.BOMB,
-            POWER: 0,
-            GRAZE: 0,
-            POINT: 0,
-            TIME: 0,
-        });
-    };
+    const loadGlobals = useCallback(() => {
+        Object.assign(globals, defaults, JSON.parse(ls('globals')));
+    }, []);
 
     useEffect(() => {
         const interval = window.setInterval(() => {
@@ -42,5 +35,5 @@ export const GlobalsContainer = ({ children }) => {
         };
     }, []);
 
-    return <GlobalsContext.Provider value={{ setGlobal, resetGlobals }}>{children}</GlobalsContext.Provider>;
+    return <GlobalsContext.Provider value={{ setGlobal, loadGlobals }}>{children}</GlobalsContext.Provider>;
 };

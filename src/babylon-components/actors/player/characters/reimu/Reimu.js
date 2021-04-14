@@ -2,6 +2,7 @@ import { Animation, BezierCurveEase, Color3, Space, StandardMaterial, Vector3 } 
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { useName } from '../../../../hooks/useName';
+import { useTexture } from '../../../../hooks/useTexture';
 import { useKeydown, useKeyup } from '../../../../../hooks/useKeydown';
 import { useEffects } from '../../../../gameLogic/useEffects';
 import { ReimuBombObject } from './ReimuBombObject';
@@ -16,6 +17,9 @@ import { ReimuTrackingBulletEmitter } from './ReimuTrackingBulletEmitter';
 import { TrailMesh } from '../../../../TrailMesh';
 import { InvulnerabilityField } from '../../InvulnerabilityField';
 import { PLAYER_INVULNERABLE_COOLDOWN } from '../../../../../utils/Constants';
+import { useAddBulletGroup } from '../../../../hooks/useAddBulletGroup';
+import { BULLET_TYPE } from '../../../../bullets/behaviours/EnemyBulletBehaviour';
+import { times } from 'lodash';
 
 const z = new Vector3(0, 0, 1);
 const focusPosition1 = new Vector3(0.5, 0, 0);
@@ -25,6 +29,33 @@ const unfocusPosition2 = new Vector3(-1, 0, 0);
 
 const initialVelocityRight = [6, 0, 4];
 const initialVelocityLeft = [-6, 0, 4];
+
+const deathInstruction = {
+    type: 'shoot',
+    materialOptions: {
+        material: 'item',
+        texture: 'power',
+        doubleSided: true,
+        hasAlpha: true,
+    },
+    patternOptions: {
+        pattern: 'arc',
+        num: 7,
+        from: [1, 0, 10],
+        to: [-1, 0, 10],
+        speed: 80,
+        radius: 5
+    },
+    meshOptions: {
+        mesh: 'item',
+    },
+    behaviourOptions: {
+        behaviour: 'item',
+        bulletType: BULLET_TYPE.POWER,
+    },
+    lifespan: 20,
+    wait: 0,
+}
 
 export const Reimu = () => {
     const transformNodeRef = useRef();
@@ -43,7 +74,9 @@ export const Reimu = () => {
     const { setGlobal } = useContext(GlobalsContext);
     const [powerClass, setPowerClass] = useState(0);
     const [isInvulnerable, setIsInvulnerable] = useState(false);
+    const deathTexture = useTexture("reimuDeath");
     const addEffect = useEffects();
+    const addBulletGroup = useAddBulletGroup();
     const scene = useScene();
 
     useKeydown('SLOW', () => {
@@ -152,16 +185,34 @@ export const Reimu = () => {
     useEffect(() => {
         if(player !== startPlayer){
             setIsInvulnerable(true);
+            addBulletGroup(
+                transformNodeRef.current,
+                deathInstruction
+            )
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [player])
 
-    const invulnerableTimings = useMemo(() => [PLAYER_INVULNERABLE_COOLDOWN], []);
+    const invulnerableTimings = useMemo(() => 
+        times(40, (num) => {
+            return PLAYER_INVULNERABLE_COOLDOWN * num / 40
+        }), 
+    []);
     const invulnerableActions = useMemo(() => [
+        ...times(39, (num) => {
+            return () => {
+                sphereRef1.current.isVisible = num % 2 === 0
+                sphereRef2.current.isVisible = num % 2 === 0
+            }
+        }), 
         () => {
+            sphereRef1.current.isVisible = true
+            sphereRef2.current.isVisible = true
             setIsInvulnerable(false);
         }
     ], []);
+
+    console.log(isInvulnerable)
 
     useDoSequence(isInvulnerable, invulnerableTimings, invulnerableActions);
 
@@ -217,7 +268,11 @@ export const Reimu = () => {
                 </transformNode>
             </transformNode>
             <transformNode name="bombObjectTransformNode" position={new Vector3(0, 0, 1)}>
-                {(isInvulnerable || isBombing) && <InvulnerabilityField radius={5}/>}
+                <InvulnerabilityField
+                    active={isInvulnerable || isBombing}
+                    radius={isInvulnerable ? [5, 500, 5] : 2} 
+                    texture={isInvulnerable ? deathTexture : false}
+                />
                 {isBombing && (
                     <>
                         <ReimuBombObject

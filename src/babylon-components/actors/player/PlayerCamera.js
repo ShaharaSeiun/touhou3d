@@ -54,7 +54,7 @@ export const PlayerCamera = () => {
         <transformNode ref={transformNodeRef} name="cameraTransform" position={new Vector3(0, 0, 0)}>
             <transformNode ref={targetRef} name="targetTransform" position={new Vector3(0, 0, TARGET_LENGTH)}>
                 <plane renderingGroupId={1} width={0.3} height={0.3} name="targetPlane">
-                    <standardMaterial useAlphaFromDiffuseTexture name={'targetMat'}>
+                    <standardMaterial useAlphaFromDiffuseTexture disableLighting name={'targetMat'}>
                         <texture hasAlpha assignTo="diffuseTexture" url={'/assets/crossHair/crosshair.png'} />
                     </standardMaterial>
                 </plane>
