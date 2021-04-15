@@ -2,8 +2,13 @@ import { BULLET_TYPE } from "../../babylon-components/bullets/behaviours/EnemyBu
 
 export const Wriggle1 = () => {
     const map = {
-        type: 'wriggle',
-        behaviour: 'wriggle1',
+        meshProps:{
+            type: 'wriggle',
+        },
+        behaviourProps: {
+            type: 'wriggle1',
+        },
+        
         radius: 1,
         health: 1000,
         deathInstruction: {

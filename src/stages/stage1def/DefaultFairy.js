@@ -2,12 +2,17 @@ import { BULLET_TYPE } from "../../babylon-components/bullets/behaviours/EnemyBu
 
 export const DefaultFairy = (spawn, target) => {
     const map = {
-        type: 'fairy',
-        asset: 'blueFairy',
-        behaviour: 'defaultFairy',
         radius: 0.5,
         health: 10,
-        spawn: spawn,
+        behaviourProps:{
+            type: 'defaultFairy',
+            spawn: spawn,
+        },
+        meshProps:{
+            type: 'fairy',
+            asset: 'blueFairy',
+        },
+        
         deathInstruction: {
             type: 'shoot',
             materialOptions: {

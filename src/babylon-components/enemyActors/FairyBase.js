@@ -3,11 +3,13 @@ import { Vector3 } from '@babylonjs/core';
 import { useName } from '../hooks/useName';
 import { useBeforeRender } from 'react-babylonjs';
 import { clamp } from 'lodash';
+import { useAssets } from '../hooks/useAssets';
 
-export const FairyBase = React.forwardRef(({ assetName, radius, mesh, ...props }, ref) => {
+export const FairyBase = React.forwardRef(({ asset, radius, ...props }, ref) => {
     const transBaseName = useName('fairyTransformBase');
     const transOffsetName = useName('fairyTransformOffset');
     const meshRootRef = useRef();
+    const mesh = useAssets(asset);
 
     useEffect(() => {
         if (!mesh) return;

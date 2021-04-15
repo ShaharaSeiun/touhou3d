@@ -53,7 +53,7 @@ export const Stage1MinionBehaviour = ({ children, leaveScene, spawn}) => {
         []
     );
 
-    useDoSequence(true, actionsTimings, actions);
+    useDoSequence(true, transformNodeRef, actionsTimings, actions);
 
     useEffect(() => {
         return () => {

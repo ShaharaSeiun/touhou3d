@@ -1,7 +1,11 @@
 export const InertMinionDef = (radius = 0.5) => {
     const map = {
-        type: 'minion',
-        behaviour: 'inertMinion',
+        meshProps:{
+            type: 'minion',
+        },
+        behaviourProps: {
+            type: 'inertMinion',
+        },
         radius,
         health: 10,
     };

@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useCallback, useContext } from 'react';
 import { genericEnemyDeath } from '../effects/genericEnemyDeath';
 import { genericEnemyHit } from '../effects/genericEnemyHit';
 import { reimuBombCharge } from '../effects/reimuBombCharge';
@@ -8,7 +8,7 @@ export const useEffects = (assets) => {
     const backupAssets = useContext(AssetsContext);
     if (!assets) assets = backupAssets;
 
-    const addEffect = (emitter, effectName) => {
+    const addEffect = useCallback((emitter, effectName) => {
         switch (effectName) {
             case 'deathParticles':
                 genericEnemyDeath(emitter, assets);
@@ -22,7 +22,7 @@ export const useEffects = (assets) => {
             default:
                 throw new Error('Unknown effect ' + effectName);
         }
-    };
+    }, [assets]);
 
     return addEffect;
 };

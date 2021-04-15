@@ -78,7 +78,7 @@ export const TumbleweedBehaviour = ({ children, leaveScene, spawn, target }) => 
         [leaveScene]
     );
 
-    useDoSequence(true, actionsTimings, actions);
+    useDoSequence(true, transformNodeRef, actionsTimings, actions);
 
     return (
         <transformNode name position={startPosition} ref={transformNodeRef}>

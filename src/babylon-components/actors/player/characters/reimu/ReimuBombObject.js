@@ -82,7 +82,7 @@ export const ReimuBombObject = ({ id, color, delay, ...props }) => {
         []
     );
 
-    useDoSequence(true, actionsTimings, actions);
+    useDoSequence(true, sphereRef, actionsTimings, actions);
 
     useEffect(() => {
         const camera = scene.activeCamera;

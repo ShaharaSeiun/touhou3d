@@ -50,6 +50,21 @@ export const useEffectDebugger = (effectHook, dependencies, dependencyNames = []
     //eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(effectHook, dependencies);
 };
+export const useTraceUpdate = (props) => {
+    const prev = useRef(props);
+    useEffect(() => {
+        const changedProps = Object.entries(props).reduce((ps, [k, v]) => {
+            if (prev.current[k] !== v) {
+                ps[k] = [prev.current[k], v];
+            }
+            return ps;
+        }, {});
+        if (Object.keys(changedProps).length > 0) {
+            console.log('Changed props:', changedProps);
+        }
+        prev.current = props;
+    });
+}
 
 export const capFirst = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -66,28 +81,28 @@ export const staticReplace = (obj, prop, index, value) => {
 };
 
 export const rerange = (oldValue, oldMin, oldMax, newMin, newMax) => {
-    const oldRange = (oldMax - oldMin)  
-    const newRange = (newMax - newMin)  
+    const oldRange = (oldMax - oldMin)
+    const newRange = (newMax - newMin)
     return (((oldValue - oldMin) * newRange) / oldRange) + newMin
 }
 
 export const determineOrder = arr => {
-    if(arr.length < 2){
-       return 'not enough items';
+    if (arr.length < 2) {
+        return 'not enough items';
     };
     let ascending = null;
     let nextArr = arr.slice(1);
-    for(var i = 0; i < nextArr.length; i++) {
-       if(nextArr[i] === arr[i]){
-          continue;
-       }else if(ascending === null) {
-          ascending = nextArr[i] > arr[i];
-       }else if (ascending !== (nextArr[i] > arr[i])){
-          return 'unsorted';
-       };
+    for (var i = 0; i < nextArr.length; i++) {
+        if (nextArr[i] === arr[i]) {
+            continue;
+        } else if (ascending === null) {
+            ascending = nextArr[i] > arr[i];
+        } else if (ascending !== (nextArr[i] > arr[i])) {
+            return 'unsorted';
+        };
     }
-    if(ascending === null){
-       return 'all items are equal';
+    if (ascending === null) {
+        return 'all items are equal';
     };
     return ascending ? 'ascending' : 'descending';
- };
+};

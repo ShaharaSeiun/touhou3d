@@ -22,7 +22,7 @@ const multiBurst = {
     },
     meshOptions: {
         mesh: 'egg',
-        radius: 0.1
+        radius: 0.2
     },
     behaviourOptions: {
         behaviour: 'linear',
@@ -46,7 +46,7 @@ const area = {
     },
     meshOptions: {
         mesh: 'egg',
-        radius: 0.1
+        radius: 0.2
     },
     behaviourOptions: {
         behaviour: 'linear',
@@ -182,7 +182,7 @@ export const StrongStage1FairyBehaviour = ({ children, leaveScene, spawn, target
         [leaveScene]
     );
 
-    useDoSequence(true, actionsTimings, actions);
+    useDoSequence(true, transformNodeRef, actionsTimings, actions);
 
     const removeFromScene = useCallback((instName) => {
         if(instName === name + 'minion1'){

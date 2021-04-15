@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
 import { filterInPlace } from '../../utils/Utils';
 import { useAddEffect } from '../hooks/useAddEffect';
@@ -14,7 +14,7 @@ export const Enemies = ({ currentActionList }) => {
     const [enemies, setEnemies] = useState({});
     const addEffect = useAddEffect();
 
-    const removeEnemyFromScene = (enemyName, deathLocation = false) => {
+    const removeEnemyFromScene = useCallback((enemyName, deathLocation = false) => {
         metaEnemies = { ...metaEnemies };
 
         if (deathLocation) {
@@ -23,7 +23,7 @@ export const Enemies = ({ currentActionList }) => {
         }
 
         delete metaEnemies[enemyName];
-    };
+    }, [addEffect]);
 
     const doSpawnAction = (enemy) => {
         const enemyName = makeName(enemy.asset);

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
 import { useAddBulletGroup } from '../hooks/useAddBulletGroup';
 import { addEnemy, globalActorRefs, removeEnemy } from '../gameLogic/StaticRefs';
@@ -18,10 +18,10 @@ import { TumbleweedBehaviour } from '../enemyBehaviours/TumbleweedBehaviour';
 import { BOSS_WriggleBehaviour1 } from '../enemyBehaviours/BOSS_WriggleBehaviour1';
 
 
-export const Enemy = ({ type, name, asset, behaviour, radius, health, deathInstruction, removeEnemyFromScene, spawn, target }) => {
+export const Enemy = ({ type, name, radius, health, deathInstruction, removeEnemyFromScene, meshProps, behaviourProps }) => {
     const enemyRef = useRef();
     const [enemy, setEnemy] = useState();
-    const mesh = useAssets(asset);
+    const [enemyRender, setEnemyRender] = useState(false)
     const [positionID, setPositionID] = useState();
     const addBulletGroup = useAddBulletGroup();
 
@@ -61,62 +61,62 @@ export const Enemy = ({ type, name, asset, behaviour, radius, health, deathInstr
         globalActorRefs.enemies[positionID].position = enemyWorldPosition;
     });
 
-    let enemyMesh;
+    useEffect(() => {
+        let EnemyMeshClass
+        switch (meshProps.type) {
+            case 'fairy':
+                EnemyMeshClass = FairyBase;
+                break;
+            case 'fairyWithMagicCircle':
+                EnemyMeshClass = FairyBaseWithMagicCircle;
+                break;
+            case 'minion':
+                EnemyMeshClass = MinionBase;
+                break;
+            case 'tempActor':
+                EnemyMeshClass = TempActor;
+                break;
+            case 'wriggle':
+                EnemyMeshClass = Wriggle;
+                break;
+            default:
+                throw new Error('Unknown Enemy type: ' + type);
+        }
+    
+        let BehaviourClass;
+        switch (behaviourProps.type) {
+            case 'random':
+                BehaviourClass = RandomEnemyBehaviour;
+                break;
+            case 'inertMinion':
+                BehaviourClass = InertMinionBehaviour;
+                break;
+            case 'tumbleweed':
+                BehaviourClass = TumbleweedBehaviour;
+                break;
+            case 'stage1Minion':
+                BehaviourClass = Stage1MinionBehaviour;
+                break;
+            case 'defaultFairy':
+                BehaviourClass = DefaultFairyBehaviour;
+                break;
+            case 'strongStage1Fairy':
+                BehaviourClass = StrongStage1FairyBehaviour;
+                break;
+            case 'strongerStage1Fairy':
+                BehaviourClass = StrongerStage1FairyBehaviour;
+                break;
+            case 'wriggle1':
+                BehaviourClass =  BOSS_WriggleBehaviour1;
+                break;  
+            default:
+                throw new Error('Unknown Behaviour type: ' + behaviourProps.type);
+        }
 
-    switch (type) {
-        case 'fairy':
-            enemyMesh = <FairyBase mesh={mesh} radius={radius} assetName={asset} ref={enemyRef} />;
-            break;
-        case 'fairyWithMagicCircle':
-            enemyMesh = <FairyBaseWithMagicCircle mesh={mesh} radius={radius} assetName={asset} ref={enemyRef} />;
-            break;
-        case 'minion':
-            enemyMesh = <MinionBase mesh={mesh} radius={radius} ref={enemyRef} />;
-            break;
-        case 'tempActor':
-            enemyMesh = <TempActor mesh={mesh} radius={radius} ref={enemyRef} />;
-            break;
-        case 'wriggle':
-            enemyMesh = <Wriggle mesh={mesh} radius={radius} ref={enemyRef} />;
-            break;
-        default:
-            throw new Error('Unknown Enemy type: ' + type);
-    }
+        setEnemyRender(<BehaviourClass leaveScene={leaveScene} {...behaviourProps}>
+            <EnemyMeshClass radius={radius} {...meshProps} ref={enemyRef}/>
+        </BehaviourClass>)
+    }, [meshProps, behaviourProps, leaveScene])
 
-    let BehaviourClass;
-
-    switch (behaviour) {
-        case 'random':
-            BehaviourClass = RandomEnemyBehaviour;
-            break;
-        case 'inertMinion':
-            BehaviourClass = InertMinionBehaviour;
-            break;
-        case 'tumbleweed':
-            BehaviourClass = TumbleweedBehaviour;
-            break;
-        case 'stage1Minion':
-            BehaviourClass = Stage1MinionBehaviour;
-            break;
-        case 'defaultFairy':
-            BehaviourClass = DefaultFairyBehaviour;
-            break;
-        case 'strongStage1Fairy':
-            BehaviourClass = StrongStage1FairyBehaviour;
-            break;
-        case 'strongerStage1Fairy':
-            BehaviourClass = StrongerStage1FairyBehaviour;
-            break;
-        case 'wriggle1':
-            BehaviourClass =  BOSS_WriggleBehaviour1;
-            break;  
-        default:
-            throw new Error('Unknown Behaviour type: ' + behaviour);
-    }
-
-    return (
-        <BehaviourClass leaveScene={leaveScene} spawn={spawn} target={target}>
-            {enemyMesh}
-        </BehaviourClass>
-    );
+    return enemyRender;
 };

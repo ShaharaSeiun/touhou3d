@@ -224,7 +224,7 @@ export const BOSS_WriggleBehaviour1 = ({ children, leaveScene, spawn }) => {
         []
     );
 
-    useDoSequence(true, actionsTimings, actions);
+    useDoSequence(true, transformNodeRef, actionsTimings, actions);
 
     return (
         <transformNode name position={wriggle1StartPosition} ref={transformNodeRef}>

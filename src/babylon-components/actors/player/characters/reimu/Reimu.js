@@ -180,7 +180,7 @@ export const Reimu = () => {
         []
     );
 
-    useDoSequence(isBombing, bombingTimings, bombingActions);
+    useDoSequence(isBombing, transformNodeRef, bombingTimings, bombingActions);
     
     useEffect(() => {
         if(player !== startPlayer){
@@ -212,9 +212,7 @@ export const Reimu = () => {
         }
     ], []);
 
-    console.log(isInvulnerable)
-
-    useDoSequence(isInvulnerable, invulnerableTimings, invulnerableActions);
+    useDoSequence(isInvulnerable, transformNodeRef, invulnerableTimings, invulnerableActions);
 
     useBeforeRender((scene) => {
         if (!sphereTransformRef1.current || !sphereTransformRef2.current) return;
