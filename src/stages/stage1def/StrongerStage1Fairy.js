@@ -12,7 +12,7 @@ export const StrongerStage1Fairy = (spawn, target) => {
             target: target,
         },
         radius: 0.5,
-        health: 10,
+        health: 200,
         
         deathInstruction: {
             type: 'shoot',

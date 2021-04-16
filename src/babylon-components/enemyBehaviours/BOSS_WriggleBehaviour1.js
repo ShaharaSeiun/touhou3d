@@ -1,10 +1,11 @@
-import { Matrix, Quaternion, Vector3 } from '@babylonjs/core';
+import { Animation, BezierCurveEase, Matrix, Quaternion, Vector3 } from '@babylonjs/core';
 import React, { useContext, useMemo, useRef } from 'react';
-import { randVectorToPosition } from '../BabylonUtils';
-import { UIContext } from '../gameLogic/GeneralContainer';
+import { RandVector3, randVectorToPosition } from '../BabylonUtils';
+import { AnimationContext, UIContext } from '../gameLogic/GeneralContainer';
 import { allBullets } from '../gameLogic/StaticRefs';
 import { useDoSequence } from '../hooks/useDoSequence';
 import { useAddBulletGroup } from '../hooks/useAddBulletGroup';
+import { flattenDeep, times } from 'lodash';
 
 const burst1 = {
     type: 'shoot',
@@ -169,14 +170,33 @@ const pincer1 = {
     wait: 0,
 }
 
-const wriggle1StartPosition = randVectorToPosition([0, 0, 1])
+const wriggle1StartPosition = randVectorToPosition([9, 1, 3])
+
+const moveTo = (registerAnimation, transform, target) => {
+    const targetVector = randVectorToPosition(target);
+    let easingFunction = new BezierCurveEase(0.03, 0.66, 0.72, 0.98);
+    registerAnimation(
+        Animation.CreateAndStartAnimation(
+            'anim',
+            transform,
+            'position',
+            1,
+            1,
+            transform.position,
+            targetVector,
+            0,
+            easingFunction
+        )
+    );
+}
 
 export const BOSS_WriggleBehaviour1 = ({ children, leaveScene, spawn }) => {
     const transformNodeRef = useRef();
     const addBulletGroup = useAddBulletGroup();
     const { setBossUI } = useContext(UIContext)
+    const { registerAnimation } = useContext(AnimationContext);
 
-    const actionsTimings = useMemo(() => [0, 2, 3, 6], []);
+    const actionsTimings = useMemo(() => [0, ...flattenDeep(times(30, (n) => [n * 10 + 1, n * 10 + 2, n * 10 + 3]))], []);
 
     const actions = useMemo(() =>
         [
@@ -192,33 +212,32 @@ export const BOSS_WriggleBehaviour1 = ({ children, leaveScene, spawn }) => {
                     ]
                 })
             },
-            () => {
-                const id = addBulletGroup(
-                    transformNodeRef.current,
-                    burst1
-                )
-
-                addBulletGroup(
-                    transformNodeRef.current,
-                    burst1_replace1(id)
-                )
-            },
-            () => {
-                const id = addBulletGroup(
-                    transformNodeRef.current,
-                    burst2
-                )
-                addBulletGroup(
-                    transformNodeRef.current,
-                    burst2_replace1(id)
-                )
-            },
-            () => {
-                addBulletGroup(
-                    transformNodeRef.current,
-                    pincer1
-                )
-            }
+            ...flattenDeep(times(30, () => [
+                () => {
+                    moveTo(registerAnimation, transformNodeRef.current, [[-0.8, 0.8], [-0.8, 0.8], [0.8, 1.0]])
+                },
+                () => {
+                    const id = addBulletGroup(
+                        transformNodeRef.current,
+                        burst1
+                    )
+    
+                    addBulletGroup(
+                        transformNodeRef.current,
+                        burst1_replace1(id)
+                    )
+                },
+                () => {
+                    const id = addBulletGroup(
+                        transformNodeRef.current,
+                        burst2
+                    )
+                    addBulletGroup(
+                        transformNodeRef.current,
+                        burst2_replace1(id)
+                    )
+                },
+            ]))
         ],
         //eslint-disable-next-line react-hooks/exhaustive-deps
         []
