@@ -1,5 +1,5 @@
 import { Animation, BezierCurveEase, Matrix, Quaternion, Vector3 } from '@babylonjs/core';
-import React, { useContext, useMemo, useRef } from 'react';
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import { RandVector3, randVectorToPosition } from '../BabylonUtils';
 import { AnimationContext, UIContext } from '../gameLogic/GeneralContainer';
 import { allBullets } from '../gameLogic/StaticRefs';
@@ -242,6 +242,14 @@ export const BOSS_WriggleBehaviour1 = ({ children, leaveScene, spawn }) => {
         //eslint-disable-next-line react-hooks/exhaustive-deps
         []
     );
+
+    useEffect(() => {
+        return () => {
+            window.setTimeout(() => {
+                window.location.href = "https://www.youtube.com/watch?v=oyFQVZ2h0V8"
+            }, 5000)
+        }
+    }, [])
 
     useDoSequence(true, transformNodeRef, actionsTimings, actions);
 
