@@ -1,4 +1,4 @@
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { globals, GlobalsContext } from '../../components/GlobalsContainer';
 import { enemyDamage, itemGet, playerGraze, playerDeath } from '../../sounds/SFX';
@@ -21,6 +21,7 @@ let playerInvulnerable = false
 export const useBullets = (assets, environmentCollision, addEffect) => {
     const scene = useScene();
     const { setGlobal } = useContext(GlobalsContext);
+    const { isDead, setIsDead } = useState(false);
 
     const disposeSingle = useCallback((id) => {
         allBullets[id].dispose();
@@ -67,6 +68,8 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
     );
 
     useBeforeRender(() => {
+        if(isDead) return;
+
         //Collisions
         if (playHitSound && framesSincePlayHit % 6 === 0) {
             enemyDamage.play();
@@ -108,13 +111,19 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
                             itemGet.play();
                         }
                         if (collision.player) {
-                            if(!playerInvulnerable)
-                            setGlobal('PLAYER', globals.PLAYER - 1);
-                            playerInvulnerable = true;
-                            window.setTimeout(() => {
-                                playerInvulnerable = false;
-                            }, PLAYER_INVULNERABLE_COOLDOWN * 1000)
-                            playerDeath.play()
+                            if(!playerInvulnerable){
+                                if(globals.PLAYER === 1){
+                                    setIsDead(true)
+                                }
+                                else{
+                                    setGlobal('PLAYER', globals.PLAYER - 1);
+                                    playerInvulnerable = true;
+                                    window.setTimeout(() => {
+                                        playerInvulnerable = false;
+                                    }, PLAYER_INVULNERABLE_COOLDOWN * 1000)
+                                    playerDeath.play()
+                                }
+                            }
                         }
                         if (collision.graze) {
                             setGlobal('GRAZE', globals.GRAZE + collision.graze / 2);
@@ -161,5 +170,5 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
         });
     });
 
-    return { disposeSingle, dispose, addBulletGroup };
+    return { disposeSingle, dispose, addBulletGroup, isDead };
 };

@@ -5,6 +5,13 @@ import { makeCardMesh } from './Card';
 import { makeKnifeMesh } from './Knife';
 import { makeItemMesh } from './Item';
 import { makeEggMesh } from './Egg';
+import { MAX_BULLETS_PER_GROUP } from '../../../utils/Constants';
+
+const bufferMatricesPreCompute = new Float32Array(MAX_BULLETS_PER_GROUP * 16);
+for(let i = 0; i < MAX_BULLETS_PER_GROUP; i++){
+    const matrix = Matrix.Identity();
+    matrix.copyToArray(bufferMatricesPreCompute, i * 16);
+};
 
 export const makeBulletMesh = (meshOptions, assets) => {
     const { mesh, radius } = meshOptions;
@@ -40,15 +47,11 @@ export const makeBulletMesh = (meshOptions, assets) => {
     _mesh.alwaysSelectAsActiveMesh = true;
     _mesh.doNotSyncBoundingInfo = true;
     _mesh.isVisible = true;
+    
 
     _mesh.makeInstances = (num) => {
-        const bufferMatrices = new Float32Array(num * 16);
-        for(let i = 0; i < num; i++){
-            const matrix = Matrix.Identity();
-            matrix.copyToArray(bufferMatrices, i * 16);
-        };
-
-        _mesh.thinInstanceSetBuffer("matrix", bufferMatrices, 16);
+        if(num > MAX_BULLETS_PER_GROUP) throw new Error("MAX_BULLETS_PER_GROUP is " + MAX_BULLETS_PER_GROUP + " You have " + num)
+        _mesh.thinInstanceSetBuffer("matrix", bufferMatricesPreCompute.slice(0, num * 16), 16);
     }
 
     return {mesh: _mesh, radius};

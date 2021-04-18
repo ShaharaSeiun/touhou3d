@@ -2,7 +2,7 @@ import { Animation, Color3, StandardMaterial, Vector3 } from '@babylonjs/core';
 import { useContext, useEffect, useMemo, useRef } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { playerBombShoot } from '../../../../../sounds/SFX';
-import { AnimationContext } from '../../../../gameLogic/GeneralContainer';
+import { AnimationContext, GlowContext } from '../../../../gameLogic/GeneralContainer';
 import { addBomb, globalActorRefs, killEnemy, removeBomb, setBombPosition, setBombRadius } from '../../../../gameLogic/StaticRefs';
 import { useDoSequence } from '../../../../hooks/useDoSequence';
 import { useName } from '../../../../hooks/useName';
@@ -17,6 +17,7 @@ export const ReimuBombObject = ({ id, color, delay, ...props }) => {
     const trail = useRef();
     const name = useName('bombObject');
     const { registerAnimation } = useContext(AnimationContext);
+    const glowLayer = useContext(GlowContext);
 
     useEffect(() => {
         addBomb(id, sphereRef.current.getAbsolutePosition(), sphereRef.current.scaling.x/2)
@@ -24,7 +25,7 @@ export const ReimuBombObject = ({ id, color, delay, ...props }) => {
         return () => {
             removeBomb(id)
         }
-    }, [])
+    }, [id])
 
     const actionsTimings = useMemo(
         () => [0, delay],
@@ -64,6 +65,8 @@ export const ReimuBombObject = ({ id, color, delay, ...props }) => {
                 sourceMat.alpha = 0.3;
                 trail.current.material = sourceMat;
 
+                glowLayer.addIncludedOnlyMesh(trail.current)
+
                 registerAnimation(
                     Animation.CreateAndStartAnimation(
                         'anim',
@@ -86,8 +89,12 @@ export const ReimuBombObject = ({ id, color, delay, ...props }) => {
 
     useEffect(() => {
         const camera = scene.activeCamera;
+        const sphereMesh = sphereRef.current;
+        glowLayer.addIncludedOnlyMesh(sphereMesh)
 
         return () => {
+            glowLayer.removeIncludedOnlyMesh(trail.current)
+            glowLayer.removeIncludedOnlyMesh(sphereMesh)
             trail.current.dispose();
             camera.position.x = 0;
             camera.position.y = 0;

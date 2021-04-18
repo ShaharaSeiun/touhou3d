@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useScene } from 'react-babylonjs';
 import { Vector3, Color3, Scene } from '@babylonjs/core';
 import '@babylonjs/loaders';
@@ -8,14 +8,13 @@ import stage1def from './stage1def';
 import { makeActionListTimeline } from '../babylon-components/enemyLogic/EnemyUtils';
 import { UIExecutor } from '../babylon-components/ui/UIExecutor';
 import Music from '../sounds/Music';
-import { GlobalsContext } from '../components/GlobalsContainer';
 
 export const Stage1 = () => {
     const scene = useScene();
     const [epochIndex, setEpochIndex] = useState(0);
     const stageSource = useMemo(() => stage1def(), []);
     const currentActionList = useMemo(() => makeActionListTimeline(stageSource.epochs[epochIndex]), [stageSource, epochIndex]);
-    const enemyActionList = currentActionList.filter((action) => action.type === 'spawn');
+    const enemyActionList = currentActionList.filter((action) => action.type === 'enemies');
     const UIActionList = currentActionList.filter((action) => action.type === 'UI');
 
     useEffect(() => {

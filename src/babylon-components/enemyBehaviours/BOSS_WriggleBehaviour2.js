@@ -5,6 +5,7 @@ import { AnimationContext, UIContext } from '../gameLogic/GeneralContainer';
 import { useDoSequence } from '../hooks/useDoSequence';
 import { useAddBulletGroup } from '../hooks/useAddBulletGroup';
 import { flattenDeep, times } from 'lodash';
+import Music from '../../sounds/Music';
 import { burst1, burst1_replace1, burst2, burst2_replace1} from "./BOSS_WriggleBehaviourCommon";
 
 const pincer1 = {
@@ -56,7 +57,7 @@ const moveTo = (registerAnimation, transform, target) => {
     );
 }
 
-export const BOSS_WriggleBehaviour1 = ({ children, leaveScene, spawn }) => {
+export const BOSS_WriggleBehaviour2 = ({ children, leaveScene, spawn }) => {
     const transformNodeRef = useRef();
     const addBulletGroup = useAddBulletGroup();
     const { setBossUI } = useContext(UIContext)
@@ -110,6 +111,8 @@ export const BOSS_WriggleBehaviour1 = ({ children, leaveScene, spawn }) => {
     );
 
     useEffect(() => {
+        Music.play("wriggleTheme")
+
         return () => {
             // window.setTimeout(() => {
             //     window.location.href = "https://www.youtube.com/watch?v=oyFQVZ2h0V8"

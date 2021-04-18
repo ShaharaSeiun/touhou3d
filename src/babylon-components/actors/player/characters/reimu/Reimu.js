@@ -1,34 +1,20 @@
-import { Animation, BezierCurveEase, Color3, Space, StandardMaterial, Vector3 } from '@babylonjs/core';
+import { Animation, BezierCurveEase, Color3, Vector3 } from '@babylonjs/core';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { useBeforeRender, useScene } from 'react-babylonjs';
+import { useBeforeRender } from 'react-babylonjs';
 import { useName } from '../../../../hooks/useName';
 import { useTexture } from '../../../../hooks/useTexture';
-import { useKeydown, useKeyup } from '../../../../../hooks/useKeydown';
+import { useKeydown } from '../../../../../hooks/useKeydown';
 import { useEffects } from '../../../../gameLogic/useEffects';
 import { ReimuBombObject } from './ReimuBombObject';
 import { useDoSequence } from '../../../../hooks/useDoSequence';
 import { AnimationContext } from '../../../../gameLogic/GeneralContainer';
-import { PlayerUILeft } from '../PlayerUILeft';
-import { PlayerUIRight } from '../PlayerUIRight';
 import { globals, GlobalsContext } from '../../../../../components/GlobalsContainer';
 import { calcPowerClass } from '../../PlayerUtils';
-import { ReimuLinearBulletEmitter } from './ReimuLinearBulletEmitter';
-import { ReimuTrackingBulletEmitter } from './ReimuTrackingBulletEmitter';
-import { TrailMesh } from '../../../../TrailMesh';
 import { InvulnerabilityField } from '../../InvulnerabilityField';
-import { PLAYER_INVULNERABLE_COOLDOWN } from '../../../../../utils/Constants';
+import { PLAYER_BOMB_DURATION, PLAYER_INVULNERABLE_COOLDOWN } from '../../../../../utils/Constants';
 import { useAddBulletGroup } from '../../../../hooks/useAddBulletGroup';
 import { BULLET_TYPE } from '../../../../bullets/behaviours/EnemyBulletBehaviour';
-import { times } from 'lodash';
-
-const z = new Vector3(0, 0, 1);
-const focusPosition1 = new Vector3(0.5, 0, 0);
-const focusPosition2 = new Vector3(-0.5, 0, 0);
-const unfocusPosition1 = new Vector3(1, 0, 0);
-const unfocusPosition2 = new Vector3(-1, 0, 0);
-
-const initialVelocityRight = [6, 0, 4];
-const initialVelocityLeft = [-6, 0, 4];
+import { ReimuOrb } from './ReimuOrb';
 
 const deathInstruction = {
     type: 'shoot',
@@ -60,12 +46,6 @@ const deathInstruction = {
 export const Reimu = () => {
     const transformNodeRef = useRef();
     const sphereTransformNodeRef = useRef();
-    const sphereTransformRef1 = useRef();
-    const sphereTransformRef2 = useRef();
-    const sphereRef1 = useRef();
-    const sphereRef2 = useRef();
-    const trail1 = useRef();
-    const trail2 = useRef();
     const startPlayer = useMemo(() => globals.PLAYER, [])
     const [player, setPlayer] = useState(globals.PLAYER)
     const name = useName('reimu');
@@ -77,52 +57,6 @@ export const Reimu = () => {
     const deathTexture = useTexture("reimuDeath");
     const addEffect = useEffects();
     const addBulletGroup = useAddBulletGroup();
-    const scene = useScene();
-
-    useKeydown('SLOW', () => {
-        Animation.CreateAndStartAnimation(
-            'anim',
-            sphereTransformRef1.current,
-            'position',
-            60,
-            15,
-            sphereTransformRef1.current.position,
-            focusPosition1,
-            Animation.ANIMATIONLOOPMODE_CONSTANT
-        );
-        Animation.CreateAndStartAnimation(
-            'anim',
-            sphereTransformRef2.current,
-            'position',
-            60,
-            15,
-            sphereTransformRef2.current.position,
-            focusPosition2,
-            Animation.ANIMATIONLOOPMODE_CONSTANT
-        );
-    });
-    useKeyup('SLOW', () => {
-        Animation.CreateAndStartAnimation(
-            'anim',
-            sphereTransformRef1.current,
-            'position',
-            60,
-            15,
-            sphereTransformRef1.current.position,
-            unfocusPosition1,
-            Animation.ANIMATIONLOOPMODE_CONSTANT
-        );
-        Animation.CreateAndStartAnimation(
-            'anim',
-            sphereTransformRef2.current,
-            'position',
-            60,
-            15,
-            sphereTransformRef2.current.position,
-            unfocusPosition2,
-            Animation.ANIMATIONLOOPMODE_CONSTANT
-        );
-    });
     
     useKeydown('BOMB', () => {
         if (!globals.BOMB || isBombing) return;
@@ -130,27 +64,11 @@ export const Reimu = () => {
         setIsBombing(true);
     });
 
-    const bombingTimings = useMemo(() => [0, 5, 10], []);
+    const bombingTimings = useMemo(() => [0, PLAYER_BOMB_DURATION], []);
 
     const bombingActions = useMemo(
         () => [
             () => {
-                sphereTransformRef1.current.computeWorldMatrix();
-                trail1.current = new TrailMesh('sphere1Trail', sphereTransformRef1.current, scene, 0.25, 30, true);
-                const sourceMat1 = new StandardMaterial('sourceMat1', scene);
-                const color1 = new Color3.Red();
-                sourceMat1.emissiveColor = sourceMat1.diffuseColor = color1;
-                sourceMat1.specularColor = new Color3.Black();
-                trail1.current.material = sourceMat1;
-
-                sphereTransformRef2.current.computeWorldMatrix();
-                trail2.current = new TrailMesh('sphere2Trail', sphereTransformRef2.current, scene, 0.25, 30, true);
-                const sourceMat2 = new StandardMaterial('sourceMat2', scene);
-                const color2 = new Color3.White();
-                sourceMat2.emissiveColor = sourceMat2.diffuseColor = color2;
-                sourceMat2.specularColor = new Color3.Black();
-                trail2.current.material = sourceMat2;
-
                 addEffect(sphereTransformNodeRef.current, 'reimuBombCharge');
 
                 let easingFunction = new BezierCurveEase(0.33, 0.01, 0.66, 0.99);
@@ -167,10 +85,6 @@ export const Reimu = () => {
                         easingFunction
                     )
                 );
-            },
-            () => {
-                trail1.current.dispose();
-                trail2.current.dispose();
             },
             () => {
                 setIsBombing(false);
@@ -193,35 +107,15 @@ export const Reimu = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [player])
 
-    const invulnerableTimings = useMemo(() => 
-        times(40, (num) => {
-            return PLAYER_INVULNERABLE_COOLDOWN * num / 40
-        }), 
-    []);
+    const invulnerableTimings = useMemo(() => [PLAYER_INVULNERABLE_COOLDOWN], []);
     const invulnerableActions = useMemo(() => [
-        ...times(39, (num) => {
-            return () => {
-                sphereRef1.current.isVisible = num % 2 === 0
-                sphereRef2.current.isVisible = num % 2 === 0
-            }
-        }), 
         () => {
-            sphereRef1.current.isVisible = true
-            sphereRef2.current.isVisible = true
             setIsInvulnerable(false);
         }
     ], []);
-
     useDoSequence(isInvulnerable, transformNodeRef, invulnerableTimings, invulnerableActions);
 
-    useBeforeRender((scene) => {
-        if (!sphereTransformRef1.current || !sphereTransformRef2.current) return;
-
-        const deltaS = scene.paused ? 0 : scene.getEngine().getDeltaTime() / 1000;
-
-        sphereRef1.current.rotate(z, deltaS, Space.WORLD);
-        sphereRef2.current.rotate(z, -deltaS, Space.WORLD);
-
+    useBeforeRender(() => {
         const curPowerClass = calcPowerClass(globals.POWER);
         if (curPowerClass !== powerClass) setPowerClass(curPowerClass);
 
@@ -232,38 +126,8 @@ export const Reimu = () => {
     return (
         <transformNode name={name} ref={transformNodeRef}>
             <transformNode name={name + 'sphereTransformNode'} position={new Vector3(0, 0, 1)} ref={sphereTransformNodeRef}>
-                <transformNode name={name + 'sphereTransform'} ref={sphereTransformRef1} position={new Vector3(1, 0, 0)}>
-                    {!isBombing && <PlayerUIRight position={new Vector3(0, -0.6, 0)} />}
-                    <ReimuLinearBulletEmitter position={new Vector3(0.15, 0, 0)} powerClass={powerClass} />
-                    {powerClass > 0 && (
-                        <ReimuTrackingBulletEmitter initialVelocity={initialVelocityRight} powerClass={powerClass} />
-                    )}
-                    <sphere
-                        name={name + 'sphere1'}
-                        scaling={new Vector3(0.5, 0.5, 0.5)}
-                        rotation={new Vector3(Math.PI / 4, 0, 0)}
-                        ref={sphereRef1}
-                    >
-                        <standardMaterial alpha={0.5} name={name + 'sphereMat1'}>
-                            <texture assignTo="diffuseTexture" url={'/assets/debugTextures/yinyang.jpg'} />
-                        </standardMaterial>
-                    </sphere>
-                </transformNode>
-                <transformNode name={name + 'sphereTransform'} ref={sphereTransformRef2} position={new Vector3(-1, 0, 0)}>
-                    {!isBombing && <PlayerUILeft position={new Vector3(0, -0.6, 0)} />}
-                    <ReimuLinearBulletEmitter position={new Vector3(-0.15, 0, 0)} powerClass={powerClass} />
-                    {powerClass > 0 && <ReimuTrackingBulletEmitter initialVelocity={initialVelocityLeft} powerClass={powerClass} />}
-                    <sphere
-                        name={name + 'sphere2'}
-                        scaling={new Vector3(0.5, 0.5, 0.5)}
-                        rotation={new Vector3(Math.PI / 4, 0, 0)}
-                        ref={sphereRef2}
-                    >
-                        <standardMaterial alpha={0.5} name={name + 'sphereMat2'}>
-                            <texture assignTo="diffuseTexture" url={'/assets/debugTextures/yinyang.jpg'} />
-                        </standardMaterial>
-                    </sphere>
-                </transformNode>
+                <ReimuOrb isBombing={isBombing} powerClass={powerClass} side={'right'} isInvulnerable={isInvulnerable}/>
+                <ReimuOrb isBombing={isBombing} powerClass={powerClass} side={'left'} isInvulnerable={isInvulnerable}/>
             </transformNode>
             <transformNode name="bombObjectTransformNode" position={new Vector3(0, 0, 1)}>
                 <InvulnerabilityField

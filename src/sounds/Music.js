@@ -33,6 +33,7 @@ class MusicClass {
     }
 
     play(activeSound) {
+        if(this.activeSound) this.stop();
         if (activeSound) this.activeSound = activeSound;
         if (SETTINGS.MUSIC === 'OFF' || !this.activeSound) return;
         if (this.pausedAt) {

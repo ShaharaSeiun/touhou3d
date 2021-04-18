@@ -1,5 +1,4 @@
 import { Constants, RawTexture, Vector2, Vector3 } from '@babylonjs/core';
-import _ from 'lodash';
 import nextPowerOfTwo from 'next-power-of-two';
 import { MAX_BULLETS_PER_GROUP } from '../../utils/Constants';
 import { glsl } from '../BabylonUtils';

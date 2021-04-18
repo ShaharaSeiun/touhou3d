@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useKeydown } from '../../hooks/useKeydown';
 import { UIContext } from '../gameLogic/GeneralContainer';
 
-export const UIExecutor = ({ currentActionList }) => {
+export const UIExecutor = ({ currentActionList, setEpochIndex }) => {
     const actionList = useMemo(() => [...currentActionList], [currentActionList]);
     const {
         charactersInDialogue,
@@ -37,18 +37,18 @@ export const UIExecutor = ({ currentActionList }) => {
                 case 'stageStartQuote':
                     setStageStartQuote(action.text);
                     break;
+                case 'nextEpoch':
+                    setActiveCharacter(false);
+                    setCharactersInDialogue([]);
+                    setActiveCharacterText(false);
+                    setActiveCharacterEmotion(false);
+                    setEpochIndex(epochIndex => epochIndex + 1);
+                    break;
                 default:
                     throw new Error('Unknown UI command: ' + action.action);
             }
         },
-        [
-            charactersInDialogue,
-            setActiveCharacter,
-            setActiveCharacterEmotion,
-            setActiveCharacterText,
-            setCharactersInDialogue,
-            setStageStartQuote,
-        ]
+        [charactersInDialogue, setActiveCharacter, setActiveCharacterEmotion, setActiveCharacterText, setCharactersInDialogue, setEpochIndex, setStageStartQuote]
     );
 
     const nextUIAction = () => {

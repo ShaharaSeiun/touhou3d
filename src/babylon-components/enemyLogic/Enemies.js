@@ -6,8 +6,9 @@ import { Enemy } from './Enemy';
 import { makeName } from '../hooks/useName';
 
 let metaEnemies = {};
+let listeningForEnemiesDead = false
 
-export const Enemies = ({ currentActionList }) => {
+export const Enemies = ({ currentActionList, setEpochIndex }) => {
     //eslint-disable-next-line react-hooks/exhaustive-deps
     const timeSinceStart = useMemo(() => ({ current: 0 }), [currentActionList]);
 
@@ -25,23 +26,26 @@ export const Enemies = ({ currentActionList }) => {
         delete metaEnemies[enemyName];
     }, [addEffect]);
 
-    const doSpawnAction = (enemy) => {
+    const doSpawnAction = useCallback((enemy) => {
         const enemyName = makeName(enemy.asset);
         metaEnemies = {
             ...metaEnemies,
             [enemyName]: enemy,
         };
-    };
+    }, []);
 
-    const executeAction = (action) => {
-        switch (action.type) {
+    const executeAction = useCallback((action) => {
+        switch (action.action) {
             case 'spawn':
                 doSpawnAction(action.enemy);
                 break;
+            case 'nextEpoch':
+                listeningForEnemiesDead = true;
+                break;
             default:
-                console.warn('Unsupported meta-action type: ' + action.type);
+                console.warn('Unsupported enemy-action action: ' + action.action);
         }
-    };
+    }, [doSpawnAction]);
 
     useBeforeRender((scene) => {
         const deltaS = scene.paused ? 0 : scene.getEngine().getDeltaTime() / 1000;
@@ -59,6 +63,14 @@ export const Enemies = ({ currentActionList }) => {
 
         if (metaEnemies !== enemies) {
             setEnemies(metaEnemies);
+        }
+
+        if(listeningForEnemiesDead){
+            if(Object.keys(enemies).length === 0){
+                setEpochIndex(epochIndex => epochIndex + 1);
+                listeningForEnemiesDead = false;
+                console.log("epoch set")
+            }
         }
     });
 

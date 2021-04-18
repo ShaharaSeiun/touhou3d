@@ -5,7 +5,6 @@ import { AnimationContext } from '../gameLogic/GeneralContainer';
 import { globalActorRefs } from '../gameLogic/StaticRefs';
 import { useDoSequence } from '../hooks/useDoSequence';
 import { useAddBulletGroup } from '../hooks/useAddBulletGroup';
-import { useTraceUpdate } from '../../utils/Utils';
 
 const smallTowardsPlayer = {
     type: 'shoot',

@@ -1,10 +1,9 @@
-import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
 import { useAddBulletGroup } from '../hooks/useAddBulletGroup';
 import { addEnemy, globalActorRefs, removeEnemy } from '../gameLogic/StaticRefs';
 import { FairyBase } from '../enemyActors/FairyBase';
 import { TempActor } from '../enemyActors/TempActor';
-import { useAssets } from '../hooks/useAssets';
 import { RandomEnemyBehaviour } from '../enemyBehaviours/RandomEnemyBehaviour';
 import { DefaultFairyBehaviour } from '../enemyBehaviours/DefaultFairyBehaviour';
 import { StrongStage1FairyBehaviour } from '../enemyBehaviours/StrongStage1FairyBehaviour';
@@ -16,9 +15,10 @@ import { StrongerStage1FairyBehaviour } from '../enemyBehaviours/StrongerStage1F
 import { Stage1MinionBehaviour } from '../enemyBehaviours/Stage1MinionBehaviour';
 import { TumbleweedBehaviour } from '../enemyBehaviours/TumbleweedBehaviour';
 import { BOSS_WriggleBehaviour1 } from '../enemyBehaviours/BOSS_WriggleBehaviour1';
+import { BOSS_WriggleBehaviour2 } from '../enemyBehaviours/BOSS_WriggleBehaviour2';
 
 
-export const Enemy = ({ type, name, radius, health, deathInstruction, removeEnemyFromScene, meshProps, behaviourProps }) => {
+export const Enemy = ({ name, radius, health, deathInstruction, removeEnemyFromScene, meshProps, behaviourProps }) => {
     const enemyRef = useRef();
     const [enemy, setEnemy] = useState();
     const [enemyRender, setEnemyRender] = useState(false)
@@ -80,7 +80,7 @@ export const Enemy = ({ type, name, radius, health, deathInstruction, removeEnem
                 EnemyMeshClass = Wriggle;
                 break;
             default:
-                throw new Error('Unknown Enemy type: ' + type);
+                throw new Error('Unknown Enemy type: ' + meshProps.type);
         }
     
         let BehaviourClass;
@@ -109,6 +109,9 @@ export const Enemy = ({ type, name, radius, health, deathInstruction, removeEnem
             case 'wriggle1':
                 BehaviourClass =  BOSS_WriggleBehaviour1;
                 break;  
+            case 'wriggle2':
+                BehaviourClass =  BOSS_WriggleBehaviour2;
+                break;  
             default:
                 throw new Error('Unknown Behaviour type: ' + behaviourProps.type);
         }
@@ -116,7 +119,7 @@ export const Enemy = ({ type, name, radius, health, deathInstruction, removeEnem
         setEnemyRender(<BehaviourClass leaveScene={leaveScene} {...behaviourProps}>
             <EnemyMeshClass radius={radius} {...meshProps} ref={enemyRef}/>
         </BehaviourClass>)
-    }, [meshProps, behaviourProps, leaveScene])
+    }, [meshProps, behaviourProps, leaveScene, radius])
 
     return enemyRender;
 };

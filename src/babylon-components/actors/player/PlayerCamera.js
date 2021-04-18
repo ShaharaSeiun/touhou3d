@@ -59,7 +59,7 @@ export const PlayerCamera = () => {
                     </standardMaterial>
                 </plane>
             </transformNode>
-            <targetCamera ref={cameraRef} name="camera" minZ={0.01} maxZ={100} position={new Vector3(0, 0, 0)} />
+            <targetCamera fov={1.0472} ref={cameraRef} name="camera" minZ={0.01} maxZ={100} position={new Vector3(0, 0, 0)} />
         </transformNode>
     );
 };
