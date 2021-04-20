@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Animation, EasingFunction, SineEase, Vector3 } from '@babylonjs/core';
-import { useName } from '../hooks/useName';
-import { useTexture } from '../hooks/useTexture';
+import { useName } from '../../hooks/useName';
+import { useTexture } from '../../hooks/useTexture';
 import { FairyBase } from './FairyBase';
 import { useScene } from 'react-babylonjs';
 

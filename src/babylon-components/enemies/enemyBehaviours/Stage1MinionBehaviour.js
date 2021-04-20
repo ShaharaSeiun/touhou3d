@@ -1,8 +1,8 @@
 import { Vector3 } from '@babylonjs/core';
 import React, { useEffect, useMemo, useRef } from 'react';
-import { randVectorToPosition } from '../BabylonUtils';
-import { useAddBulletGroup } from '../hooks/useAddBulletGroup';
-import { useDoSequence } from '../hooks/useDoSequence';
+import { randVectorToPosition } from '../../BabylonUtils';
+import { useAddBulletGroup } from '../../hooks/useAddBulletGroup';
+import { useDoSequence } from '../../hooks/useDoSequence';
 
 const small = {
     type: 'shoot',

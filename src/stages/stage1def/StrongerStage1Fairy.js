@@ -2,6 +2,9 @@ import { BULLET_TYPE } from "../../babylon-components/bullets/behaviours/EnemyBu
 
 export const StrongerStage1Fairy = (spawn, target) => {
     const map = {
+        movementProps: {
+            type: 'empty',
+        },
         meshProps:{
             type: 'fairyWithMagicCircle',
             asset: 'greenHatFairy',

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Vector3 } from '@babylonjs/core';
-import { useName } from '../hooks/useName';
+import { useName } from '../../hooks/useName';
 
 export const TempActor = React.forwardRef(({ assetName, radius, ...props }, ref) => {
     const transBaseName = useName('tempActorTransformBase');

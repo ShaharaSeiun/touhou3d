@@ -4,9 +4,12 @@ export const DefaultFairy = (spawn, target) => {
     const map = {
         radius: 0.5,
         health: 10,
+        movementProps: {
+            type: 'agroThenAfraid',
+            spawn: spawn,
+        },
         behaviourProps:{
             type: 'defaultFairy',
-            spawn: spawn,
         },
         meshProps:{
             type: 'fairy',

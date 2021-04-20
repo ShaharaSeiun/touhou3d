@@ -1,6 +1,6 @@
 import { Animation } from '@babylonjs/core';
 import React, { useEffect, useMemo, useRef } from 'react';
-import { randVectorToPosition } from '../BabylonUtils';
+import { randVectorToPosition } from '../../BabylonUtils';
 
 const lifespan = 10000;
 

@@ -1,10 +1,11 @@
 import { Animation, BezierCurveEase } from '@babylonjs/core';
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
-import { randVectorToPosition } from '../BabylonUtils';
-import { AnimationContext, UIContext } from '../gameLogic/GeneralContainer';
-import { useDoSequence } from '../hooks/useDoSequence';
-import { useAddBulletGroup } from '../hooks/useAddBulletGroup';
+import { randVectorToPosition } from '../../BabylonUtils';
+import { AnimationContext, UIContext } from '../../gameLogic/GeneralContainer';
+import { useDoSequence } from '../../hooks/useDoSequence';
+import { useAddBulletGroup } from '../../hooks/useAddBulletGroup';
 import { flattenDeep, times } from 'lodash';
+import Music from '../../../sounds/Music';
 import { burst1, burst1_replace1, burst2, burst2_replace1} from "./BOSS_WriggleBehaviourCommon";
 
 const pincer1 = {
@@ -56,13 +57,13 @@ const moveTo = (registerAnimation, transform, target) => {
     );
 }
 
-export const BOSS_WriggleBehaviour1 = ({ children, leaveScene, spawn }) => {
+export const BOSS_WriggleBehaviour2 = ({ children, leaveScene, spawn }) => {
     const transformNodeRef = useRef();
     const addBulletGroup = useAddBulletGroup();
     const { setBossUI } = useContext(UIContext)
     const { registerAnimation } = useContext(AnimationContext);
 
-    const actionsTimings = useMemo(() => [0, ...flattenDeep(times(30, (n) => [n * 10 + 1, n * 10 + 2, n * 10 + 3]))], []);
+    const actionsTimings = useMemo(() => [0, 1, 2, 3, 4, 10], []);
 
     const actions = useMemo(() =>
         [
@@ -78,38 +79,52 @@ export const BOSS_WriggleBehaviour1 = ({ children, leaveScene, spawn }) => {
                     ]
                 })
             },
-            ...flattenDeep(times(30, () => [
-                () => {
-                    moveTo(registerAnimation, transformNodeRef.current, [[-0.8, 0.8], [-0.8, 0.8], [0.8, 1.0]])
-                },
-                () => {
-                    const id = addBulletGroup(
-                        transformNodeRef.current,
-                        burst1
-                    )
-    
-                    addBulletGroup(
-                        transformNodeRef.current,
-                        burst1_replace1(id)
-                    )
-                },
-                () => {
-                    const id = addBulletGroup(
-                        transformNodeRef.current,
-                        burst2
-                    )
-                    addBulletGroup(
-                        transformNodeRef.current,
-                        burst2_replace1(id)
-                    )
-                },
-            ]))
+            () => {
+                const id = addBulletGroup(
+                    transformNodeRef.current,
+                    burst1
+                )
+
+                addBulletGroup(
+                    transformNodeRef.current,
+                    burst1_replace1(id)
+                )
+            },
+            () => {
+                const id = addBulletGroup(
+                    transformNodeRef.current,
+                    burst2
+                )
+                addBulletGroup(
+                    transformNodeRef.current,
+                    burst2_replace1(id)
+                )
+            },
+            () => {
+                const id = addBulletGroup(
+                    transformNodeRef.current,
+                    burst1
+                )
+
+                addBulletGroup(
+                    transformNodeRef.current,
+                    burst1_replace1(id)
+                )
+            },
+            () => {
+                moveTo(registerAnimation, transformNodeRef.current, [[-0.8, 0.8], [-0.8, 0.8], [0.8, 1.0]])
+            },
+            () => {
+
+            }
         ],
         //eslint-disable-next-line react-hooks/exhaustive-deps
         []
     );
 
     useEffect(() => {
+        Music.play("wriggleTheme")
+
         return () => {
             // window.setTimeout(() => {
             //     window.location.href = "https://www.youtube.com/watch?v=oyFQVZ2h0V8"
@@ -122,6 +137,7 @@ export const BOSS_WriggleBehaviour1 = ({ children, leaveScene, spawn }) => {
     return (
         <transformNode name position={wriggle1StartPosition} ref={transformNodeRef}>
             {children}
+            
         </transformNode>
     );
 };

@@ -1,10 +1,11 @@
-import { Animation, BezierCurveEase } from '@babylonjs/core';
+import { Animation, BezierCurveEase, Vector3 } from '@babylonjs/core';
 import React, { useContext, useMemo, useRef } from 'react';
-import { randVectorToPosition } from '../BabylonUtils';
-import { AnimationContext } from '../gameLogic/GeneralContainer';
-import { globalActorRefs } from '../gameLogic/StaticRefs';
-import { useDoSequence } from '../hooks/useDoSequence';
-import { useAddBulletGroup } from '../hooks/useAddBulletGroup';
+import { randVectorToPosition } from '../../BabylonUtils';
+import { AnimationContext } from '../../gameLogic/GeneralContainer';
+import { globalActorRefs } from '../../gameLogic/StaticRefs';
+import { useDoSequence } from '../../hooks/useDoSequence';
+import { useAddBulletGroup } from '../../hooks/useAddBulletGroup';
+import { useName } from '../../hooks/useName';
 
 const smallTowardsPlayer = {
     type: 'shoot',
@@ -54,9 +55,10 @@ const mediumTowardsPlayer = {
 
 export const DefaultFairyBehaviour = ({ children, leaveScene, spawn }) => {
     const transformNodeRef = useRef();
-    const startPosition = useMemo(() => randVectorToPosition(spawn), [spawn]);
+    const startPosition = useMemo(() => new Vector3(0, 0, 0), []);
     const { registerAnimation } = useContext(AnimationContext);
     const addBulletGroup = useAddBulletGroup();
+    const name = useName("DefaultFairyBehaviour")
 
     const actionsTimings = useMemo(() => [0, 2, 2, 3.2, 4.1, 5.5, 6.3, 7], []);
 
@@ -140,7 +142,7 @@ export const DefaultFairyBehaviour = ({ children, leaveScene, spawn }) => {
     useDoSequence(true, transformNodeRef, actionsTimings, actions);
 
     return (
-        <transformNode name position={startPosition} ref={transformNodeRef}>
+        <transformNode name = {name} position={startPosition} ref={transformNodeRef}>
             {children}
         </transformNode>
     );

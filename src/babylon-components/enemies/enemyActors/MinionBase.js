@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { Animation, Color3, StandardMaterial, Vector3 } from '@babylonjs/core';
-import { useName } from '../hooks/useName';
-import { useTexture } from '../hooks/useTexture';
+import { useName } from '../../hooks/useName';
+import { useTexture } from '../../hooks/useTexture';
 import { useScene } from 'react-babylonjs';
-import { TrailMesh } from '../TrailMesh';
+import { TrailMesh } from '../../TrailMesh';
 
 const planePosition = new Vector3(0, 0, 0.5);
 

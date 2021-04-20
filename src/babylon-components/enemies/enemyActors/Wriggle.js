@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { AnimationPropertiesOverride, Vector3 } from '@babylonjs/core';
-import { useName } from '../hooks/useName';
-import { useAssets } from '../hooks/useAssets';
+import { useName } from '../../hooks/useName';
+import { useAssets } from '../../hooks/useAssets';
 import { useBeforeRender } from 'react-babylonjs';
 
 export const Wriggle = React.forwardRef(({ assetName, radius, ...props }, ref) => {
