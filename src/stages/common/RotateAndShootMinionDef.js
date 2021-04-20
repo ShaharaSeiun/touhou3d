@@ -1,12 +1,17 @@
-export const Stage1MinionDef = (radius = 0.5) => {
+export const RotateAndShootMinionDef = (spawn) => {
     const map = {
+        movementProps: {
+            type: 'rotate',
+            spawn: spawn, 
+            targetDist: 1,
+        },
         meshProps:{
             type: 'minion',
         },
         behaviourProps: {
             type: 'stage1Minion',
         },
-        radius,
+        radius: 0.5,
         health: 10,
     };
 

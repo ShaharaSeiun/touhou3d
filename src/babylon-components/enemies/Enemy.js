@@ -15,7 +15,7 @@ export const Enemy = ({ name, radius, health, deathInstruction, removeEnemyFromS
     const addBulletGroup = useAddBulletGroup();
 
     const leaveScene = useCallback(() => {
-        if(positionID === undefined || positionID === null) return;
+        if(positionID === undefined || positionID === null || globalActorRefs.enemies[positionID].dead) return;
         removeEnemy(positionID);
         removeEnemyFromScene(name);
     }, [removeEnemyFromScene, name, positionID]);
@@ -38,6 +38,12 @@ export const Enemy = ({ name, radius, health, deathInstruction, removeEnemyFromS
         );
         setPositionID(id);
     }, [enemy, radius, name, removeEnemyFromScene, health, deathInstruction, addBulletGroup]);
+
+    useEffect(() => {
+        return () => {
+            leaveScene();
+        }
+    }, [leaveScene])
 
     useBeforeRender(() => {
         if (enemyRef.current && !enemy) {

@@ -1,25 +1,25 @@
-import { Animation, BezierCurveEase } from '@babylonjs/core';
+import { Animation, BezierCurveEase, Vector3 } from '@babylonjs/core';
 import React, { useContext, useMemo, useRef } from 'react';
 import { randVectorToPosition } from '../../BabylonUtils';
 import { AnimationContext } from '../../gameLogic/GeneralContainer';
-import { globalActorRefs } from '../../gameLogic/StaticRefs';
 import { useDoSequence } from '../../hooks/useDoSequence';
 import { useName } from '../../hooks/useName';
 
 
-export const AgroThenAfraidMovement = ({ children, spawn }) => {
+export const AppearMoveMovement = ({ children, spawn, target }) => {
     const transformNodeRef = useRef();
     const startPosition = useMemo(() => randVectorToPosition(spawn), [spawn]);
+    const targetPosition = useMemo(() => randVectorToPosition(target), [target]);
     const { registerAnimation } = useContext(AnimationContext);
-    const name = useName("AgroThenAfraidMovement")
+    const name = useName("AppearMoveMovement")
 
-    const actionsTimings = useMemo(() => [0, 2], []);
+    const actionsTimings = useMemo(() => [0, 2.5], []);
 
     const actions = useMemo(
         () => [
             () => {
                 const transform = transformNodeRef.current;
-                const target = globalActorRefs.player.position.scale(1.2).add(startPosition.scale(0.8)).scale(0.5);
+                const target = startPosition.add(new Vector3(0, 0, -4));
                 let easingFunction = new BezierCurveEase(0.03, 0.66, 0.72, 0.98);
                 registerAnimation(
                     Animation.CreateAndStartAnimation(
@@ -37,11 +37,7 @@ export const AgroThenAfraidMovement = ({ children, spawn }) => {
             },
             () => {
                 const transform = transformNodeRef.current;
-                const target = transform.position.add(
-                    transform.position.subtract(globalActorRefs.player.position).normalize().scale(20)
-                );
-                target.y = transform.position.y;
-                const easingFunction = new BezierCurveEase(0.64, 0.24, 0.87, 0.41);
+                const target = targetPosition
                 registerAnimation(
                     Animation.CreateAndStartAnimation(
                         'anim',
@@ -52,7 +48,6 @@ export const AgroThenAfraidMovement = ({ children, spawn }) => {
                         transform.position,
                         target,
                         0,
-                        easingFunction
                     )
                 );
             },

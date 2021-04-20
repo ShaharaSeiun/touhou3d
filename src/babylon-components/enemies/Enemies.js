@@ -1,35 +1,33 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
 import { filterInPlace } from '../../utils/Utils';
 import { useAddEffect } from '../hooks/useAddEffect';
 import { Enemy } from './Enemy';
 import { makeName } from '../hooks/useName';
 
-let metaEnemies = {};
-let listeningForEnemiesDead = false
-
 export const Enemies = ({ currentActionList, setEpochIndex }) => {
     //eslint-disable-next-line react-hooks/exhaustive-deps
     const timeSinceStart = useMemo(() => ({ current: 0 }), [currentActionList]);
-
+    const metaEnemies = useRef({});
+    const listeningForEnemiesDead = useRef(false);
     const [enemies, setEnemies] = useState({});
     const addEffect = useAddEffect();
 
     const removeEnemyFromScene = useCallback((enemyName, deathLocation = false) => {
-        metaEnemies = { ...metaEnemies };
+        metaEnemies.current = { ...metaEnemies.current };
 
         if (deathLocation) {
             const deathStartLocation = deathLocation.clone();
             addEffect(deathStartLocation, 'deathParticles');
         }
 
-        delete metaEnemies[enemyName];
+        delete metaEnemies.current[enemyName];
     }, [addEffect]);
 
     const doSpawnAction = useCallback((enemy) => {
         const enemyName = makeName(enemy.asset);
-        metaEnemies = {
-            ...metaEnemies,
+        metaEnemies.current = {
+            ...metaEnemies.current,
             [enemyName]: enemy,
         };
     }, []);
@@ -40,7 +38,9 @@ export const Enemies = ({ currentActionList, setEpochIndex }) => {
                 doSpawnAction(action.enemy);
                 break;
             case 'nextEpoch':
-                listeningForEnemiesDead = true;
+                listeningForEnemiesDead.current = true;
+                break;
+            case 'empty':
                 break;
             default:
                 console.warn('Unsupported enemy-action action: ' + action.action);
@@ -61,14 +61,14 @@ export const Enemies = ({ currentActionList, setEpochIndex }) => {
 
         filterInPlace(currentActionList, (action) => action.timeline >= timeSinceStart.current);
 
-        if (metaEnemies !== enemies) {
-            setEnemies(metaEnemies);
+        if (metaEnemies.current !== enemies) {
+            setEnemies(metaEnemies.current);
         }
 
-        if(listeningForEnemiesDead){
+        if(listeningForEnemiesDead.current){
             if(Object.keys(enemies).length === 0){
                 setEpochIndex(epochIndex => epochIndex + 1);
-                listeningForEnemiesDead = false;
+                listeningForEnemiesDead.current = false;
                 console.log("epoch set")
             }
         }

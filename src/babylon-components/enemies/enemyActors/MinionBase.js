@@ -44,7 +44,7 @@ export const MinionBase = React.forwardRef(({ radius, ...props }, ref) => {
             <plane position={planePosition} ref={planeRef} name={name + 'circlePlane'} width={3} height={3}>
                 <standardMaterial useAlphaFromDiffuseTexture backFaceCulling={false} name={name + 'mat'}  diffuseTexture={texture}/>
             </plane>
-            <sphere diameter={radius * 2} >
+            <sphere name={name + 'sphere'} diameter={radius * 2} >
                 <standardMaterial emissiveColor={new Color3(10, 10, 10)} disableLighting={true} name={name + 'spheremat'} />
             </sphere>
         </transformNode>

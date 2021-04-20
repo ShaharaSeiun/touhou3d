@@ -85,6 +85,10 @@ export const unnormalizePosition = (position) => {
 };
 
 export const randVectorToPosition = (arrayVector) => {
+    if(arrayVector instanceof Vector3){
+        return arrayVector;
+    }
+
     const position = new RandVector3(...arrayVector);
     return unnormalizePosition(position);
 };

@@ -1,5 +1,8 @@
-export const InertMinionDef = (radius = 0.5) => {
+export const InertOrbitMinionDef = (radius = 0.5) => {
     const map = {
+        movementProps: {
+            type: 'empty',
+        },
         meshProps:{
             type: 'minion',
         },

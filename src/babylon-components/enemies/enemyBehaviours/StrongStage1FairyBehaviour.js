@@ -5,7 +5,7 @@ import { AnimationContext } from '../../gameLogic/GeneralContainer';
 import { useDoSequence } from '../../hooks/useDoSequence';
 import { useAddBulletGroup } from '../../hooks/useAddBulletGroup';
 import { useName } from '../../hooks/useName';
-import { InertMinionDef } from '../../../stages/common/InertMinionDef'
+import { InertOrbitMinionDef } from '../../../stages/common/InertOrbitMinionDef'
 import { Enemy } from '../../enemies/Enemy'
 import { minionSpawn } from '../../../sounds/SFX';
 
@@ -55,8 +55,8 @@ const area = {
     wait: 0,
 }
 
-const inertMinion1 = InertMinionDef();
-const inertMinion2 = InertMinionDef();
+const inertMinion1 = InertOrbitMinionDef();
+const inertMinion2 = InertOrbitMinionDef();
 
 export const StrongStage1FairyBehaviour = ({ children, leaveScene, spawn, target }) => {
     const transformNodeRef = useRef();

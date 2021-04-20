@@ -4,7 +4,6 @@ import { randVectorToPosition } from '../../BabylonUtils';
 import { AnimationContext, UIContext } from '../../gameLogic/GeneralContainer';
 import { useDoSequence } from '../../hooks/useDoSequence';
 import { useAddBulletGroup } from '../../hooks/useAddBulletGroup';
-import { flattenDeep, times } from 'lodash';
 import Music from '../../../sounds/Music';
 import { burst1, burst1_replace1, burst2, burst2_replace1} from "./BOSS_WriggleBehaviourCommon";
 

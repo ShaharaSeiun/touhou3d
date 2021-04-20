@@ -1,5 +1,5 @@
 import { times } from 'lodash'
-import React, {createRef, useCallback, useMemo, useState} from 'react'
+import {createRef, useCallback, useState} from 'react'
 
 export const useMinions = (num) => {
     const [minions, setMinions] = useState(times(num, () => ({
