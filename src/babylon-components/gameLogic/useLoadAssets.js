@@ -72,6 +72,11 @@ export const useLoadAssets = () => {
                 type: 'particles',
             },
             {
+                json: 'chargeWriggle',
+                name: 'chargeWriggle',
+                type: 'particles',
+            },
+            {
                 rootUrl: '/assets/enemies/bosses/',
                 sceneFilename: 'wriggle.glb',
                 name: 'wriggle',

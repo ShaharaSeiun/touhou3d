@@ -3,15 +3,15 @@ import { BULLET_TYPE } from "../../babylon-components/bullets/behaviours/EnemyBu
 export const Tumbleweed = (spawn, target) => {
     const map = {
         movementProps: {
-            type: 'empty',
+            type: 'fromTo',
+            spawn,
+            target
         },
         meshProps:{
-            type: 'tempActor',
+            type: 'tumbleweed',
         },
         behaviourProps: {
             type: 'tumbleweed',
-            spawn: spawn,
-            target: target,
         },
         
         radius: 0.5,

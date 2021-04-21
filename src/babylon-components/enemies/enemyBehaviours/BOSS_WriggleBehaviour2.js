@@ -1,4 +1,4 @@
-import { Animation, BezierCurveEase } from '@babylonjs/core';
+import { Animation, BezierCurveEase, Vector3 } from '@babylonjs/core';
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import { randVectorToPosition } from '../../BabylonUtils';
 import { AnimationContext, UIContext } from '../../gameLogic/GeneralContainer';
@@ -6,6 +6,10 @@ import { useDoSequence } from '../../hooks/useDoSequence';
 import { useAddBulletGroup } from '../../hooks/useAddBulletGroup';
 import Music from '../../../sounds/Music';
 import { burst1, burst1_replace1, burst2, burst2_replace1} from "./BOSS_WriggleBehaviourCommon";
+import { RotateAndShootMinionDef } from '../../../stages/common/RotateAndShootMinionDef';
+import { makeActionListTimeline } from '../EnemyUtils';
+import { Enemies } from '../Enemies';
+import { useAddEffect } from '../../hooks/useAddEffect';
 
 const pincer1 = {
     type: 'shoot',
@@ -56,11 +60,48 @@ const moveTo = (registerAnimation, transform, target) => {
     );
 }
 
+const enemiesInstructions = []
+
+enemiesInstructions.push({
+    type: "enemies",
+    action: 'empty',
+    wait: 12
+})
+
+
+enemiesInstructions.push({
+    type: "enemies",
+    action: 'spawn',
+    enemy: RotateAndShootMinionDef({color: [1, 1, 0], targetDist: 3, armTime: 1, spawn: new Vector3(0.1, 0, 0)}),
+    wait: 0
+})
+enemiesInstructions.push({
+    type: "enemies",
+    action: 'spawn',
+    enemy: RotateAndShootMinionDef({color: [1, 1, 0], targetDist: 3, armTime: 1, spawn: new Vector3(-0.1, 0, 0), reverse: true}),
+    wait: 0
+})
+enemiesInstructions.push({
+    type: "enemies",
+    action: 'spawn',
+    enemy: RotateAndShootMinionDef({color: [1, 1, 0], targetDist: 3, armTime: 1, spawn: new Vector3(0.1, 0.1, 0)}),
+    wait: 0
+})
+enemiesInstructions.push({
+    type: "enemies",
+    action: 'spawn',
+    enemy: RotateAndShootMinionDef({color: [1, 1, 0], targetDist: 3, armTime: 1, spawn: new Vector3(-0.1, 0.1, 0), reverse: true}),
+    wait: 0
+})
+
+const enemiesActionList = makeActionListTimeline(enemiesInstructions);
+
 export const BOSS_WriggleBehaviour2 = ({ children, leaveScene, spawn }) => {
     const transformNodeRef = useRef();
     const addBulletGroup = useAddBulletGroup();
     const { setBossUI } = useContext(UIContext)
     const { registerAnimation } = useContext(AnimationContext);
+    const addEffect = useAddEffect()
 
     const actionsTimings = useMemo(() => [0, 1, 2, 3, 4, 10], []);
 
@@ -77,6 +118,7 @@ export const BOSS_WriggleBehaviour2 = ({ children, leaveScene, spawn }) => {
                         },
                     ]
                 })
+                moveTo(registerAnimation, transformNodeRef.current, [0, 0, 1])
             },
             () => {
                 const id = addBulletGroup(
@@ -114,8 +156,8 @@ export const BOSS_WriggleBehaviour2 = ({ children, leaveScene, spawn }) => {
                 moveTo(registerAnimation, transformNodeRef.current, [[-0.8, 0.8], [-0.8, 0.8], [0.8, 1.0]])
             },
             () => {
-
-            }
+                addEffect(transformNodeRef.current, 'wriggleCharge')
+            },
         ],
         //eslint-disable-next-line react-hooks/exhaustive-deps
         []
@@ -135,6 +177,7 @@ export const BOSS_WriggleBehaviour2 = ({ children, leaveScene, spawn }) => {
 
     return (
         <transformNode name position={wriggle1StartPosition} ref={transformNodeRef}>
+            <Enemies currentActionList={enemiesActionList} />
             {children}
             
         </transformNode>

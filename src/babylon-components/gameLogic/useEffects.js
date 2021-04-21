@@ -2,6 +2,7 @@ import { useCallback, useContext } from 'react';
 import { genericEnemyDeath } from '../effects/genericEnemyDeath';
 import { genericEnemyHit } from '../effects/genericEnemyHit';
 import { reimuBombCharge } from '../effects/reimuBombCharge';
+import { wriggleCharge } from '../effects/wriggleCharge';
 import { AssetsContext } from './GeneralContainer';
 
 export const useEffects = (assets) => {
@@ -18,6 +19,9 @@ export const useEffects = (assets) => {
                 break;
             case 'reimuBombCharge':
                 reimuBombCharge(emitter, assets);
+                break;
+            case 'wriggleCharge':
+                wriggleCharge(emitter, assets);
                 break;
             default:
                 throw new Error('Unknown effect ' + effectName);

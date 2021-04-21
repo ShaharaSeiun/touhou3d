@@ -1,7 +1,9 @@
-export const InertOrbitMinionDef = (radius = 0.5) => {
+export const InertOrbitMinionDef = (spawn) => {
     const map = {
         movementProps: {
-            type: 'empty',
+            type: 'rotate',
+            spawn: spawn, 
+            targetDist: 1,
         },
         meshProps:{
             type: 'minion',
@@ -9,7 +11,7 @@ export const InertOrbitMinionDef = (radius = 0.5) => {
         behaviourProps: {
             type: 'inertMinion',
         },
-        radius,
+        radius: 0.5,
         health: 10,
     };
 

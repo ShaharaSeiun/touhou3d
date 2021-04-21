@@ -13,7 +13,7 @@ export const makeEnemyBehaviour = (type) => {
         case 'random':
             BehaviourClass = RandomEnemyBehaviour;
             break;
-        case 'orbitMinion':
+        case 'inertMinion':
             BehaviourClass = InertMinionBehaviour;
             break;
         case 'tumbleweed':

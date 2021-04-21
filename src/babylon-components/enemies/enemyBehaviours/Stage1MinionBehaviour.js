@@ -4,11 +4,11 @@ import { randVectorToPosition } from '../../BabylonUtils';
 import { useAddBulletGroup } from '../../hooks/useAddBulletGroup';
 import { useDoSequence } from '../../hooks/useDoSequence';
 
-const small = {
+const small = (color) =>  ({
     type: 'shoot',
     materialOptions: {
         material: 'fresnel',
-        color: [0, 0, 1]
+        color
     },
     patternOptions: {
         pattern: 'single',
@@ -32,9 +32,9 @@ const small = {
     },
     lifespan: 10,
     wait: 0,
-}
+})
 
-export const Stage1MinionBehaviour = ({ children, leaveScene, spawn}) => {
+export const Stage1MinionBehaviour = ({ children, leaveScene, spawn, color}) => {
     const transformNodeRef = useRef();
     const startPosition = useMemo(() => spawn ? randVectorToPosition(spawn) : new Vector3(0, 0, 0), [spawn]);
     const actionsTimings = useMemo(() => [2], []);
@@ -45,7 +45,7 @@ export const Stage1MinionBehaviour = ({ children, leaveScene, spawn}) => {
             () => {
                 addBulletGroup(
                     transformNodeRef.current,
-                    small
+                    small(color)
                 )
             }
         ],

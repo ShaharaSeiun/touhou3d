@@ -9,7 +9,7 @@ export const burst1 = {
     },
     patternOptions: {
         pattern: 'multiBurst',
-        num: 5000,
+        num: 4000,
         speeds: [4, 5, 6, 7],
         thetaLength: Math.PI * 1.1,
         thetaStart: -Math.PI/2.5
@@ -20,7 +20,7 @@ export const burst1 = {
     },
     meshOptions: {
         mesh: 'egg',
-        radius: 0.2
+        radius: 0.15
     },
     behaviourOptions: {
         behaviour: 'slowToStop',
@@ -53,7 +53,7 @@ export const burst1_replace1 = (sourceId) => {
         },
         meshOptions: {
             mesh: 'egg',
-            radius: 0.2
+            radius: 0.15
         },
         behaviourOptions: {
             behaviour: 'linear',
@@ -76,7 +76,7 @@ export const burst2 = {
     },
     patternOptions: {
         pattern: 'multiBurst',
-        num: 5000,
+        num: 4000,
         speeds: [4, 5, 6, 7],
         thetaLength: Math.PI * 1.1,
         thetaStart: Math.PI - 0.5
@@ -87,7 +87,7 @@ export const burst2 = {
     },
     meshOptions: {
         mesh: 'egg',
-        radius: 0.2
+        radius: 0.15
     },
     behaviourOptions: {
         behaviour: 'slowToStop',
@@ -120,7 +120,7 @@ export const burst2_replace1 = (sourceId) => {
         },
         meshOptions: {
             mesh: 'egg',
-            radius: 0.2
+            radius: 0.15
         },
         behaviourOptions: {
             behaviour: 'linear',

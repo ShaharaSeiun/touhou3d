@@ -3,6 +3,7 @@ import { TempActor } from './TempActor';
 import { FairyBaseWithMagicCircle } from './FairyBaseWithMagicCircle';
 import { MinionBase } from './MinionBase';
 import { Wriggle } from './Wriggle';
+import { Tumbleweed } from './Tumbleweed';
 
 export const makeEnemyMesh = (type) => {
     let EnemyMeshClass;
@@ -19,6 +20,9 @@ export const makeEnemyMesh = (type) => {
             break;
         case 'tempActor':
             EnemyMeshClass = TempActor;
+            break;
+        case 'tumbleweed':
+            EnemyMeshClass = Tumbleweed;
             break;
         case 'wriggle':
             EnemyMeshClass = Wriggle;

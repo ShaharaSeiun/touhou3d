@@ -28,44 +28,15 @@ const mediumRandomPlayer = {
     wait: 0,
 }
 
-export const TumbleweedBehaviour = ({ children, leaveScene, spawn, target }) => {
+export const TumbleweedBehaviour = ({ children, leaveScene }) => {
     const transformNodeRef = useRef();
-    const startPosition = useMemo(() => randVectorToPosition(spawn), [spawn]);
-    const targetPosition = useMemo(() => randVectorToPosition(target), [target]);
-    const { registerAnimation } = useContext(AnimationContext);
+    const startPosition = useMemo(() => new Vector3(0, 0, 0), []);
     const addBulletGroup = useAddBulletGroup();
-    const name = useName("tumbleweed")
 
-    const actionsTimings = useMemo(() => [0, 2, 5], []);
+    const actionsTimings = useMemo(() => [2, 5], []);
 
     const actions = useMemo(
         () => [
-            () => {
-                const transform = transformNodeRef.current;
-                const target = targetPosition;
-                registerAnimation(
-                    Animation.CreateAndStartAnimation(
-                        'anim',
-                        transform,
-                        'position',
-                        1,
-                        5,
-                        transform.position,
-                        target,
-                        0
-                    )
-                );
-                Animation.CreateAndStartAnimation(
-                    name + "spinanim",
-                    transform,
-                    'rotation',
-                    2,
-                    1,
-                    new Vector3(0, 0, 0),
-                    new Vector3(0, 0, Math.PI * 2),
-                    Animation.ANIMATIONLOOPMODE_CYCLE,
-                )
-            },
             () => {
                 addBulletGroup(
                     transformNodeRef.current,

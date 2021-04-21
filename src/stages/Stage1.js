@@ -14,8 +14,8 @@ export const Stage1 = () => {
     const [epochIndex, setEpochIndex] = useState(0);
     const stageSource = useMemo(() => testdef(), []);
     const currentActionList = useMemo(() => makeActionListTimeline(stageSource.epochs[epochIndex]), [stageSource, epochIndex]);
-    const enemyActionList = currentActionList.filter((action) => action.type === 'enemies');
-    const UIActionList = currentActionList.filter((action) => action.type === 'UI');
+    const enemyActionList = useMemo(() => currentActionList.filter((action) => action.type === 'enemies'), [currentActionList]);
+    const UIActionList = useMemo(() => currentActionList.filter((action) => action.type === 'UI'), [currentActionList]);
 
     useEffect(() => {
         scene.fogMode = Scene.FOGMODE_LINEAR;
