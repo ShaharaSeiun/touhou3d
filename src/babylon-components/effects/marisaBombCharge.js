@@ -1,8 +1,8 @@
 import { playerBombCharge } from '../../sounds/SFX';
 import { makeParticleSystem } from './makeParticleSystem';
 
-export const reimuBombCharge = (emitter, assets) => {
-    const particleSystem = makeParticleSystem(assets, 'chargeBomb', emitter);
+export const marisaBombCharge = (emitter, assets) => {
+    const particleSystem = makeParticleSystem(assets, 'chargeBombMarisa', emitter);
     particleSystem.start();
     playerBombCharge.play();
 
@@ -10,5 +10,3 @@ export const reimuBombCharge = (emitter, assets) => {
         particleSystem.stop();
     }, 1000);
 };
-
-

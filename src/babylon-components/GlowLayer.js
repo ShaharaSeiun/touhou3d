@@ -332,11 +332,8 @@ var GlowLayer = /** @class */ (function (_super) {
             return false;
         }
         // Included Mesh
-        if (this._includedOnlyMeshes.length) {
-            return this._includedOnlyMeshes.indexOf(mesh.uniqueId) !== -1;
-        }
-        if (this._meshesUsingTheirOwnMaterials.length) {
-            return this._meshesUsingTheirOwnMaterials.indexOf(mesh.uniqueId) !== -1;
+        if (this._includedOnlyMeshes.length || this._meshesUsingTheirOwnMaterials.length) {
+            return this._includedOnlyMeshes.indexOf(mesh.uniqueId) !== -1 || this._meshesUsingTheirOwnMaterials.indexOf(mesh.uniqueId) !== -1;
         }
         // Excluded Mesh
         if (this._excludedMeshes.length) {

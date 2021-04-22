@@ -90,10 +90,6 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
                             if (globalActorRefs.enemies[enemyID]) {
                                 addEffect(collision.hit, 'hitParticles');
                             }
-
-                            if (globalActorRefs.enemies[enemyID].health <= 0) {
-                                killEnemy(enemyID);
-                            }
                         }
                     });
                 });
@@ -134,6 +130,13 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
             }
         });
 
+        globalActorRefs.enemies.forEach(enemy => {
+            if(enemy.dead) return;
+            if (enemy.health <= 0) {
+                killEnemy(enemy.id);
+            }
+        })
+
         //Lifespans
         const deltaS = scene.paused ? 0 : scene.getEngine().getDeltaTime() / 1000;
 
@@ -168,6 +171,8 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
             globalActorRefs.bombPositionBuffer[offset + 2] = bomb.position.z;
             globalActorRefs.bombRadiiBuffer[i] = bomb.radius;
         });
+
+        console.log(globalActorRefs.bombPositionBuffer, globalActorRefs.bombRadiiBuffer)
     });
 
     return { disposeSingle, dispose, addBulletGroup, isDead };

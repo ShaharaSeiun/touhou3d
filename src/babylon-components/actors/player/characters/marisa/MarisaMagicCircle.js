@@ -16,14 +16,12 @@ import { useTexture } from '../../../../hooks/useTexture';
 import { useTarget } from '../../../../hooks/useTarget';
 
 const UIPosition = new Vector3(0, -0.6, 0);
-const z = new Vector3(0, 0, 1);
 
 export const MarisaMagicCircle = ({isBombing, powerClass, side, isInvulnerable}) => {
     const name = useName("MarisaMagicCircle")
     const sphereTransformRef = useRef();
     const planeRef = useRef();
     const smallPlaneRef = useRef();
-    const trailRef = useRef();
     const sideCoefficient = useMemo(() => side === 'right' ? 1 : -1, [side])
     const UIClass = useMemo(() => side === 'right' ? PlayerUIRight : PlayerUILeft, [side])
     const linearBulletEmitterPosition = useMemo(() => new Vector3(sideCoefficient * 0.15, 0, 0), [sideCoefficient])
@@ -80,31 +78,6 @@ export const MarisaMagicCircle = ({isBombing, powerClass, side, isInvulnerable})
     ], []);
 
     useDoSequence(isInvulnerable, planeRef, invulnerableTimings, invulnerableActions);
-
-    const bombingTimings = useMemo(() => [0, PLAYER_BOMB_DURATION], []);
-
-    const bombingActions = useMemo(
-        () => [
-            () => {
-                
-                trailRef.current = new TrailMesh('sphere1Trail', sphereTransformRef.current, scene, 0.25, 30, true);
-                const sourceMat = new StandardMaterial('sourceMat1', scene);
-                const color = new Color3.Red();
-                sourceMat.emissiveColor = sourceMat.diffuseColor = color;
-                sourceMat.specularColor = new Color3.Black();
-                trailRef.current.material = sourceMat;
-                glowLayer.addIncludedOnlyMesh(trailRef.current)
-            },
-            () => {
-                glowLayer.removeIncludedOnlyMesh(trailRef.current)
-                trailRef.current.dispose();
-            },
-        ],
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        []
-    );
-
-    useDoSequence(isBombing, planeRef, bombingTimings, bombingActions);
 
     useEffect(() => {
         glowLayer.addIncludedOnlyMesh(planeRef.current)

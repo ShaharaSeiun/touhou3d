@@ -70,7 +70,7 @@ export const Marisa = () => {
     const bombingActions = useMemo(
         () => [
             () => {
-                addEffect(sphereTransformNodeRef.current, 'reimuBombCharge');
+                addEffect(sphereTransformNodeRef.current, 'marisaBombCharge');
 
                 let easingFunction = new BezierCurveEase(0.33, 0.01, 0.66, 0.99);
                 registerAnimation(

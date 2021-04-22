@@ -2,6 +2,7 @@ import { useCallback, useContext } from 'react';
 import { genericEnemyDeath } from '../effects/genericEnemyDeath';
 import { genericEnemyHit } from '../effects/genericEnemyHit';
 import { reimuBombCharge } from '../effects/reimuBombCharge';
+import { marisaBombCharge} from '../effects/marisaBombCharge';
 import { wriggleCharge } from '../effects/wriggleCharge';
 import { AssetsContext } from './GeneralContainer';
 
@@ -19,6 +20,9 @@ export const useEffects = (assets) => {
                 break;
             case 'reimuBombCharge':
                 reimuBombCharge(emitter, assets);
+                break;
+            case 'marisaBombCharge':
+                marisaBombCharge(emitter, assets);
                 break;
             case 'wriggleCharge':
                 wriggleCharge(emitter, assets);

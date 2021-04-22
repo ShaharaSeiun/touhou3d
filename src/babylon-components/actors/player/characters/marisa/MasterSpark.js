@@ -1,98 +1,13 @@
-import { Animation, Color3, Vector3, Effect, MeshBuilder, ShaderMaterial, Matrix } from '@babylonjs/core'
-import React, { useContext, useEffect, useMemo, useRef } from 'react'
-import { useScene } from 'react-babylonjs'
-import { glsl } from '../../../../BabylonUtils'
+import { Animation, Color3, Vector3 } from '@babylonjs/core'
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { useBeforeRender, useScene } from 'react-babylonjs'
 import { AnimationContext, GlowContext } from '../../../../gameLogic/GeneralContainer'
 import { useDoSequence } from '../../../../hooks/useDoSequence'
 import { useName } from '../../../../hooks/useName'
 import { useTexture } from '../../../../hooks/useTexture'
-
-Effect.ShadersStore['masterSparkVertexShader'] = glsl`
-  attribute vec3 position;
-  attribute vec3 normal;
-  attribute vec2 uv;
-  uniform mat4 world;
-  uniform mat4 worldViewProjection;
-  varying vec3 vPositionW;
-  varying vec3 vPosition;
-  varying vec3 vNormalW;
-
-  //World normal
-  #include<helperFunctions>
-
-  //Entry point
-  void main(void) {
-
-      //World normal
-      vNormalW = normal;
-
-      vPosition = position;
-      //WorldPos
-      vec4 positionW = world * vec4(position, 1.0);
-      vPositionW = positionW.xyz;
-
-      //VertexOutput
-      gl_Position = worldViewProjection * vec4(position, 1.0);
-
-  }
-`;
-
-Effect.ShadersStore['masterSparkFragmentShader'] = glsl`
-    varying vec3 vPositionW;
-    varying vec3 vPosition;
-    varying vec3 vNormalW;
-    uniform vec3 cameraPosition;
-    vec3 hsl2rgb( in vec3 c )
-    {
-        vec3 rgb = clamp( abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),6.0)-3.0)-1.0, 0.0, 1.0 );
-        return c.z + c.y * (rgb-0.5)*(1.0-abs(2.0*c.z-1.0));
-    }
-    vec3 rgb2hsl( in vec3 c ){
-        float h = 0.0;
-        float s = 0.0;
-        float l = 0.0;
-        float r = c.r;
-        float g = c.g;
-        float b = c.b;
-        float cMin = min( r, min( g, b ) );
-        float cMax = max( r, max( g, b ) );
-    
-        l = ( cMax + cMin ) / 2.0;
-        if ( cMax > cMin ) {
-        float cDelta = cMax - cMin;
-            
-        s = l < .0 ? cDelta / ( cMax + cMin ) : cDelta / ( 2.0 - ( cMax + cMin ) );
-            
-        if ( r == cMax ) {
-            h = ( g - b ) / cDelta;
-        } else if ( g == cMax ) {
-            h = 2.0 + ( b - r ) / cDelta;
-        } else {
-            h = 4.0 + ( r - g ) / cDelta;
-        }
-    
-        if ( h < 0.0) {
-            h += 6.0;
-        }
-        h = h / 6.0;
-        }
-        return vec3( h, s, l );
-    }
-    void main() {
-        vec3 viewDirectionW = normalize(cameraPosition - vPositionW);
-        float fresnelTerm = dot(viewDirectionW, vNormalW);
-        fresnelTerm = clamp(1. - fresnelTerm, 0., 0.5);
-        fresnelTerm = pow(fresnelTerm, 0.5);
-        vec4 from = vec4(1., 1., 1., 1.);
-        vec4 to = vec4(vPosition, 0.);
-        vec4 color = mix(from, to, fresnelTerm);
-        vec3 hsl = rgb2hsl(abs(color.xyz));
-        hsl.z = max(hsl.z, 0.5);
-        vec3 rgb = hsl2rgb(hsl);
-        float a = 1. - fresnelTerm;
-        gl_FragColor = vec4(rgb, a);
-    }
-`;
+import { MasterSparkBeam } from './MasterSparkBeam'
+import { playerBombCharge2, playerMasterSpark } from '../../../../../sounds/SFX';
+import { addBomb, globalActorRefs, removeBomb, setBombPosition, setBombRadius } from '../../../../gameLogic/StaticRefs'
 
 export const MasterSpark = (props) => {
     const name = useName()
@@ -101,10 +16,14 @@ export const MasterSpark = (props) => {
     const circle2Ref = useRef()
     const circle3Ref = useRef()
     const circle4Ref = useRef()
+    const masterSparkRef = useRef();
+    const masterSparkTransformNode = useRef();
+    const initialBeamScaling = useMemo(() => new Vector3(0, 0, 0), []);
     const transformNodeRef = useRef();
     const scene = useScene()
     const { registerAnimation } = useContext(AnimationContext)
     const glowLayer = useContext(GlowContext);
+    const [beamActive, setBeamActive] = useState();
 
     useEffect(() => {
         const x1 = 1;
@@ -132,154 +51,199 @@ export const MasterSpark = (props) => {
         const y4 = y(x4);
         circle4Ref.current.targetScaling = new Vector3(y4, y4, y4).scale(1.6);
 
-        const masterSparkZScale = 30;
-
-        const myShape = [];
-        const segments = 80;
-        const length = 1;
-
-        for (let i = 0; i <= segments; i++) {
-            myShape.push(new Vector3(y(masterSparkZScale * i * length / segments), i * length / segments, 0))
-        }
-
-        // const mesh = MeshBuilder.CreateLathe(
-        //     "masterSpark",
-        //     {
-        //         shape: myShape,
-        //         tessellation: segments / 2
-        //     }
-        // );
-
-        const mesh = MeshBuilder.CreateSphere("sphere", {})
-        mesh.position = new Vector3(0, 0, 5);
-        mesh.scaling = new Vector3(1, 1, 10);
-
-        const material = new ShaderMaterial(
-            'masterSpark',
-            scene,
-            {
-                vertex: 'masterSpark',
-                fragment: 'masterSpark',
-            },
-            {
-                attributes: ['position', 'normal', 'uv'],
-                uniforms: ['worldView', 'worldViewProjection', 'view', 'projection', 'direction', 'cameraPosition', 'world'],
-                needAlphaBlending: true
-            }
-        );
-
-        mesh.material = material;
-        mesh.parent = transformNodeRef.current;
-
-        // Animation.CreateAndStartAnimation(
-        //     name + "spinanim",
-        //     mesh,
-        //     'rotation',
-        //     2,
-        //     1,
-        //     new Vector3(0, 0, 0),
-        //     new Vector3(0, 0, Math.PI * 2),
-        //     Animation.ANIMATIONLOOPMODE_CYCLE,
-        // )
-
         glowLayer.addIncludedOnlyMesh(circle1Ref.current)
         glowLayer.addIncludedOnlyMesh(circle2Ref.current)
         glowLayer.addIncludedOnlyMesh(circle3Ref.current)
         glowLayer.addIncludedOnlyMesh(circle4Ref.current)
-        // glowLayer.referenceMeshToUseItsOwnMaterial(mesh);
+
     }, [glowLayer, name, scene])
 
-    const invulnerableTimings = useMemo(() => [0, 1, 2, 3, 4], []);
-    const invulnerableActions = useMemo(() => [
+    const masterSparkTimings = useMemo(() => [0, 0.5, 1.2, 2.1, 3.6], []);
+    const masterSparkActions = useMemo(() => [
         () => {
+            window.setTimeout(() => playerBombCharge2.play(), 500);
             registerAnimation(
                 Animation.CreateAndStartAnimation(
                     name + "anim",
                     circle1Ref.current,
                     "scaling",
                     1,
-                    1,
+                    0.5,
                     circle1Ref.current.scaling,
                     circle1Ref.current.targetScaling,
                     Animation.ANIMATIONLOOPMODE_CONSTANT
                 )
             )
+            Animation.CreateAndStartAnimation(
+                name + "spinanim",
+                circle1Ref.current,
+                'rotation',
+                2,
+                6,
+                new Vector3(0, 0, 0),
+                new Vector3(0, 0, -Math.PI * 2),
+                Animation.ANIMATIONLOOPMODE_CYCLE,
+            )
         },
         () => {
+            window.setTimeout(() => playerBombCharge2.play(), 500);
             registerAnimation(
                 Animation.CreateAndStartAnimation(
                     name + "anim",
                     circle2Ref.current,
                     "scaling",
                     1,
-                    1,
+                    0.7,
                     circle2Ref.current.scaling,
                     circle2Ref.current.targetScaling,
                     Animation.ANIMATIONLOOPMODE_CONSTANT
                 )
             )
+            Animation.CreateAndStartAnimation(
+                name + "spinanim",
+                circle2Ref.current,
+                'rotation',
+                2,
+                6,
+                new Vector3(0, 0, 0),
+                new Vector3(0, 0, Math.PI * 2),
+                Animation.ANIMATIONLOOPMODE_CYCLE,
+            )
         },
         () => {
+            window.setTimeout(() => playerBombCharge2.play(), 500);
             registerAnimation(
                 Animation.CreateAndStartAnimation(
                     name + "anim",
                     circle3Ref.current,
                     "scaling",
                     1,
-                    1,
+                    0.9,
                     circle3Ref.current.scaling,
                     circle3Ref.current.targetScaling,
                     Animation.ANIMATIONLOOPMODE_CONSTANT
                 )
             )
+            Animation.CreateAndStartAnimation(
+                name + "spinanim",
+                circle3Ref.current,
+                'rotation',
+                2,
+                6,
+                new Vector3(0, 0, 0),
+                new Vector3(0, 0, -Math.PI * 2),
+                Animation.ANIMATIONLOOPMODE_CYCLE,
+            )
         },
         () => {
+            window.setTimeout(() => playerBombCharge2.play(), 500);
             registerAnimation(
                 Animation.CreateAndStartAnimation(
                     name + "anim",
                     circle4Ref.current,
                     "scaling",
                     1,
-                    1,
+                    1.1,
                     circle4Ref.current.scaling,
                     circle4Ref.current.targetScaling,
                     Animation.ANIMATIONLOOPMODE_CONSTANT
                 )
             )
+            Animation.CreateAndStartAnimation(
+                name + "spinanim",
+                circle4Ref.current,
+                'rotation',
+                2,
+                6,
+                new Vector3(0, 0, 0),
+                new Vector3(0, 0, Math.PI * 2),
+                Animation.ANIMATIONLOOPMODE_CYCLE,
+            )
+        },
+        () => {
+            for(let i = 0; i < 7; i++){
+                addBomb(i, transformNodeRef.current.getAbsolutePosition().add(new Vector3(0, 0, i * 3)), 0)
+            }
+            
+            playerMasterSpark.play();
+            registerAnimation(
+                Animation.CreateAndStartAnimation(
+                    name + "anim",
+                    masterSparkRef.current,
+                    "scaling",
+                    1,
+                    0.6,
+                    masterSparkRef.current.scaling,
+                    new Vector3(1, 1, 1),
+                    Animation.ANIMATIONLOOPMODE_CONSTANT
+                )
+            )
+            setBeamActive(true);
         }
     ], [name, registerAnimation]);
-    useDoSequence(true, circle1Ref, invulnerableTimings, invulnerableActions);
+    useDoSequence(true, circle1Ref, masterSparkTimings, masterSparkActions);
+
+    useEffect(() => {
+        return () => {
+            for(let i = 0; i < 7; i++){
+                removeBomb(i)
+            }
+        }
+    }, []);
+
+    useBeforeRender(() => {
+        if(!beamActive) return;
+
+        const scale = Math.max(Math.random(), 0.5);
+        masterSparkTransformNode.current.scaling = new Vector3(scale, scale, scale);
+
+        for(let i = 0; i < 7; i++){
+            setBombPosition(i, transformNodeRef.current.getAbsolutePosition().add(new Vector3(0, 0, i * 3)))
+            setBombRadius(i, scale * 50);
+        }
+
+        globalActorRefs.enemies.forEach((enemy, id) => {
+            if (enemy.dead) return;
+            const lazerPos = transformNodeRef.current.getAbsolutePosition()
+            if(Math.abs(enemy.position.x - lazerPos.x) < 4 && Math.abs(enemy.position.y - lazerPos.y) < 4){
+                enemy.health--;
+            }
+        });
+    })
 
     return (
         <transformNode ref={transformNodeRef} {...props}>
             <plane
                 name={name + 'plane'}
-                scaling={new Vector3(100, 100, 100)}
+                scaling={new Vector3(50, 50, 50)}
                 ref={circle1Ref}
             >
                 <standardMaterial useAlphaFromDiffuseTexture disableLighting={true} diffuseTexture={runeEmpty} emissiveColor={new Color3(1, 0, 0)} name={name + 'circle1Mat'} />
             </plane>
             <plane
                 name={name + 'plane'}
-                scaling={new Vector3(100, 100, 100)}
+                scaling={new Vector3(50, 50, 50)}
                 ref={circle2Ref}
             >
                 <standardMaterial useAlphaFromDiffuseTexture disableLighting={true} diffuseTexture={runeEmpty} emissiveColor={new Color3(1, 1, 0)} name={name + 'circle2Mat'} />
             </plane>
             <plane
                 name={name + 'plane'}
-                scaling={new Vector3(100, 100, 100)}
+                scaling={new Vector3(50, 50, 50)}
                 ref={circle3Ref}
             >
                 <standardMaterial useAlphaFromDiffuseTexture disableLighting={true} diffuseTexture={runeEmpty} emissiveColor={new Color3(0, 0, 1)} name={name + 'circle3Mat'} />
             </plane>
             <plane
                 name={name + 'plane'}
-                scaling={new Vector3(100, 100, 100)}
+                scaling={new Vector3(50, 50, 50)}
                 ref={circle4Ref}
             >
                 <standardMaterial useAlphaFromDiffuseTexture disableLighting={true} diffuseTexture={runeEmpty} emissiveColor={new Color3(0, 1, 0)} name={name + 'circle4Mat'} />
             </plane>
+            <transformNode ref={masterSparkTransformNode}>
+                <MasterSparkBeam ref={masterSparkRef} scaling={initialBeamScaling} />
+            </transformNode>
         </transformNode>
     )
 }

@@ -1,6 +1,7 @@
-import { GlowLayer } from '@babylonjs/core';
+
 import { useMemo } from 'react';
 import { useScene } from 'react-babylonjs';
+import { GlowLayer } from '../GlowLayer';
 
 export const useGlowLayer = () => {
     const scene = useScene();

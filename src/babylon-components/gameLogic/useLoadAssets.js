@@ -72,6 +72,11 @@ export const useLoadAssets = () => {
                 type: 'particles',
             },
             {
+                json: 'chargeBombMarisa',
+                name: 'chargeBombMarisa',
+                type: 'particles',
+            },
+            {
                 json: 'chargeWriggle',
                 name: 'chargeWriggle',
                 type: 'particles',
@@ -227,6 +232,12 @@ export const useLoadAssets = () => {
                 rootUrl: '/assets/player/marisa/broomstick/',
                 sceneFilename: 'scene.gltf',
                 name: 'broomstick',
+                type: 'model',
+            },
+            {
+                rootUrl: '/assets/player/marisa/beam/',
+                sceneFilename: 'beam.glb',
+                name: 'beam',
                 type: 'model',
             },
             {

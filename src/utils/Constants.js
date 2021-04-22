@@ -16,7 +16,7 @@ export const PLAYER_BULLETS_WHEEL_LENGTH = 100;
 
 export const GRAZE_DISTANCE = 0.5;
 export const PLAYER_INVULNERABLE_COOLDOWN = 2;
-export const PLAYER_BOMB_DURATION = 15;
+export const PLAYER_BOMB_DURATION = 8;
 export const TARGET_LENGTH = 15;
 
 export const BULLET_WARNING = 0.2;
