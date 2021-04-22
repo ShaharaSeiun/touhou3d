@@ -8,7 +8,7 @@ import { ControlsContainer } from '../components/ControlsContainer';
 import { BindControls } from '../babylon-components/BindControls';
 import { GeneralContainer } from '../babylon-components/gameLogic/GeneralContainer';
 import { Playground } from '../babylon-components/actors/Playground';
-import { Reimu } from '../babylon-components/actors/player/characters/reimu/Reimu';
+import { Marisa } from '../babylon-components/actors/player/characters/marisa/Marisa';
 import { PlayerMovement } from '../babylon-components/actors/player/PlayerMovement';
 import { PlayerCamera } from '../babylon-components/actors/player/PlayerCamera';
 import { FightRoot } from '../babylon-components/actors/FightRoot';
@@ -35,7 +35,7 @@ export const Game = () => {
                                     />
                                     <Playground />
                                     <PlayerMovement>
-                                        <Reimu />
+                                        <Marisa />
                                         <PlayerCamera />
                                     </PlayerMovement>
                                 </FightRoot>

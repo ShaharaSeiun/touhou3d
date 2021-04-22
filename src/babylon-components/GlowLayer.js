@@ -335,6 +335,9 @@ var GlowLayer = /** @class */ (function (_super) {
         if (this._includedOnlyMeshes.length) {
             return this._includedOnlyMeshes.indexOf(mesh.uniqueId) !== -1;
         }
+        if (this._meshesUsingTheirOwnMaterials.length) {
+            return this._meshesUsingTheirOwnMaterials.indexOf(mesh.uniqueId) !== -1;
+        }
         // Excluded Mesh
         if (this._excludedMeshes.length) {
             return this._excludedMeshes.indexOf(mesh.uniqueId) === -1;

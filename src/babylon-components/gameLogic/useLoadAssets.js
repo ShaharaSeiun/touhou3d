@@ -143,6 +143,31 @@ export const useLoadAssets = () => {
                 type: 'model',
             },
             {
+                url: '/assets/player/marisa/rune1.png',
+                name: 'rune1',
+                type: 'texture',
+            },
+            {
+                url: '/assets/player/marisa/rune2.png',
+                name: 'rune2',
+                type: 'texture',
+            },
+            {
+                url: '/assets/player/marisa/rune3.png',
+                name: 'rune3',
+                type: 'texture',
+            },
+            {
+                url: '/assets/player/marisa/rune4.png',
+                name: 'rune4',
+                type: 'texture',
+            },
+            {
+                url: '/assets/player/marisa/runeEmpty.png',
+                name: 'runeEmpty',
+                type: 'texture',
+            },
+            {
                 url: '/assets/enemies/textures/blueMagicCircle.png',
                 name: 'blueMagicCircle',
                 type: 'texture',
@@ -196,6 +221,12 @@ export const useLoadAssets = () => {
                 rootUrl: '/assets/bullets/knife/',
                 sceneFilename: 'knife.glb',
                 name: 'knife',
+                type: 'model',
+            },
+            {
+                rootUrl: '/assets/player/marisa/broomstick/',
+                sceneFilename: 'scene.gltf',
+                name: 'broomstick',
                 type: 'model',
             },
             {
