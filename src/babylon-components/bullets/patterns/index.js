@@ -11,9 +11,20 @@ import { Texture } from '@babylonjs/core';
 import { RandVector3 } from '../../BabylonUtils';
 import { makeArcPattern } from './Arc';
 import { makeClawsPattern } from './Claws';
+import { makeSprayStableRandBurstPattern } from './SprayStableRandBurst';
+import { preComputedBulletPatterns } from '../../gameLogic/StaticRefs';
 
+//if there's not a parent, then it's a precompute
 export const makeBulletPattern = (patternOptions, parent) => {
     let _pattern;
+
+    const precomputedBulletPattern = preComputedBulletPatterns[JSON.stringify(patternOptions)];
+    if(precomputedBulletPattern){
+        return precomputedBulletPattern;
+    }
+    if(parent){
+        console.warn("Bullet pattern wasn't precomputed, this is gonna take a while", patternOptions);
+    }
 
     if (isFunction(patternOptions)) {
         _pattern = patternOptions();
@@ -30,6 +41,9 @@ export const makeBulletPattern = (patternOptions, parent) => {
                 break;
             case 'multiBurst':
                 _pattern = makeMultiBurstPattern(patternOptions, parent);
+                break;
+            case 'sprayStableRandBurst':
+                _pattern = makeSprayStableRandBurstPattern(patternOptions, parent);
                 break;
             case 'area':
                 _pattern = makeAreaPattern(patternOptions, parent);
@@ -85,6 +99,10 @@ export const makeBulletPattern = (patternOptions, parent) => {
         _pattern.positions = newPositions;
         _pattern.velocities = newVelocities;
         _pattern.timings = newTimings;
+    }
+
+    if(!parent){
+        preComputedBulletPatterns[JSON.stringify(patternOptions)] = _pattern;
     }
 
     return _pattern;

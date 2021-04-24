@@ -4,12 +4,21 @@ import { glsl } from '../../../BabylonUtils';
 
 export const actorFresnelVertexShader = glsl`
     attribute vec3 position;
-    attribute vec3 uv;
+    attribute vec3 normal;
+    attribute vec2 uv;
+    uniform mat4 world;
     uniform mat4 worldViewProjection;
-    varying vec2 vUV;
+    varying vec3 vPositionW;
+    varying vec3 vNormalW;
+
+    #include<helperFunctions>
+
     void main() {
+        vPositionW = (world * vec4(position, 1.0)).xyz;
+
+        mat3 normalMatrix = transposeMat3(inverseMat3(mat3(world)));
+        vNormalW = normalMatrix * normal;
         gl_Position = worldViewProjection * vec4(position, 1.0);
-        vUV = uv;
     }
 `;
 export const actorFresnelFragmentShader = glsl`
@@ -20,17 +29,19 @@ export const actorFresnelFragmentShader = glsl`
 
     void main() {
 
-        vec3 color = vec3(1., 1., 1.);
-
+        vec3 from = vec3(1., 1., 1.);
         vec3 viewDirectionW = normalize(cameraPosition - vPositionW);
         float fresnelTerm = dot(viewDirectionW, vNormalW);
         fresnelTerm = clamp(1. - fresnelTerm, 0., 1.0);
 
-        gl_FragColor = vec4(mix(color, toColor, fresnelTerm), 1.0);
+        vec4 color = vec4(mix(from, toColor, fresnelTerm), 1.);
+
+
+        gl_FragColor = color;
     }
 `;
 
-export const makeFresnelMaterial = (color, scene) => {
+export const makeActorFresnelMaterial = (color, scene) => {
     const _material = new ShaderMaterial(
         v4() + 'actorFresnel',
         scene,
@@ -40,7 +51,7 @@ export const makeFresnelMaterial = (color, scene) => {
         },
         {
             attributes: ['position', 'normal', 'uv', 'world0', 'world1', 'world2', 'world3'],
-            uniforms: ['worldView', 'worldViewProjection', 'view', 'projection', 'direction', 'cameraPosition']
+            uniforms: ['worldView', 'world', 'worldViewProjection', 'view', 'projection', 'direction', 'cameraPosition']
         }
     );
     

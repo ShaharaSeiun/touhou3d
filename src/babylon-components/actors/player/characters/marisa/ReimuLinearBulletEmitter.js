@@ -9,6 +9,7 @@ import { useControl } from '../../../../hooks/useControl';
 import { useTarget } from '../../../../hooks/useTarget';
 import { useNormalizedFrameSkip } from '../../../../hooks/useNormalizedFrameSkip';
 import { useName } from '../../../../hooks/useName';
+import { preComputeBulletGroup } from '../../../../gameLogic/useBullets';
 
 //15 bullets per second
 let bulletFrameSkip = 5;
@@ -61,6 +62,31 @@ const makeShotInstruction = (powerClass) => {
     return instruction;
 };
 
+const shotPower0 = makeShotInstruction(0);
+const shotPower1 = makeShotInstruction(0);
+const shotPower2 = makeShotInstruction(0);
+const shotPower3 = makeShotInstruction(0);
+
+preComputeBulletGroup(shotPower0)
+preComputeBulletGroup(shotPower1)
+preComputeBulletGroup(shotPower2)
+preComputeBulletGroup(shotPower3)
+
+const shotInstruction = (power) => {
+    switch (power) {
+        case 0:
+            return shotPower0;
+        case 1:
+            return shotPower1;
+        case 2:
+            return shotPower2;
+        case 3:
+            return shotPower3;
+        default:
+            throw new Error('Unknown power class')
+    }
+}
+
 export const ReimuLinearBulletEmitter = ({ powerClass, ...props }) => {
     const transformNodeRef = useRef();
     const { addBulletGroup, disposeSingle } = useContext(BulletsContext);
@@ -74,7 +100,7 @@ export const ReimuLinearBulletEmitter = ({ powerClass, ...props }) => {
     useEffect(() => {
         if (!transformNodeRef.current) return;
 
-        const id = addBulletGroup(transformNodeRef.current, makeShotInstruction(powerClass));
+        const id = addBulletGroup(transformNodeRef.current, shotInstruction(powerClass));
         setShotId(id);
 
         return () => {

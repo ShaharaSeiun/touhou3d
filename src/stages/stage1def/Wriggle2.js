@@ -13,7 +13,7 @@ export const Wriggle2 = () => {
         },
         
         radius: 1,
-        health: 100,
+        health: 1000,
         deathInstruction: {
             type: 'shoot',
             materialOptions: {

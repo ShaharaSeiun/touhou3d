@@ -18,6 +18,12 @@ let playHitSound = false;
 let framesSincePlayHit = 0;
 let playerInvulnerable = false
 
+export const preComputeBulletGroup = (instruction) => {
+    const preparedInstruction = prepareBulletInstruction(instruction);
+    const { positions, velocities, timings } = makeBulletPattern(preparedInstruction.patternOptions);
+    return { positions, velocities, timings, instruciton: preparedInstruction}
+}
+
 export const useBullets = (assets, environmentCollision, addEffect) => {
     const scene = useScene();
     const { setGlobal } = useContext(GlobalsContext);
@@ -34,6 +40,15 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
             delete allBullets[id];
         });
     }, []);
+
+    const clearAllBullets = useCallback(() => {
+        Object.keys(allBullets).forEach((bulletGroupIndex) => {
+            const bulletGroup = allBullets[bulletGroupIndex];
+            if(bulletGroup.behaviour.isEnemyBullet){
+                bulletGroup.lifespan = 0;
+            }
+        });
+    }, [])
 
     const addBulletGroup = useCallback(
         (parent, instruction) => {
@@ -58,7 +73,7 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
             const { lifespan } = preparedInstruction;
             const timeSinceStart = 0;
 
-            const bulletGroup = new BulletGroup(material, mesh, behaviour, sounds, positions, velocities, timings, endTimings, lifespan, timeSinceStart);
+            const bulletGroup = new BulletGroup({material, mesh, behaviour, sounds, positions, velocities, timings, endTimings, lifespan, timeSinceStart, instruciton: preparedInstruction});
 
             const newID = makeName('bulletGroup');
             allBullets[newID] = bulletGroup;
@@ -173,5 +188,5 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
         });
     });
 
-    return { disposeSingle, dispose, addBulletGroup, isDead };
+    return { disposeSingle, dispose, addBulletGroup, clearAllBullets, isDead };
 };

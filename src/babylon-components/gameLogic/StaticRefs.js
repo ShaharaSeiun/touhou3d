@@ -82,3 +82,5 @@ for (let i = 0; i < MAX_BULLETS_PER_GROUP; i++) {
     const matrix = Matrix.Identity();
     matrix.copyToArray(bufferMatricesSource, i * 16);
 }
+
+export const preComputedBulletPatterns = {};

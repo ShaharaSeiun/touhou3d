@@ -1,7 +1,7 @@
 import { times } from 'lodash';
 import * as BulletVectorFunctions from './BulletVectorFunctions';
 
-export const makeSprayPattern = (patternOptions) => {
+export const makeSprayStableRandBurstPattern = (patternOptions) => {
     let velocities = [];
     let positions = [];
     let timings = [];
@@ -11,11 +11,11 @@ export const makeSprayPattern = (patternOptions) => {
     for(let i = 0; i < burstPerSecond * patternOptions.timeLength; i++) {
         const speed = patternOptions.speed || 4;
         const perc = i / 8;
-        const thetaStart = perc * Math.PI/8 * (patternOptions.thetaSpeed || 1);
-        velocities.push(...BulletVectorFunctions.burst(patternOptions.num, speed, thetaStart, patternOptions.thetaLength));
+        const thetaStart = perc * Math.PI/8;
+        velocities.push(...BulletVectorFunctions.stableRandBurst(patternOptions.seed || "seed", patternOptions.num, speed, thetaStart, patternOptions.thetaLength));
 
         const radius = patternOptions.radius || 0;
-        positions.push(...BulletVectorFunctions.burst(patternOptions.num, radius, thetaStart, patternOptions.thetaLength));
+        positions.push(...BulletVectorFunctions.stableRandBurst(patternOptions.seed || "seed", patternOptions.num, radius, thetaStart, patternOptions.thetaLength));
         
         const time = i / burstPerSecond;
         timings.push(...times(patternOptions.num, () => time))

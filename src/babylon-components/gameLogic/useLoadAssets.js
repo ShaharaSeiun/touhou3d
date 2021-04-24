@@ -229,6 +229,12 @@ export const useLoadAssets = () => {
                 type: 'model',
             },
             {
+                rootUrl: '/assets/enemies/tumbleweeds/',
+                sceneFilename: 'tumbleweed.glb',
+                name: 'tumbleweed',
+                type: 'model',
+            },
+            {
                 rootUrl: '/assets/player/marisa/broomstick/',
                 sceneFilename: 'scene.gltf',
                 name: 'broomstick',

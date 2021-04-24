@@ -102,6 +102,6 @@ export const MasterSparkBeam = React.forwardRef((props, ref) => {
     })
 
     return (
-        <transformNode ref={ref} {...props}/>
+        <transformNode name="masterSparkBeam" ref={ref} {...props}/>
     )
 })

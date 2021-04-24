@@ -1,7 +1,7 @@
 import { Vector3 } from '@babylonjs/core';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { randVectorToPosition } from '../../BabylonUtils';
-import { AnimationContext, UIContext } from '../../gameLogic/GeneralContainer';
+import { AnimationContext, BulletsContext, UIContext } from '../../gameLogic/GeneralContainer';
 import { useWrigglePhase1Normal } from './BOSS_WriggleBehaviourTrunk/wrigglePhase1Normal';
 import Music from '../../../sounds/Music';
 import { moveTo} from "./BehaviourCommon";
@@ -12,6 +12,9 @@ import { useBeforeRender } from 'react-babylonjs';
 import { globalActorRefs } from '../../gameLogic/StaticRefs';
 import { flattenDeep } from 'lodash';
 import { useWrigglePhase1SpellCard } from './BOSS_WriggleBehaviourTrunk/wrigglePhase1SpellCard';
+import { useWrigglePhase2Normal } from './BOSS_WriggleBehaviourTrunk/wrigglePhase2Normal';
+import { useWrigglePhase2SpellCard } from './BOSS_WriggleBehaviourTrunk/wrigglePhase2SpellCard';
+import { useWriggleExtraPhase1SpellCard } from './BOSS_WriggleBehaviourTrunk/wriggleExtraPhase1SpellCard';
 
 
 const wriggle1StartPosition = randVectorToPosition([9, 1, 3])
@@ -56,9 +59,9 @@ const enemiesActionList = makeActionListTimeline(enemiesInstructions);
 
 const lives = [
     {
-        healthStart: 100,
+        healthStart: 1000,
         healthEnd: 0,
-        spellCards: [50]
+        spellCards: [500]
     },
 ]
 
@@ -71,6 +74,7 @@ export const BOSS_WriggleBehaviour2 = ({ children, leaveScene, spawn }) => {
     
     const { setBossUI } = useContext(UIContext)
     const { registerAnimation } = useContext(AnimationContext);
+    const { clearAllBullets } = useContext(BulletsContext);
     const [epoch, setEpoch] = useState(0);
     
 
@@ -89,8 +93,16 @@ export const BOSS_WriggleBehaviour2 = ({ children, leaveScene, spawn }) => {
         }
     }, [registerAnimation, setBossUI])
 
-    useWrigglePhase1Normal(epoch === 0, transformNodeRef)
-    useWrigglePhase1SpellCard(epoch === 1, transformNodeRef)
+    useEffect(() => {
+        clearAllBullets();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [epoch])
+
+    useWrigglePhase1Normal(epoch === 1, transformNodeRef)
+    useWrigglePhase1SpellCard(epoch === 2, transformNodeRef)
+    useWrigglePhase2Normal(epoch === 0, transformNodeRef)
+    useWrigglePhase2SpellCard(epoch === 4, transformNodeRef)
+    useWriggleExtraPhase1SpellCard(epoch === 5, transformNodeRef)
 
     useBeforeRender(() => {
         const bossHealth = globalActorRefs.enemies[0].health;

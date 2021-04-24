@@ -106,3 +106,7 @@ export const determineOrder = arr => {
     };
     return ascending ? 'ascending' : 'descending';
 };
+
+export const sum = (array1, array2) => array1.map(function (num, idx) {
+    return num + array2[idx];
+});

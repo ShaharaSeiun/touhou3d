@@ -7,14 +7,19 @@ import { capFirst, rerange } from '../../utils/Utils';
 import { arcOnCtx, textOnCtx } from '../BabylonUtils';
 import { globalActorRefs } from '../gameLogic/StaticRefs';
 import { useTexture } from '../hooks/useTexture';
+import { usePrevious } from '../../hooks/usePrevious';
 
 export const BossUI = ({ bossUIProps, spellCardUIProps }) => {
     const {bossName} = bossUIProps;
-    const bossUIRef = useRef()
-    const characterPortraitRef = useRef()
+    const bossUIRef = useRef();
+    const spellCardRef = useRef();
+    const previousSpellCardUIProps = usePrevious(spellCardUIProps);
+    const characterPortraitRef = useRef();
     const textTexture = useMemo(() => new DynamicTexture('bossUITexture', { width: 512, height: 512 }), []);
+    const spellCardTexture = useMemo(() => new DynamicTexture('spellCardTexture', { width: 1024, height: 64 }), []);
     const characterTexture = useTexture(spellCardUIProps ? spellCardUIProps.character + 'CharacterNeutral' : 'wriggleCharacterNeutral');
     const characterPortraitPosition = useMemo(() => new Vector3(0, 0, 0), []);
+    const spellCardPosition = useMemo(() => new Vector3(4, 2, 0), []);
 
     useBeforeRender(() => {
         textTexture.hasAlpha = true;
@@ -34,7 +39,7 @@ export const BossUI = ({ bossUIProps, spellCardUIProps }) => {
         if(!currentLife) return;
 
         const normalHealthRemaining = bossHealth - (currentLife.spellCards[0] + currentLife.healthEnd);
-        const normalHealthPerc = clamp(normalHealthRemaining/(currentLife.spellCards[0] + currentLife.healthEnd), 0, 1)
+        const normalHealthPerc = clamp(normalHealthRemaining/(currentLife.healthStart - (currentLife.spellCards[0] + currentLife.healthEnd)), 0, 1)
         const normalPerc = rerange(normalHealthPerc, 0, 1, currentLife.spellCards.length / 8, 1)
 
         arcOnCtx(ctx, currentLife.spellCards.length / 8, normalPerc, "#000000")
@@ -57,6 +62,8 @@ export const BossUI = ({ bossUIProps, spellCardUIProps }) => {
 
     useEffect(() => {
         if(!spellCardUIProps?.character) return;
+        if(spellCardUIProps.spellCard === previousSpellCardUIProps?.spellCard) return;
+        
 
         Animation.CreateAndStartAnimation(
             'spellCardPortraitAlphaAnim',
@@ -64,7 +71,7 @@ export const BossUI = ({ bossUIProps, spellCardUIProps }) => {
             'alpha',
             1,
             2,
-            0.5,
+            0.8,
             0.0,
             Animation.ANIMATIONLOOPMODE_CONSTANT
         );
@@ -74,25 +81,57 @@ export const BossUI = ({ bossUIProps, spellCardUIProps }) => {
             'position',
             1,
             2,
-            new Vector3(0, 12, 0),
-            new Vector3(0, 4, 0),
+            new Vector3(4, 10, 0),
+            new Vector3(4, 2, 0),
             Animation.ANIMATIONLOOPMODE_CONSTANT
         );
-    }, [spellCardUIProps])
+        
+        spellCardTexture.hasAlpha = true;
+        const ctx = spellCardTexture.getContext();
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        const textColor = CHARACTER_CONSTS[bossName].color;
+        textOnCtx(ctx, spellCardUIProps.spellCard, 0.8, 0.5, 0.8, textColor, undefined, undefined, true);
+        spellCardTexture.update();
 
+        Animation.CreateAndStartAnimation(
+            'spellCardPortraitPositionAnim',
+            spellCardRef.current,
+            'position',
+            1,
+            1.5,
+            new Vector3(4, 2, 0),
+            new Vector3(4, 5, 0),
+            Animation.ANIMATIONLOOPMODE_CONSTANT
+        );
+
+        window.setTimeout(() => {
+            const relPosition = spellCardRef.current.getAbsolutePosition().subtract(bossUIRef.current.getAbsolutePosition());
+            spellCardRef.current.parent = bossUIRef.current;
+            Animation.CreateAndStartAnimation(
+                'spellCardPortraitPositionAnim',
+                spellCardRef.current,
+                'position',
+                1,
+                0.8,
+                relPosition,
+                new Vector3(0, -1.5, 0),
+                Animation.ANIMATIONLOOPMODE_CONSTANT
+            );
+        }, 1500)
+    }, [bossName, previousSpellCardUIProps, spellCardTexture, spellCardUIProps])
+    
     return (
         <>
         <plane ref={bossUIRef} name="bossUIPlane" width={5} height={5} position={new Vector3(-510, -510, -510)} renderingGroupId={1}>
             <standardMaterial
                 disableLighting={true}
-                
                 useAlphaFromDiffuseTexture
                 name="bossUIMaterial"
                 diffuseTexture={textTexture}
                 emissiveTexture={textTexture}
             />
         </plane>
-        <plane isVisible={false} ref={characterPortraitRef} name={'spellCardCharacterPortrait'} position={characterPortraitPosition} width={4} height={6}>
+        <plane ref={characterPortraitRef} name={'spellCardCharacterPortrait'} position={characterPortraitPosition} width={8} height={12} renderingGroupId={1}>
             <standardMaterial
                 alpha={0}
                 disableLighting={true}
@@ -100,6 +139,16 @@ export const BossUI = ({ bossUIProps, spellCardUIProps }) => {
                 name={'spellCardCharacterPortraitMat'}
                 diffuseTexture={characterTexture}
                 emissiveTexture={characterTexture}
+            />
+        </plane>
+        <plane ref={spellCardRef} name={'spellCard'} position={spellCardPosition} width={8} height={0.5} renderingGroupId={1}>
+            <standardMaterial
+                alpha={1}
+                disableLighting={true}
+                useAlphaFromDiffuseTexture
+                name={'spellCardMat'}
+                diffuseTexture={spellCardTexture}
+                emissiveTexture={spellCardTexture}
             />
         </plane>
         </>

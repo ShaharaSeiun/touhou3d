@@ -1,10 +1,12 @@
 import { useContext, useMemo } from "react";
+import { bulletReplaceRotation } from "../../../bullets/BulletUtils";
+import { preComputeBulletGroup } from "../../../gameLogic/useBullets";
 import { AnimationContext } from "../../../gameLogic/GeneralContainer";
 import { useAddBulletGroup } from "../../../hooks/useAddBulletGroup";
 import { useAddEffect } from "../../../hooks/useAddEffect";
 import { useDoSequence } from "../../../hooks/useDoSequence";
 import { moveTo } from "../BehaviourCommon";
-import { burst1, burst1_replace1, burst2, burst2_replace1 } from "./BOSS_WriggleBehaviourCommon";
+import { burst1, burst2 } from "./BOSS_WriggleBehaviourCommon";
 
 const makeSlash = (from1, from2, to1, to2) => ({
     type: 'shoot',
@@ -31,14 +33,35 @@ const makeSlash = (from1, from2, to1, to2) => ({
     wait: 0,
 })
 
+const slash1 = makeSlash([-1, -1, -1], [1, -1, -1], [-1, 1, -1], [1, 1, -1])
+const slash2 = makeSlash([-1, 1, -1], [-1, -1, -1], [1, 1, -1], [1, -1, -1])
+const slash3 = makeSlash([-1, 0, -1], [0, -1, -1], [0, 1, -1], [1, 0, -1])
+const slash4 = makeSlash([0, 1, -1], [-1, 0, -1], [1, 0, -1], [0, -1, -1])
+const slash5 = makeSlash([1, 1, -1], [-1, 1, -1], [1, -1, -1], [-1, -1, -1])
+const slash6 = makeSlash([1, -1, -1], [1, 1, -1], [-1, -1, -1], [-1, 1, -1])
+const slash7 = makeSlash([1, 0, -1], [0, 1, -1], [0, -1, -1], [-1, 0, -1])
+const slash8 = makeSlash([0, -1, -1], [1, 0, -1], [-1, 0, -1], [0, 1, -1])
+
+preComputeBulletGroup(slash1)
+preComputeBulletGroup(slash2)
+preComputeBulletGroup(slash3)
+preComputeBulletGroup(slash4)
+preComputeBulletGroup(slash5)
+preComputeBulletGroup(slash6)
+preComputeBulletGroup(slash7)
+preComputeBulletGroup(slash8)
+
 
 export const useWrigglePhase1Normal = (active, transformNodeRef) => {
     const addBulletGroup = useAddBulletGroup();
     const { registerAnimation } = useContext(AnimationContext);
     const addEffect = useAddEffect()
-    const actionsTimings = useMemo(() => [1, 2, 3, 4, 10, 12,12.25, 12.5, 12.75, 13,13.25, 13.5, 13.75, 14, 16, 16.25, 16.5, 16.75, 17, 17.25, 17.5, 17.75], []);
+    const actionsTimings = useMemo(() => [1, 3, 4, 5, 6, 12, 14,12.25, 14.5, 14.75, 15,13.25, 15.5, 15.75, 16, 18, 18.25, 18.5, 18.75, 19, 19.25, 19.5, 19.75], []);
     const actions = useMemo(() =>
         [
+            () => {
+                addEffect(transformNodeRef.current, 'wriggleCharge')
+            },
             () => {
                 const id = addBulletGroup(
                     transformNodeRef.current,
@@ -47,7 +70,9 @@ export const useWrigglePhase1Normal = (active, transformNodeRef) => {
 
                 addBulletGroup(
                     transformNodeRef.current,
-                    burst1_replace1(id)
+                    bulletReplaceRotation(id, { rotation: Math.PI/2 }, {
+                        behaviour: 'linear'
+                    })
                 )
             },
             () => {
@@ -57,7 +82,9 @@ export const useWrigglePhase1Normal = (active, transformNodeRef) => {
                 )
                 addBulletGroup(
                     transformNodeRef.current,
-                    burst2_replace1(id)
+                    bulletReplaceRotation(id, { rotation: Math.PI/2 }, {
+                        behaviour: 'linear'
+                    })
                 )
             },
             () => {
@@ -68,7 +95,9 @@ export const useWrigglePhase1Normal = (active, transformNodeRef) => {
 
                 addBulletGroup(
                     transformNodeRef.current,
-                    burst1_replace1(id)
+                    bulletReplaceRotation(id, { rotation: Math.PI/2 }, {
+                        behaviour: 'linear'
+                    })
                 )
             },
             () => {
@@ -80,49 +109,49 @@ export const useWrigglePhase1Normal = (active, transformNodeRef) => {
             () => {
                 addBulletGroup(
                     transformNodeRef.current,
-                    makeSlash([-1, -1, -1], [1, -1, -1], [-1, 1, -1], [1, 1, -1])
+                    slash1
                 )
             },
             () => {
                 addBulletGroup(
                     transformNodeRef.current,
-                    makeSlash( [-1, 1, -1], [-1, -1, -1], [1, 1, -1], [1, -1, -1])
+                    slash2
                 )
             },
             () => {
                 addBulletGroup(
                     transformNodeRef.current,
-                    makeSlash([-1, 0, -1], [0, -1, -1], [0, 1, -1], [1, 0, -1])
+                    slash3
                 )
             },
             () => {
                 addBulletGroup(
                     transformNodeRef.current,
-                    makeSlash([0, 1, -1], [-1, 0, -1], [1, 0, -1], [0, -1, -1])
+                    slash4
                 )
             },
             () => {
                 addBulletGroup(
                     transformNodeRef.current,
-                    makeSlash([1, 1, -1], [-1, 1, -1], [1, -1, -1], [-1, -1, -1])
+                    slash5
                 )
             },
             () => {
                 addBulletGroup(
                     transformNodeRef.current,
-                    makeSlash( [1, -1, -1], [1, 1, -1], [-1, -1, -1], [-1, 1, -1])
+                    slash6
                 )
             },
             () => {
                 addBulletGroup(
                     transformNodeRef.current,
-                    makeSlash([1, 0, -1], [0, 1, -1], [0, -1, -1], [-1, 0, -1])
+                    slash7
                 )
             },
             () => {
                 addBulletGroup(
                     transformNodeRef.current,
-                    makeSlash([0, -1, -1], [1, 0, -1], [-1, 0, -1], [0, 1, -1])
+                    slash8
                 )
             },
             () => {

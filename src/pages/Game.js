@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import { Stage1 } from '../stages/Stage1';
-import { Engine, Scene } from 'react-babylonjs';
+import { Scene } from 'react-babylonjs';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ControlsContainer } from '../components/ControlsContainer';
@@ -13,6 +13,7 @@ import { PlayerMovement } from '../babylon-components/actors/player/PlayerMoveme
 import { PlayerCamera } from '../babylon-components/actors/player/PlayerCamera';
 import { FightRoot } from '../babylon-components/actors/FightRoot';
 import '../babylon-components/Shaders';
+import Engine from '../babylon-components/Engine';
 import { UI } from '../babylon-components/ui/UI';
 import { GlobalsContainer } from '../components/GlobalsContainer';
 

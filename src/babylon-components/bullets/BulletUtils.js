@@ -1,8 +1,10 @@
-import { Constants, RawTexture, Vector2, Vector3 } from '@babylonjs/core';
+import { Constants, Matrix, Quaternion, RawTexture, Vector2, Vector3 } from '@babylonjs/core';
 import nextPowerOfTwo from 'next-power-of-two';
 import { MAX_BULLETS_PER_GROUP } from '../../utils/Constants';
+import { sum } from '../../utils/Utils';
 import { glsl } from '../BabylonUtils';
 import { CustomCustomProceduralTexture } from '../CustomCustomProceduralTexture';
+import { allBullets } from '../gameLogic/StaticRefs';
 import { makeName } from '../hooks/useName';
 
 export const addReducerPixelShader = glsl`
@@ -25,6 +27,76 @@ export const addReducerPixelShader = glsl`
         gl_FragColor = outValue;
     }
 `;
+
+// export const bulletReplaceRotationPrecompute = (sourceInstruction, {rotation = Math.PI/2, velocityMultiplier = 1}, optionsToChange = {}) => {
+//     const newInstruction = {...allBullets[sourceId].instruciton}
+
+//     const velocities = allBullets[sourceId].velocities.map(velocity => {
+//         const rotationQuaternion = Quaternion.RotationYawPitchRoll(rotation, 0, 0)
+//         const rotationMatrix = new Matrix();
+//         rotationQuaternion.toRotationMatrix(rotationMatrix);
+//         return Vector3.TransformCoordinates(velocity, rotationMatrix).scale(velocityMultiplier);
+//     });
+//     const timings = sum(allBullets[sourceId].endTimings, allBullets[sourceId].timings);
+
+//     const outInstruction = Object.assign(newInstruction, {
+//         patternOptions: {
+//             pattern: 'explicit',
+//             velocities: velocities,
+//             timings: timings
+//         },
+//         soundOptions: {
+//             sound: 'enemyChangeBullet'
+//         },
+//         wait: 0,
+//     })
+//     delete outInstruction.endTimings;
+//     doubleAssign(outInstruction, optionsToChange)
+//     doubleAssign(outInstruction, { 
+//         behaviourOptions: {
+//             reliesOnParent: false,
+//             disableWarning: true
+//         },
+//     })
+
+//     return outInstruction
+// }
+
+export const bulletReplaceRotation = (sourceId, {rotation = Math.PI/2, velocityMultiplier = 1}, optionsToChange = {}) => {
+    const newInstruction = {...allBullets[sourceId].instruciton}
+
+    const positions = allBullets[sourceId].behaviour.diffSystem.positionTextures[0];
+    const velocities = allBullets[sourceId].velocities.map(velocity => {
+        const rotationQuaternion = Quaternion.RotationYawPitchRoll(rotation, 0, 0)
+        const rotationMatrix = new Matrix();
+        rotationQuaternion.toRotationMatrix(rotationMatrix);
+        return Vector3.TransformCoordinates(velocity, rotationMatrix).scale(velocityMultiplier);
+    });
+    const timings = sum(allBullets[sourceId].endTimings, allBullets[sourceId].timings);
+
+    const outInstruction = Object.assign(newInstruction, {
+        patternOptions: {
+            pattern: 'explicit',
+            positions: positions,
+            velocities: velocities,
+            timings: timings
+        },
+        soundOptions: {
+            sound: 'enemyChangeBullet'
+        },
+        wait: 0,
+    })
+    delete outInstruction.endTimings;
+    doubleAssign(outInstruction, optionsToChange)
+    doubleAssign(outInstruction, { 
+        behaviourOptions: {
+            reliesOnParent: false,
+            disableWarning: true
+        },
+    })
+
+    return outInstruction
+}
 
 export const parallelReducer = (source, sourceResolution, scene) => {
     const reducerName = makeName('reducer');
@@ -67,6 +139,20 @@ export const parallelReducer = (source, sourceResolution, scene) => {
     return [reducer, reducerLayers];
 };
 
+export const doubleAssign = (object1, object2) => {
+    for(let key in object2){
+        let mergeTarget = {}
+        if(key in object1){
+            mergeTarget = object1[key];
+        }
+        const newValue = object2[key] instanceof Object ? 
+            Object.assign(mergeTarget, object2[key]) : 
+            object2[key];
+        object1[key] = newValue;
+    }
+    return object1;
+}
+
 export const prepareBulletInstruction = (instruction) => {
     const defaultInstruction = {
         materialOptions: {
@@ -96,19 +182,11 @@ export const prepareBulletInstruction = (instruction) => {
         lifespan: 10,
     };
 
-    for(let key in instruction){
-        let mergeTarget = {}
-        if(key in defaultInstruction){
-            mergeTarget = defaultInstruction[key];
-        }
-        const newValue = instruction[key] instanceof Object ? 
-            Object.assign(mergeTarget, instruction[key]) : 
-            instruction[key];
-        defaultInstruction[key] = newValue;
-    }
-    
+    doubleAssign(defaultInstruction, instruction);
     return defaultInstruction;
 };
+
+
 
 export const makeTextureFromVectors = (vectors, scene, w = 1, fill = -510) => {
     const num = vectors.length;

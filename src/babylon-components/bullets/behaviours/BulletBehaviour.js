@@ -29,8 +29,9 @@ export class BulletBehaviour {
     init(bulletMaterial, initialPositions, initialVelocities, timings, endTimings, reliesOnParent, disableWarning, scene) {
         const num = timings.length;
         const startPositionsState = makeTextureFromBlank(timings.length, scene, 1., -510., -510.) //All positions are invalid until enter time
-        const startVelocitiesState = makeTextureFromVectors(initialVelocities, scene, 1, 0);
         const startCollisionsState = makeTextureFromBlank(timings.length, scene, 0, 0); //No collisions
+        const startVelocitiesState = makeTextureFromVectors(initialVelocities, scene, 1, 0);
+        
 
         const initialPositionsTexture = (initialPositions instanceof Texture) ? initialPositions : 
             makeTextureFromVectors(initialPositions, scene, 1, -510);

@@ -113,14 +113,14 @@ export const MarisaMagicCircle = ({isBombing, powerClass, side, isInvulnerable})
                 scaling={new Vector3(0.5, 0.5, 0.5)}
                 ref={planeRef}
             >
-                <standardMaterial useAlphaFromDiffuseTexture disableLighting={true} diffuseTexture={rune1} emissiveColor={new Color3(0, 1, 0)} name={name + 'planeMat'}/>
+                <standardMaterial alpha={0.5} useAlphaFromDiffuseTexture disableLighting={true} diffuseTexture={rune1} emissiveColor={new Color3(0, 1, 0)} name={name + 'planeMat'}/>
                 <plane
                     name={name + 'smallPlane'}
                     scaling={new Vector3(0.5, 0.5, 0.5)}
                     position={new Vector3(0, 0, 0.5)}
                     ref={smallPlaneRef}
                 >
-                    <standardMaterial useAlphaFromDiffuseTexture disableLighting={true} diffuseTexture={rune1} emissiveColor={new Color3(0, 1, 0)} name={name + 'planeMat'}/>
+                    <standardMaterial alpha={0.5} useAlphaFromDiffuseTexture disableLighting={true} diffuseTexture={rune1} emissiveColor={new Color3(0, 1, 0)} name={name + 'planeMat'}/>
                 </plane>
             </plane>
         </transformNode>

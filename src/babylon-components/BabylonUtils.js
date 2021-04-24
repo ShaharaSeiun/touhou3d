@@ -124,7 +124,7 @@ export const textOnCtx = (ctx, text, size, x, y, fill, stroke = 'black', strokeW
     ctx.font = `${size * ctx.canvas.height}px tuhu`;
     ctx.textAlign = centered ? 'center' : 'left';
 
-    const lines = getLines(ctx, text, (1 - x * 2) * ctx.canvas.width);
+    const lines = centered ? [text] : getLines(ctx, text, (1 - x * 2) * ctx.canvas.width);
 
     lines.forEach((line, i) => {
         ctx.strokeStyle = stroke;

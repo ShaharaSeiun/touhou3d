@@ -37,8 +37,9 @@ export const mainHeaderSnippet = glsl`
     vec3 startVelocity = velocity;
 `;
 
-export const postComputeSnippet = glsl`
-    velocity = mix(velocity, startVelocity, shouldPositionReset);
+export const postVelocityComputeSnippet = glsl`
+    float isBefore = max(shouldPositionReset, float(dTiming < 0.)); 
+    velocity = mix(velocity, startVelocity, isBefore);
 `;
 
 export const collisionSnippet = glsl`

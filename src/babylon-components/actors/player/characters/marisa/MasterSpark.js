@@ -212,7 +212,7 @@ export const MasterSpark = (props) => {
     })
 
     return (
-        <transformNode ref={transformNodeRef} {...props}>
+        <transformNode name="masterSparkTransformNode" ref={transformNodeRef} {...props}>
             <plane
                 name={name + 'plane'}
                 scaling={new Vector3(50, 50, 50)}
@@ -241,7 +241,7 @@ export const MasterSpark = (props) => {
             >
                 <standardMaterial useAlphaFromDiffuseTexture disableLighting={true} diffuseTexture={runeEmpty} emissiveColor={new Color3(0, 1, 0)} name={name + 'circle4Mat'} />
             </plane>
-            <transformNode ref={masterSparkTransformNode}>
+            <transformNode name="masterSparkBeamTransformNode" ref={masterSparkTransformNode}>
                 <MasterSparkBeam ref={masterSparkRef} scaling={initialBeamScaling} />
             </transformNode>
         </transformNode>

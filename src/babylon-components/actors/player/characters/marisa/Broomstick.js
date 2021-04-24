@@ -15,6 +15,6 @@ export const Broomstick = (props) => {
     }, [broomstick])
 
     return (
-        <transformNode ref={transformNodeRef} {...props}/>
+        <transformNode name="broomstick" ref={transformNodeRef} {...props}/>
     )
 }
