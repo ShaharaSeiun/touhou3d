@@ -3,8 +3,17 @@ import { RandVector3 } from '../../BabylonUtils';
 
 export const makeArcPattern = (patternOptions, parent) => {
 
-    const from = new RandVector3(...patternOptions.from);
-    const to = new RandVector3(...patternOptions.to);
+    let from, to;
+
+    if(patternOptions.from instanceof Vector3){
+        from = patternOptions.from;
+        to = patternOptions.to;
+    }
+    else{
+        from = new RandVector3(...patternOptions.from);
+        to = new RandVector3(...patternOptions.to);
+    }
+    
     const positions = [];
     const velocities = [];
 

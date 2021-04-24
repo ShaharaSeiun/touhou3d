@@ -1,4 +1,4 @@
-import { Animation, Color3, EasingFunction, SineEase, Space, StandardMaterial, Vector3 } from '@babylonjs/core';
+import { Animation, Color3, EasingFunction, SineEase, Space, Vector3 } from '@babylonjs/core';
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { useName } from '../../../../hooks/useName';
@@ -9,8 +9,7 @@ import { PlayerUILeft } from '../PlayerUILeft';
 import { PlayerUIRight } from '../PlayerUIRight';
 import { ReimuLinearBulletEmitter } from './ReimuLinearBulletEmitter';
 import { ReimuTrackingBulletEmitter } from './ReimuTrackingBulletEmitter';
-import { TrailMesh } from '../../../../TrailMesh';
-import { PLAYER_BOMB_DURATION, PLAYER_INVULNERABLE_COOLDOWN } from '../../../../../utils/Constants';
+import { PLAYER_INVULNERABLE_COOLDOWN } from '../../../../../utils/Constants';
 import { times } from 'lodash';
 import { useTexture } from '../../../../hooks/useTexture';
 import { useTarget } from '../../../../hooks/useTarget';

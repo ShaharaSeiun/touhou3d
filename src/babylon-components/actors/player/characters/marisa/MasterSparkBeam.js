@@ -1,5 +1,5 @@
 import { Effect, ShaderMaterial, Vector3 } from '@babylonjs/core';
-import React, { useContext, useEffect, useMemo, useRef } from 'react'
+import React, { useContext, useEffect, useMemo } from 'react'
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { glsl } from '../../../../BabylonUtils';
 import { GlowContext } from '../../../../gameLogic/GeneralContainer';

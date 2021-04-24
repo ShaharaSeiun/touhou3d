@@ -34,7 +34,7 @@ export const RotateMovement = ({children, spawn, targetDist, reverse, armTime}) 
             new Vector3(0, 0, reverse ? Math.PI * 2 : -Math.PI * 2),
             Animation.ANIMATIONLOOPMODE_CYCLE,
         )
-    }, [name, targetDist, armStartPosition, reverse])
+    }, [name, targetDist, armStartPosition, reverse, armTime])
 
     return (
         <transformNode name={name + "rotateAround"} position={startPosition} ref={rotateAroundRef}>

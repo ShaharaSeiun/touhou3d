@@ -1,4 +1,4 @@
-import { Animation, BezierCurveEase, Vector3 } from '@babylonjs/core';
+import { Animation } from '@babylonjs/core';
 import React, { useContext, useMemo, useRef } from 'react';
 import { randVectorToPosition } from '../../BabylonUtils';
 import { AnimationContext } from '../../gameLogic/GeneralContainer';

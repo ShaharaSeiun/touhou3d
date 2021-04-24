@@ -1,17 +1,20 @@
-import { DynamicTexture, Vector3 } from '@babylonjs/core';
+import { Animation, DynamicTexture, Vector3 } from '@babylonjs/core';
 import { clamp } from 'lodash';
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
 import { CHARACTER_CONSTS } from '../../utils/Constants';
 import { capFirst, rerange } from '../../utils/Utils';
 import { arcOnCtx, textOnCtx } from '../BabylonUtils';
 import { globalActorRefs } from '../gameLogic/StaticRefs';
+import { useTexture } from '../hooks/useTexture';
 
-export const BossUI = ({ bossUIProps }) => {
+export const BossUI = ({ bossUIProps, spellCardUIProps }) => {
     const {bossName} = bossUIProps;
     const bossUIRef = useRef()
+    const characterPortraitRef = useRef()
     const textTexture = useMemo(() => new DynamicTexture('bossUITexture', { width: 512, height: 512 }), []);
-
+    const characterTexture = useTexture(spellCardUIProps ? spellCardUIProps.character + 'CharacterNeutral' : 'wriggleCharacterNeutral');
+    const characterPortraitPosition = useMemo(() => new Vector3(0, 0, 0), []);
 
     useBeforeRender(() => {
         textTexture.hasAlpha = true;
@@ -52,15 +55,53 @@ export const BossUI = ({ bossUIProps }) => {
         bossUIRef.current.position.copyFrom(globalActorRefs.enemies[0].position)
     })
 
+    useEffect(() => {
+        if(!spellCardUIProps?.character) return;
+
+        Animation.CreateAndStartAnimation(
+            'spellCardPortraitAlphaAnim',
+            characterPortraitRef.current.material,
+            'alpha',
+            1,
+            2,
+            0.5,
+            0.0,
+            Animation.ANIMATIONLOOPMODE_CONSTANT
+        );
+        Animation.CreateAndStartAnimation(
+            'spellCardPortraitPositionAnim',
+            characterPortraitRef.current,
+            'position',
+            1,
+            2,
+            new Vector3(0, 12, 0),
+            new Vector3(0, 4, 0),
+            Animation.ANIMATIONLOOPMODE_CONSTANT
+        );
+    }, [spellCardUIProps])
+
     return (
-        <plane ref={bossUIRef} name="bossUIPlane" width={5} height={5} position={new Vector3(-510, -510, -510)}>
+        <>
+        <plane ref={bossUIRef} name="bossUIPlane" width={5} height={5} position={new Vector3(-510, -510, -510)} renderingGroupId={1}>
             <standardMaterial
                 disableLighting={true}
+                
                 useAlphaFromDiffuseTexture
                 name="bossUIMaterial"
                 diffuseTexture={textTexture}
                 emissiveTexture={textTexture}
             />
         </plane>
+        <plane isVisible={false} ref={characterPortraitRef} name={'spellCardCharacterPortrait'} position={characterPortraitPosition} width={4} height={6}>
+            <standardMaterial
+                alpha={0}
+                disableLighting={true}
+                useAlphaFromDiffuseTexture
+                name={'spellCardCharacterPortraitMat'}
+                diffuseTexture={characterTexture}
+                emissiveTexture={characterTexture}
+            />
+        </plane>
+        </>
     );
 };

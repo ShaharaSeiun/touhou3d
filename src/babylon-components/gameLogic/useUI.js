@@ -8,6 +8,7 @@ export const useUI = () => {
     const [activeCharacterText, setActiveCharacterText] = useState();
     const [stageStartQuote, setStageStartQuote] = useState();
     const [bossUI, _setBossUI] = useState();
+    const [spellCardUI, setSpellCardUI] = useState();
 
     const setBossUI = useCallback((bossUIProps) => {
         bossUIProps.lives.forEach(life => {
@@ -30,6 +31,8 @@ export const useUI = () => {
         stageStartQuote,
         setStageStartQuote,
         bossUI, 
-        setBossUI
+        setBossUI,
+        spellCardUI, 
+        setSpellCardUI
     };
 };

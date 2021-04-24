@@ -37,7 +37,7 @@ const small = (color) =>  ({
 export const Stage1MinionBehaviour = ({ children, leaveScene, spawn, color}) => {
     const transformNodeRef = useRef();
     const startPosition = useMemo(() => spawn ? randVectorToPosition(spawn) : new Vector3(0, 0, 0), [spawn]);
-    const actionsTimings = useMemo(() => [2], []);
+    const actionsTimings = useMemo(() => [2, 15], []);
     const addBulletGroup = useAddBulletGroup();
 
     const actions = useMemo(
@@ -47,7 +47,8 @@ export const Stage1MinionBehaviour = ({ children, leaveScene, spawn, color}) => 
                     transformNodeRef.current,
                     small(color)
                 )
-            }
+            },
+            leaveScene
         ],
         // eslint-disable-next-line react-hooks/exhaustive-deps
         []

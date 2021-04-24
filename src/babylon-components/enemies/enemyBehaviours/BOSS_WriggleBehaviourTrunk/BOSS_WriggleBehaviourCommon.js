@@ -1,5 +1,5 @@
 import { Matrix, Quaternion, Vector3 } from '@babylonjs/core';
-import { allBullets } from '../../gameLogic/StaticRefs';
+import { allBullets } from '../../../gameLogic/StaticRefs';
 
 export const burst1 = {
     type: 'shoot',

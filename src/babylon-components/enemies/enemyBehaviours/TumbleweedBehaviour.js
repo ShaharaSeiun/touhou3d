@@ -1,10 +1,7 @@
-import { Animation, Vector3 } from '@babylonjs/core';
-import React, { useContext, useMemo, useRef } from 'react';
-import { randVectorToPosition } from '../../BabylonUtils';
-import { AnimationContext } from '../../gameLogic/GeneralContainer';
+import { Vector3 } from '@babylonjs/core';
+import React, { useMemo, useRef } from 'react';
 import { useDoSequence } from '../../hooks/useDoSequence';
 import { useAddBulletGroup } from '../../hooks/useAddBulletGroup';
-import { useName } from '../../hooks/useName';
 
 const mediumRandomPlayer = {
     type: 'shoot',

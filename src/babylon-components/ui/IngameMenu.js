@@ -67,7 +67,7 @@ export const IngameMenu = () => {
     }, [selectedOption, textTexture]);
 
     return (
-        <plane name="IngameMenuPlane" position={new Vector3(0, 4, -1.0)} width={8} height={8}>
+        <plane name="IngameMenuPlane" position={new Vector3(0, 4, -1.0)} width={8} height={8} renderingGroupId={1}>
             <standardMaterial
                 disableLighting={true}
                 useAlphaFromDiffuseTexture

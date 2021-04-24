@@ -14,7 +14,6 @@ export const Wriggle = React.forwardRef(({ assetName, radius, ...props }, ref) =
         if (!mesh) return;
         mesh.parent = meshRootRef.current;
         mesh.animationGroups.forEach((animationGroup) => {
-            console.log(animationGroup.name)
             animationGroup.animatables.forEach(animatable => animatable.enableBlending(0.02))
             switch (animationGroup.name) {
                 case 'Idle':

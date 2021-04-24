@@ -171,8 +171,6 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
             globalActorRefs.bombPositionBuffer[offset + 2] = bomb.position.z;
             globalActorRefs.bombRadiiBuffer[i] = bomb.radius;
         });
-
-        console.log(globalActorRefs.bombPositionBuffer, globalActorRefs.bombRadiiBuffer)
     });
 
     return { disposeSingle, dispose, addBulletGroup, isDead };

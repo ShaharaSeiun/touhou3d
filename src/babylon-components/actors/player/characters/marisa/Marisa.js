@@ -1,4 +1,4 @@
-import { Animation, BezierCurveEase, Color3, Vector3 } from '@babylonjs/core';
+import { Animation, BezierCurveEase, Vector3 } from '@babylonjs/core';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
 import { useName } from '../../../../hooks/useName';
