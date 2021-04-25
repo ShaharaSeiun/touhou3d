@@ -1,4 +1,5 @@
 import { useContext, useEffect, useMemo } from "react";
+import { v4 } from "uuid";
 import { bossDeathQuiet } from "../../../../sounds/SFX";
 import { bulletReplaceRotation } from "../../../bullets/BulletUtils";
 import { AnimationContext, UIContext } from "../../../gameLogic/GeneralContainer";
@@ -6,6 +7,7 @@ import { useAddBulletGroup } from "../../../hooks/useAddBulletGroup";
 import { useAddEffect } from "../../../hooks/useAddEffect";
 import { useDoSequence } from "../../../hooks/useDoSequence";
 import { moveTo } from "../BehaviourCommon";
+import { preComputeBulletGroup, bulletReplaceRotationPrecompute } from "../../../gameLogic/useBullets";
 
 const spray = {
     type: 'shoot',
@@ -35,6 +37,9 @@ const spray = {
     lifespan: 20,
     wait: 0,
 }
+
+preComputeBulletGroup(spray);
+bulletReplaceRotationPrecompute(spray, { rotation: Math.PI/2 })
 
 export const useWrigglePhase2SpellCard = (active, transformNodeRef) => {
     const { setSpellCardUI } = useContext(UIContext)

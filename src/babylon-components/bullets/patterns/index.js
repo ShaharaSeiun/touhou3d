@@ -18,6 +18,10 @@ import { preComputedBulletPatterns } from '../../gameLogic/StaticRefs';
 export const makeBulletPattern = (patternOptions, parent) => {
     let _pattern;
 
+    if(patternOptions.pattern === 'explicit'){
+        return patternOptions;
+    }
+
     const precomputedBulletPattern = preComputedBulletPatterns[JSON.stringify(patternOptions)];
     if(precomputedBulletPattern){
         return precomputedBulletPattern;
@@ -62,9 +66,6 @@ export const makeBulletPattern = (patternOptions, parent) => {
                 break;
             case 'spray':
                 _pattern = makeSprayPattern(patternOptions, parent);
-                break;
-            case 'explicit':
-                _pattern = patternOptions;
                 break;
             default:
                 throw new Error('Pattern type not supported: ' + patternOptions.pattern);

@@ -1,11 +1,13 @@
 import { Constants, Matrix, Quaternion, RawTexture, Vector2, Vector3 } from '@babylonjs/core';
 import nextPowerOfTwo from 'next-power-of-two';
+import { v4 } from 'uuid';
 import { MAX_BULLETS_PER_GROUP } from '../../utils/Constants';
 import { sum } from '../../utils/Utils';
 import { glsl } from '../BabylonUtils';
 import { CustomCustomProceduralTexture } from '../CustomCustomProceduralTexture';
-import { allBullets } from '../gameLogic/StaticRefs';
+import { allBullets, preComputedBulletPatterns, preComputedEndTimings } from '../gameLogic/StaticRefs';
 import { makeName } from '../hooks/useName';
+import { makeBulletPattern } from './patterns';
 
 export const addReducerPixelShader = glsl`
     uniform sampler2D source;
@@ -27,40 +29,6 @@ export const addReducerPixelShader = glsl`
         gl_FragColor = outValue;
     }
 `;
-
-// export const bulletReplaceRotationPrecompute = (sourceInstruction, {rotation = Math.PI/2, velocityMultiplier = 1}, optionsToChange = {}) => {
-//     const newInstruction = {...allBullets[sourceId].instruciton}
-
-//     const velocities = allBullets[sourceId].velocities.map(velocity => {
-//         const rotationQuaternion = Quaternion.RotationYawPitchRoll(rotation, 0, 0)
-//         const rotationMatrix = new Matrix();
-//         rotationQuaternion.toRotationMatrix(rotationMatrix);
-//         return Vector3.TransformCoordinates(velocity, rotationMatrix).scale(velocityMultiplier);
-//     });
-//     const timings = sum(allBullets[sourceId].endTimings, allBullets[sourceId].timings);
-
-//     const outInstruction = Object.assign(newInstruction, {
-//         patternOptions: {
-//             pattern: 'explicit',
-//             velocities: velocities,
-//             timings: timings
-//         },
-//         soundOptions: {
-//             sound: 'enemyChangeBullet'
-//         },
-//         wait: 0,
-//     })
-//     delete outInstruction.endTimings;
-//     doubleAssign(outInstruction, optionsToChange)
-//     doubleAssign(outInstruction, { 
-//         behaviourOptions: {
-//             reliesOnParent: false,
-//             disableWarning: true
-//         },
-//     })
-
-//     return outInstruction
-// }
 
 export const bulletReplaceRotation = (sourceId, {rotation = Math.PI/2, velocityMultiplier = 1}, optionsToChange = {}) => {
     const newInstruction = {...allBullets[sourceId].instruciton}

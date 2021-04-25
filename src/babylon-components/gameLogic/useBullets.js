@@ -1,8 +1,10 @@
+import { Matrix, Quaternion, Vector3 } from '@babylonjs/core';
 import { useCallback, useContext, useState } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { globals, GlobalsContext } from '../../components/GlobalsContainer';
 import { enemyDamage, itemGet, playerGraze, playerDeath } from '../../sounds/SFX';
 import { MAX_ENEMIES, PLAYER_INVULNERABLE_COOLDOWN } from '../../utils/Constants';
+import { sum } from '../../utils/Utils';
 import { makeBulletBehaviour } from '../bullets/behaviours';
 import { BulletGroup } from '../bullets/BulletGroup';
 import { convertPlayerBulletCollisions, convertEnemyBulletCollisions, prepareBulletInstruction } from '../bullets/BulletUtils';
@@ -12,7 +14,7 @@ import { makeBulletMesh } from '../bullets/meshes';
 import { makeBulletPattern } from '../bullets/patterns';
 import { makeBulletSound } from '../bullets/sounds';
 import { makeName } from '../hooks/useName';
-import { globalActorRefs, allBullets, killEnemy } from './StaticRefs';
+import { globalActorRefs, allBullets, killEnemy, preComputedBulletPatterns, preComputedEndTimings } from './StaticRefs';
 
 let playHitSound = false;
 let framesSincePlayHit = 0;
@@ -21,7 +23,31 @@ let playerInvulnerable = false
 export const preComputeBulletGroup = (instruction) => {
     const preparedInstruction = prepareBulletInstruction(instruction);
     const { positions, velocities, timings } = makeBulletPattern(preparedInstruction.patternOptions);
-    return { positions, velocities, timings, instruciton: preparedInstruction}
+    const endTimings = makeEndTimings(preparedInstruction.endTimings, preparedInstruction.lifespan, timings.length);
+    return { positions, velocities, timings, endTimings, instruciton: preparedInstruction}
+}
+
+export const bulletReplaceRotationPrecompute = (sourceInstruction, {rotation = Math.PI/2, velocityMultiplier = 1}) => {
+    const preparedInstruction = prepareBulletInstruction(sourceInstruction);
+    const sourcePattern = preComputedBulletPatterns[preparedInstruction.uid || JSON.stringify(preparedInstruction.patternOptions)];
+    const sourceEndTimings = preComputedEndTimings[preparedInstruction.uid || JSON.stringify(preparedInstruction.endTimings)];
+
+    const velocities = sourcePattern.velocities.map(velocity => {
+        const rotationQuaternion = Quaternion.RotationYawPitchRoll(rotation, 0, 0)
+        const rotationMatrix = new Matrix();
+        rotationQuaternion.toRotationMatrix(rotationMatrix);
+        return Vector3.TransformCoordinates(velocity, rotationMatrix).scale(velocityMultiplier);
+    });
+    const timings = sum(sourceEndTimings, sourcePattern.timings);
+
+    const endTimings = makeEndTimings(preparedInstruction.endTimings, preparedInstruction.lifespan, timings.length);
+
+    preComputedBulletPatterns[preparedInstruction.uid || JSON.stringify(preparedInstruction)] = {
+        pattern: 'explicit',
+        velocities: velocities,
+        timings: timings
+    };
+    return { velocities, timings, endTimings, instruciton: preparedInstruction}
 }
 
 export const useBullets = (assets, environmentCollision, addEffect) => {

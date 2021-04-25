@@ -84,3 +84,4 @@ for (let i = 0; i < MAX_BULLETS_PER_GROUP; i++) {
 }
 
 export const preComputedBulletPatterns = {};
+export const preComputedEndTimings = {};
