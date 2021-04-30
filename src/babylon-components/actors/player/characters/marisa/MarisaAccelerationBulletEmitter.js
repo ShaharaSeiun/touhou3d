@@ -18,7 +18,7 @@ const makeShotInstruction = (powerClass, initialVelocity) => {
 
     switch (powerClass) {
         case 0:
-            throw new Error('Tracking bullets should not be enabled for a power class of 0');
+            throw new Error('Acceleration bullets should not be enabled for a power class of 0');
         case 1:
             shotSources = [new Vector3(0, 0, 0.15)];
             break;
@@ -48,7 +48,7 @@ const makeShotInstruction = (powerClass, initialVelocity) => {
             mesh: 'card',
         },
         behaviourOptions: {
-            behaviour: 'playerShotTracking',
+            behaviour: 'playerShotAcceleration',
             initialShotVector: initialVelocity,
             shotSources: shotSources,
             shotSpeed: 20,
@@ -61,7 +61,7 @@ const makeShotInstruction = (powerClass, initialVelocity) => {
     return instruction;
 };
 
-export const ReimuTrackingBulletEmitter = ({ powerClass, initialVelocity, ...props }) => {
+export const MarisaAccelerationBulletEmitter = ({ powerClass, initialVelocity, ...props }) => {
     const transformNodeRef = useRef();
     const { addBulletGroup, disposeSingle } = useContext(BulletsContext);
     const shotFrame = useRef(0);
@@ -69,7 +69,7 @@ export const ReimuTrackingBulletEmitter = ({ powerClass, initialVelocity, ...pro
     const SHOOT = useControl('SHOOT');
     const target = useTarget();
     const frameSkip = useNormalizedFrameSkip(bulletFrameSkip);
-    const name = useName('TrackingBulletEmitter');
+    const name = useName('AccelerationBulletEmitter');
 
     useEffect(() => {
         if (!transformNodeRef.current) return;

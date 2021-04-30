@@ -7,8 +7,8 @@ import { useDoSequence } from '../../../../hooks/useDoSequence';
 import { GlowContext } from '../../../../gameLogic/GeneralContainer';
 import { PlayerUILeft } from '../PlayerUILeft';
 import { PlayerUIRight } from '../PlayerUIRight';
-import { ReimuLinearBulletEmitter } from './ReimuLinearBulletEmitter';
-import { ReimuTrackingBulletEmitter } from './ReimuTrackingBulletEmitter';
+import { MarisaLinearBulletEmitter } from './MarisaLinearBulletEmitter';
+import { MarisaAccelerationBulletEmitter } from './MarisaAccelerationBulletEmitter';
 import { PLAYER_INVULNERABLE_COOLDOWN } from '../../../../../utils/Constants';
 import { times } from 'lodash';
 import { useTexture } from '../../../../hooks/useTexture';
@@ -27,7 +27,7 @@ export const MarisaMagicCircle = ({isBombing, powerClass, side, isInvulnerable})
     const spherePosition = useMemo(() => new Vector3(sideCoefficient, 0, 0), [sideCoefficient])
     const focusPosition = useMemo(() => new Vector3(sideCoefficient * 0.5, 0, 0), [sideCoefficient])
     const unfocusPosition = useMemo(() => new Vector3(sideCoefficient, 0, 0), [sideCoefficient])
-    const trackingInitialVelocity = useMemo(() => [sideCoefficient * 6, 0, 4], [sideCoefficient]);
+    const accelerationInitialVelocity = useMemo(() => [sideCoefficient * 6, 0, 4], [sideCoefficient]);
     const glowLayer = useContext(GlowContext);
     const scene = useScene();
     const rune1 = useTexture("rune1");
@@ -104,9 +104,9 @@ export const MarisaMagicCircle = ({isBombing, powerClass, side, isInvulnerable})
     return (
         <transformNode name={name + 'sphereTransform'} ref={sphereTransformRef} position={spherePosition}>
             {!isBombing && <UIClass position={UIPosition} />}
-            <ReimuLinearBulletEmitter position={linearBulletEmitterPosition} powerClass={powerClass} />
+            <MarisaLinearBulletEmitter position={linearBulletEmitterPosition} powerClass={powerClass} />
             {powerClass > 0 && (
-                <ReimuTrackingBulletEmitter initialVelocity={trackingInitialVelocity} powerClass={powerClass} />
+                <MarisaAccelerationBulletEmitter initialVelocity={accelerationInitialVelocity} powerClass={powerClass} />
             )}
             <plane
                 name={name + 'plane'}

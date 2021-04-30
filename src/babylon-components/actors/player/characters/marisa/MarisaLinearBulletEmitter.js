@@ -87,7 +87,7 @@ const shotInstruction = (power) => {
     }
 }
 
-export const ReimuLinearBulletEmitter = ({ powerClass, ...props }) => {
+export const MarisaLinearBulletEmitter = ({ powerClass, ...props }) => {
     const transformNodeRef = useRef();
     const { addBulletGroup, disposeSingle } = useContext(BulletsContext);
     const shotFrame = useRef(0);
