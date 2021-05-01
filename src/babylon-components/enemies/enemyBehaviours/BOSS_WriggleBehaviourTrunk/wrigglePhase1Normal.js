@@ -33,23 +33,14 @@ const makeSlash = (from1, from2, to1, to2) => ({
     wait: 0,
 })
 
-const slash1 = makeSlash([-1, -1, -1], [1, -1, -1], [-1, 1, -1], [1, 1, -1])
-const slash2 = makeSlash([-1, 1, -1], [-1, -1, -1], [1, 1, -1], [1, -1, -1])
-const slash3 = makeSlash([-1, 0, -1], [0, -1, -1], [0, 1, -1], [1, 0, -1])
-const slash4 = makeSlash([0, 1, -1], [-1, 0, -1], [1, 0, -1], [0, -1, -1])
-const slash5 = makeSlash([1, 1, -1], [-1, 1, -1], [1, -1, -1], [-1, -1, -1])
-const slash6 = makeSlash([1, -1, -1], [1, 1, -1], [-1, -1, -1], [-1, 1, -1])
-const slash7 = makeSlash([1, 0, -1], [0, 1, -1], [0, -1, -1], [-1, 0, -1])
-const slash8 = makeSlash([0, -1, -1], [1, 0, -1], [-1, 0, -1], [0, 1, -1])
-
-preComputeBulletGroup(slash1)
-preComputeBulletGroup(slash2)
-preComputeBulletGroup(slash3)
-preComputeBulletGroup(slash4)
-preComputeBulletGroup(slash5)
-preComputeBulletGroup(slash6)
-preComputeBulletGroup(slash7)
-preComputeBulletGroup(slash8)
+export const slash1 = makeSlash([-1, -1, -1], [1, -1, -1], [-1, 1, -1], [1, 1, -1])
+export const slash2 = makeSlash([-1, 1, -1], [-1, -1, -1], [1, 1, -1], [1, -1, -1])
+export const slash3 = makeSlash([-1, 0, -1], [0, -1, -1], [0, 1, -1], [1, 0, -1])
+export const slash4 = makeSlash([0, 1, -1], [-1, 0, -1], [1, 0, -1], [0, -1, -1])
+export const slash5 = makeSlash([1, 1, -1], [-1, 1, -1], [1, -1, -1], [-1, -1, -1])
+export const slash6 = makeSlash([1, -1, -1], [1, 1, -1], [-1, -1, -1], [-1, 1, -1])
+export const slash7 = makeSlash([1, 0, -1], [0, 1, -1], [0, -1, -1], [-1, 0, -1])
+export const slash8 = makeSlash([0, -1, -1], [1, 0, -1], [-1, 0, -1], [0, 1, -1])
 
 
 export const useWrigglePhase1Normal = (active, transformNodeRef) => {

@@ -66,6 +66,36 @@ export const bulletReplaceRotation = (sourceId, {rotation = Math.PI/2, velocityM
     return outInstruction
 }
 
+export const bulletReplaceRotationFromPrecompute = (precomputeId, sourceId, optionsToChange = {}) => {
+    const newInstruction = {...allBullets[sourceId].instruciton}
+
+    const {velocities, timings} = preComputedBulletPatterns[precomputeId]
+    const positions = allBullets[sourceId].behaviour.diffSystem.positionTextures[0];
+
+    const outInstruction = Object.assign(newInstruction, {
+        patternOptions: {
+            pattern: 'explicit',
+            positions: positions,
+            velocities: velocities,
+            timings: timings
+        },
+        soundOptions: {
+            sound: 'enemyChangeBullet'
+        },
+        wait: 0,
+    })
+    delete outInstruction.endTimings;
+    doubleAssign(outInstruction, optionsToChange)
+    doubleAssign(outInstruction, { 
+        behaviourOptions: {
+            reliesOnParent: false,
+            disableWarning: true
+        },
+    })
+
+    return outInstruction
+}
+
 export const parallelReducer = (source, sourceResolution, scene) => {
     const reducerName = makeName('reducer');
     let reducer = new CustomCustomProceduralTexture(
@@ -119,6 +149,19 @@ export const doubleAssign = (object1, object2) => {
         object1[key] = newValue;
     }
     return object1;
+}
+
+export const doubleClone = (object) => {
+    const newObject = {};
+
+    for(let key in object){
+        const newValue = object[key] instanceof Object ? 
+            {...object[key]} : 
+            object[key];
+        newObject[key] = newValue;
+    }
+
+    return newObject;
 }
 
 export const prepareBulletInstruction = (instruction) => {
@@ -300,3 +343,47 @@ export const convertEnemyBulletCollisions = (buffer) => {
 
     return collisions;
 };
+
+export const computeSourceTextures = (pattern, scene) => {
+    const outTextures = {};
+    if(pattern.positions){
+        outTextures.initialPositions = makeTextureFromVectors(pattern.positions, scene, 1, -510);
+    }
+    if(pattern.velocities){
+        outTextures.velocities = makeTextureFromVectors(pattern.velocities, scene, 1, 0);
+    }
+    if(pattern.timings){
+        outTextures.timings = makeTextureFromArray(pattern.timings, scene);
+        outTextures.positions = makeTextureFromBlank(pattern.timings.length, scene, 1., -510., -510.)
+        outTextures.collisions = makeTextureFromBlank(pattern.timings.length, scene, 0, 0); //No collisions
+    }
+    
+    return outTextures;
+}
+
+export const makeReplaceInstruction = (oldInstruction, overrides) => {
+
+    const sourceUid = oldInstruction.patternOptions.uid;
+    const destUid = v4();
+
+    const newInstruction = doubleClone(oldInstruction);
+    doubleAssign(newInstruction, { 
+        patternOptions: {
+            pattern: 'replace',
+            sourceUid,
+            uid: destUid,
+        },
+        behaviourOptions: {
+            reliesOnParent: false,
+            disableWarning: true
+        },
+        endTimings: {
+            uid: destUid,
+        },
+        soundOptions: {
+            sound: 'enemyChangeBullet'
+        },
+    })
+    doubleAssign(newInstruction, overrides);
+    return newInstruction;
+}

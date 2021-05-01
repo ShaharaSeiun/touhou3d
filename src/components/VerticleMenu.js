@@ -1,7 +1,7 @@
 import { Box, List, ListItem } from '@material-ui/core';
 import { isFunction } from 'lodash';
 import React, { useEffect, useState } from 'react';
-import { useKeydown } from '../hooks/useKeydown';
+import { useKeydownMenu } from '../hooks/useKeydown';
 import { choiceSound, selectSound } from '../sounds/SFX';
 import { SETTINGS, SET_SETTINGS } from '../utils/Settings';
 
@@ -50,14 +50,14 @@ export const VerticleMenuArray = ({ selected, menuKey, menuValue, slanted, index
 
     const arrayIndex = menuValue.indexOf(choice);
 
-    useKeydown('LEFT', () => {
+    useKeydownMenu('LEFT', () => {
         if (!selected) return;
         choiceSound.play();
         const newArrayIndex = mod(arrayIndex - 1, menuValue.length);
         setChoice(menuValue[newArrayIndex]);
     });
 
-    useKeydown('RIGHT', () => {
+    useKeydownMenu('RIGHT', () => {
         if (!selected) return;
         choiceSound.play();
         const newArrayIndex = mod(arrayIndex + 1, menuValue.length);
@@ -104,17 +104,17 @@ export const VerticleMenu = ({ menuMap, active = true, slanted = false }) => {
     const numChildren = menuKeys.length;
     const [selectedItem, setSelectedItem] = useState(0);
 
-    useKeydown('UP', () => {
+    useKeydownMenu('UP', () => {
         if (!active) return;
         setSelectedItem(mod(selectedItem - 1, numChildren));
         choiceSound.play();
     });
-    useKeydown('DOWN', () => {
+    useKeydownMenu('DOWN', () => {
         if (!active) return;
         setSelectedItem(mod(selectedItem + 1, numChildren));
         choiceSound.play();
     });
-    useKeydown('ENTER', () => {
+    useKeydownMenu('ENTER', () => {
         if (!active) return;
 
         const menuValue = menuMap[menuKeys[selectedItem]];

@@ -1,15 +1,13 @@
 import { useContext, useEffect, useMemo } from "react";
-import { v4 } from "uuid";
 import { bossDeathQuiet } from "../../../../sounds/SFX";
-import { bulletReplaceRotation } from "../../../bullets/BulletUtils";
+import { makeReplaceInstruction } from "../../../bullets/BulletUtils";
 import { AnimationContext, UIContext } from "../../../gameLogic/GeneralContainer";
 import { useAddBulletGroup } from "../../../hooks/useAddBulletGroup";
 import { useAddEffect } from "../../../hooks/useAddEffect";
 import { useDoSequence } from "../../../hooks/useDoSequence";
 import { moveTo } from "../BehaviourCommon";
-import { preComputeBulletGroup, bulletReplaceRotationPrecompute } from "../../../gameLogic/useBullets";
 
-const spray = {
+export const spray = {
     type: 'shoot',
     materialOptions: {
         material: 'fresnel',
@@ -21,7 +19,13 @@ const spray = {
         timeLength: 7,
         speed: 8,
         thetaSpeed: 0.3,
-        burstPerSecond: 24
+        burstPerSecond: 24,
+        uid: 'wriggleSprayInit',
+    },
+    endTimings: {
+        timing: 'uniform',
+        time: 2,
+        uid: 'wriggleSprayInit',
     },
     meshOptions: {
         mesh: 'sphere',
@@ -30,27 +34,116 @@ const spray = {
     behaviourOptions: {
         behaviour: 'slowToStop',
     },
-    endTimings: {
-        timing: 'uniform',
-        time: 2
-    },
-    lifespan: 20,
+    lifespan: 15,
     wait: 0,
 }
 
-preComputeBulletGroup(spray);
-bulletReplaceRotationPrecompute(spray, { rotation: Math.PI/2 })
+export const sprayBigSphere = makeReplaceInstruction(spray, {
+    patternOptions: {
+        type: 'rotateVelocity',
+        rotation: Math.PI / 2,
+    },
+    meshOptions: {
+        radius: 0.2
+    },
+    behaviourOptions: {
+        behaviour: 'linear',
+    },
+    endTimings: {
+        time: 1,
+    },
+})
+
+export const sprayFreezeAndTurnYellow = makeReplaceInstruction(sprayBigSphere, {
+    materialOptions: {
+        color: [1, 1, 0]
+    },
+    patternOptions: {
+        type: 'rotateVelocity',
+        rotation: 0,
+        velocityMultiplier: 0.001,
+    },
+    meshOptions: {
+        radius: 0.1
+    },
+    behaviourOptions: {
+        behaviour: 'linear',
+    },
+    endTimings: {
+        time: 1,
+    },
+})
+
+export const flower1 = makeReplaceInstruction(sprayFreezeAndTurnYellow, {
+    materialOptions: {
+        color: [1, 1, 0]
+    },
+    patternOptions: {
+        type: 'rotateVelocity',
+        rotation: -Math.PI / 2,
+        velocityMultiplier: 500,
+    },
+    meshOptions: {
+        mesh: 'egg',
+    },
+    behaviourOptions: {
+        behaviour: 'linear',
+    },
+    endTimings: {
+        timing: 'lifespan',
+    },
+})
+
+export const flower2 = makeReplaceInstruction(sprayFreezeAndTurnYellow, {
+    materialOptions: {
+        color: [1, 1, 0]
+    },
+    patternOptions: {
+        type: 'rotateVelocity',
+        rotation: 0,
+        velocityMultiplier: 500,
+    },
+    meshOptions: {
+        mesh: 'egg',
+    },
+    behaviourOptions: {
+        behaviour: 'linear',
+    },
+    endTimings: {
+        timing: 'lifespan',
+    },
+})
+
+export const flower3 = makeReplaceInstruction(sprayFreezeAndTurnYellow, {
+    materialOptions: {
+        color: [1, 1, 0]
+    },
+    patternOptions: {
+        type: 'rotateVelocity',
+        rotation: Math.PI / 2,
+        velocityMultiplier: 1000,
+    },
+    meshOptions: {
+        mesh: 'egg',
+    },
+    behaviourOptions: {
+        behaviour: 'linear',
+    },
+    endTimings: {
+        timing: 'lifespan',
+    },
+})
 
 export const useWrigglePhase2SpellCard = (active, transformNodeRef) => {
     const { setSpellCardUI } = useContext(UIContext)
     const { registerAnimation } = useContext(AnimationContext);
     const addEffect = useAddEffect()
-    
+
     useEffect(() => {
-        if(active){
+        if (active) {
             bossDeathQuiet.play();
             setSpellCardUI({
-                character: 'wriggle', 
+                character: 'wriggle',
                 spellCard: `Wriggle Sign   "Nightbug Tornado"`
             })
         }
@@ -70,103 +163,28 @@ export const useWrigglePhase2SpellCard = (active, transformNodeRef) => {
                 )
                 const id2 = addBulletGroup(
                     transformNodeRef.current,
-                    bulletReplaceRotation(id, { rotation: Math.PI/2 }, {
-                        meshOptions: {
-                            mesh: 'sphere',
-                            radius: 0.2
-                        },
-                        behaviourOptions:{
-                            behaviour: 'linear'
-                        },
-                        endTimings: {
-                            timing: 'uniform',
-                            time: 1
-                        },
-                    })
+                    sprayBigSphere,
+                    id
                 )
                 const id3 = addBulletGroup(
                     transformNodeRef.current,
-                    bulletReplaceRotation(
-                        id2, 
-                        {
-                            rotation: 0,
-                            velocityMultiplier: 0.001
-                        },
-                        {
-                            materialOptions: {
-                                material: 'fresnel',
-                                color: [1, 1, 0]
-                            },
-                            meshOptions: {
-                                mesh: 'sphere',
-                                radius: 0.1
-                            },
-                            endTimings: {
-                                timing: 'uniform',
-                                time: 1
-                            },
-                        }
-                    )
+                    sprayFreezeAndTurnYellow,
+                    id2
                 )
                 addBulletGroup(
                     transformNodeRef.current,
-                    bulletReplaceRotation(
-                        id3, 
-                        {
-                            rotation: -Math.PI/2,
-                            velocityMultiplier: 500
-                        },
-                        {
-                            materialOptions: {
-                                material: 'fresnel',
-                                color: [1, 1, 0]
-                            },
-                            meshOptions: {
-                                mesh: 'egg',
-                                radius: 0.1
-                            },
-                        }
-                    )
+                    flower1,
+                    id3
                 )
                 addBulletGroup(
                     transformNodeRef.current,
-                    bulletReplaceRotation(
-                        id3, 
-                        {
-                            rotation: 0,
-                            velocityMultiplier: 500
-                        },
-                        {
-                            materialOptions: {
-                                material: 'fresnel',
-                                color: [1, 1, 0]
-                            },
-                            meshOptions: {
-                                mesh: 'egg',
-                                radius: 0.1
-                            },
-                        }
-                    )
+                    flower2,
+                    id3
                 )
                 addBulletGroup(
                     transformNodeRef.current,
-                    bulletReplaceRotation(
-                        id3, 
-                        {
-                            rotation: Math.PI/2,
-                            velocityMultiplier: 1000
-                        },
-                        {
-                            materialOptions: {
-                                material: 'fresnel',
-                                color: [0, 1, 0]
-                            },
-                            meshOptions: {
-                                mesh: 'egg',
-                                radius: 0.1
-                            },
-                        }
-                    )
+                    flower3,
+                    id3
                 )
             },
             () => {

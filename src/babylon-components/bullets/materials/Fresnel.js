@@ -9,8 +9,7 @@ export const fresnelFragmentShader = glsl`
     varying vec3 vPositionW;
     varying vec3 vNormalW;
     uniform vec3 cameraPosition;
-
-    varying float dTiming;
+    uniform float alpha;
 
     void main() {
 
@@ -20,7 +19,7 @@ export const fresnelFragmentShader = glsl`
         float fresnelTerm = dot(viewDirectionW, vNormalW);
         fresnelTerm = clamp(1. - fresnelTerm, 0., 1.0);
 
-        gl_FragColor = vec4(mix(color, toColor, fresnelTerm), 1.0);
+        gl_FragColor = vec4(mix(color, toColor, fresnelTerm), alpha);
     }
 `;
 
@@ -34,12 +33,14 @@ export const makeFresnelMaterial = (materialOptions, scene) => {
         },
         {
             attributes: ['position', 'normal', 'uv', 'world0', 'world1', 'world2', 'world3'],
-            uniforms: ['worldView', 'worldViewProjection', 'view', 'projection', 'direction', 'cameraPosition']
+            uniforms: ['worldView', 'worldViewProjection', 'view', 'projection', 'direction', 'cameraPosition'],
+            needAlphaBlending: materialOptions.hasAlpha,
         }
     );
     
     const color = materialOptions.color || [1.0, 0.0, 0.0]
     _material.setColor3("toColor", new Color3(...color))
+    _material.setFloat('alpha', materialOptions.alpha || (materialOptions.hasAlpha && 0.2) || 1);
 
     return _material;
 };

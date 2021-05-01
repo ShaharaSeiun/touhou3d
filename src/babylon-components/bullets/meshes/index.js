@@ -6,6 +6,7 @@ import { makeKnifeMesh } from './Knife';
 import { makeItemMesh } from './Item';
 import { makeEggMesh } from './Egg';
 import { MAX_BULLETS_PER_GROUP } from '../../../utils/Constants';
+import { makeMarisaBulletMesh } from './MarisaBullet';
 
 const bufferMatricesPreCompute = new Float32Array(MAX_BULLETS_PER_GROUP * 16);
 for(let i = 0; i < MAX_BULLETS_PER_GROUP; i++){
@@ -36,6 +37,9 @@ export const makeBulletMesh = (meshOptions, assets) => {
             break;
         case 'knife':
             _mesh = makeKnifeMesh(assets);
+            break;
+        case 'marisaBullet':
+            _mesh = makeMarisaBulletMesh(assets);
             break;
         default:
             throw new Error('Mesh type not supported: ' + meshOptions.mesh);

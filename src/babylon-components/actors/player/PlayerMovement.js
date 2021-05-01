@@ -1,16 +1,22 @@
 import { Vector3 } from '@babylonjs/core';
 import React, { useRef } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
-import { useControl } from '../../hooks/useControl';
 import { LATERAL_SPEED, ARENA_WIDTH, ARENA_HEIGHT, ARENA_FLOOR, ARENA_LENGTH } from '../../../utils/Constants';
 import { globalActorRefs } from '../../gameLogic/StaticRefs';
+import { keyObject } from '../../../components/ControlsContainer';
 
 export const PlayerMovement = ({ children }) => {
     const transformNodeRef = useRef();
-    const [UP, DOWN, LEFT, RIGHT, SLOW] = useControl('UP', 'DOWN', 'LEFT', 'RIGHT', 'SLOW');
+    
 
     useBeforeRender((scene) => {
         if (!transformNodeRef.current) return;
+
+        const UP = keyObject.metaDownKeys['UP'];
+        const DOWN = keyObject.metaDownKeys['DOWN'];
+        const LEFT = keyObject.metaDownKeys['LEFT'];
+        const RIGHT = keyObject.metaDownKeys['RIGHT'];
+        const SLOW = keyObject.metaDownKeys['SLOW'];
 
         const deltaS = scene.paused ? 0 : scene.getEngine().getDeltaTime() / 1000;
         const position = transformNodeRef.current.position;

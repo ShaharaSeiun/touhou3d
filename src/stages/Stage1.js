@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useScene } from 'react-babylonjs';
 import { Vector3, Color3, Scene } from '@babylonjs/core';
 import '@babylonjs/loaders';
@@ -8,6 +8,8 @@ import testdef from './testdef';
 import { makeActionListTimeline } from '../babylon-components/enemies/EnemyUtils';
 import { UIExecutor } from '../babylon-components/ui/UIExecutor';
 import Music from '../sounds/Music';
+import { BulletsContext } from '../babylon-components/gameLogic/GeneralContainer';
+import { setupStage1 } from './Stage1Setup';
 
 export const Stage1 = () => {
     const scene = useScene();
@@ -16,13 +18,15 @@ export const Stage1 = () => {
     const currentActionList = useMemo(() => makeActionListTimeline(stageSource.epochs[epochIndex]), [stageSource, epochIndex]);
     const enemyActionList = useMemo(() => currentActionList.filter((action) => action.type === 'enemies'), [currentActionList]);
     const UIActionList = useMemo(() => currentActionList.filter((action) => action.type === 'UI'), [currentActionList]);
+    const { preComputeBulletGroup } = useContext(BulletsContext);
 
     useEffect(() => {
         scene.fogMode = Scene.FOGMODE_LINEAR;
         scene.fogStart = 70.0;
         scene.fogEnd = 100.0;
         scene.fogColor = new Color3(0.1, 0.1, 0.2);
-    }, [scene]);
+        setupStage1(preComputeBulletGroup);
+    }, [preComputeBulletGroup, scene]);
 
     useEffect(() => {
         Music.play('stage1Theme');

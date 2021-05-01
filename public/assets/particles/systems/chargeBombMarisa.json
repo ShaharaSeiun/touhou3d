@@ -37,7 +37,7 @@
             "emitRate": 500,
             "gravity": [0, 0, 0],
             "noiseStrength": [10, 10, 10],
-            "color1": [0, 1, 0, 1],
+            "color1": [0.1, 0.4, 1, 1],
             "color2": [1, 1, 1, 1],
             "colorDead": [0, 0, 0, 1],
             "updateSpeed": 0.01,

@@ -1,10 +1,8 @@
-import { Matrix, Quaternion, Vector3 } from '@babylonjs/core';
 import { useCallback, useContext, useState } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { globals, GlobalsContext } from '../../components/GlobalsContainer';
 import { enemyDamage, itemGet, playerGraze, playerDeath } from '../../sounds/SFX';
 import { MAX_ENEMIES, PLAYER_INVULNERABLE_COOLDOWN } from '../../utils/Constants';
-import { sum } from '../../utils/Utils';
 import { makeBulletBehaviour } from '../bullets/behaviours';
 import { BulletGroup } from '../bullets/BulletGroup';
 import { convertPlayerBulletCollisions, convertEnemyBulletCollisions, prepareBulletInstruction } from '../bullets/BulletUtils';
@@ -14,41 +12,11 @@ import { makeBulletMesh } from '../bullets/meshes';
 import { makeBulletPattern } from '../bullets/patterns';
 import { makeBulletSound } from '../bullets/sounds';
 import { makeName } from '../hooks/useName';
-import { globalActorRefs, allBullets, killEnemy, preComputedBulletPatterns, preComputedEndTimings } from './StaticRefs';
+import { globalActorRefs, allBullets, killEnemy } from './StaticRefs';
 
 let playHitSound = false;
 let framesSincePlayHit = 0;
 let playerInvulnerable = false
-
-export const preComputeBulletGroup = (instruction) => {
-    const preparedInstruction = prepareBulletInstruction(instruction);
-    const { positions, velocities, timings } = makeBulletPattern(preparedInstruction.patternOptions);
-    const endTimings = makeEndTimings(preparedInstruction.endTimings, preparedInstruction.lifespan, timings.length);
-    return { positions, velocities, timings, endTimings, instruciton: preparedInstruction}
-}
-
-export const bulletReplaceRotationPrecompute = (sourceInstruction, {rotation = Math.PI/2, velocityMultiplier = 1}) => {
-    const preparedInstruction = prepareBulletInstruction(sourceInstruction);
-    const sourcePattern = preComputedBulletPatterns[preparedInstruction.uid || JSON.stringify(preparedInstruction.patternOptions)];
-    const sourceEndTimings = preComputedEndTimings[preparedInstruction.uid || JSON.stringify(preparedInstruction.endTimings)];
-
-    const velocities = sourcePattern.velocities.map(velocity => {
-        const rotationQuaternion = Quaternion.RotationYawPitchRoll(rotation, 0, 0)
-        const rotationMatrix = new Matrix();
-        rotationQuaternion.toRotationMatrix(rotationMatrix);
-        return Vector3.TransformCoordinates(velocity, rotationMatrix).scale(velocityMultiplier);
-    });
-    const timings = sum(sourceEndTimings, sourcePattern.timings);
-
-    const endTimings = makeEndTimings(preparedInstruction.endTimings, preparedInstruction.lifespan, timings.length);
-
-    preComputedBulletPatterns[preparedInstruction.uid || JSON.stringify(preparedInstruction)] = {
-        pattern: 'explicit',
-        velocities: velocities,
-        timings: timings
-    };
-    return { velocities, timings, endTimings, instruciton: preparedInstruction}
-}
 
 export const useBullets = (assets, environmentCollision, addEffect) => {
     const scene = useScene();
@@ -76,17 +44,25 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
         });
     }, [])
 
+    const preComputeBulletGroup = useCallback((instruction) => {
+        const preparedInstruction = prepareBulletInstruction(instruction);
+        const { positions, velocities, timings } = makeBulletPattern(preparedInstruction.patternOptions, false, scene);
+        const endTimings = makeEndTimings(preparedInstruction.endTimings, preparedInstruction.lifespan, timings.length, scene);
+        return { positions, velocities, timings, endTimings, instruciton: preparedInstruction}
+    }, [scene])
+
     const addBulletGroup = useCallback(
-        (parent, instruction) => {
+        (parent, instruction, sourceBulletId = false, supressNotPrecomputedWarning = false) => {
             if (!parent) throw new Error('parent not ready!');
 
             const preparedInstruction = prepareBulletInstruction(instruction);
+            if(sourceBulletId) preparedInstruction.patternOptions.sourceBulletId = sourceBulletId;
 
-            const { positions, velocities, timings } = makeBulletPattern(preparedInstruction.patternOptions, parent);
+            const { positions, velocities, timings, uid } = makeBulletPattern(preparedInstruction.patternOptions, parent, scene, supressNotPrecomputedWarning);
             const material = makeBulletMaterial(preparedInstruction.materialOptions, parent, assets, scene);
             const {mesh, radius} = makeBulletMesh(preparedInstruction.meshOptions, assets, scene);
             const behaviour = makeBulletBehaviour(preparedInstruction.behaviourOptions, environmentCollision, radius, parent);
-            const endTimings = makeEndTimings(preparedInstruction.endTimings, preparedInstruction.lifespan, timings.length)
+            const endTimings = makeEndTimings(preparedInstruction.endTimings, preparedInstruction.lifespan, timings.length, scene)
             const sounds = preparedInstruction.soundOptions && !preparedInstruction.soundOptions.mute && makeBulletSound(preparedInstruction.soundOptions, timings);
 
             mesh.makeInstances(timings.length);
@@ -94,12 +70,12 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
 
             const reliesOnParent = preparedInstruction.behaviourOptions.reliesOnParent;
             const disableWarning = preparedInstruction.behaviourOptions.disableWarning || false;
-            behaviour.init(material, positions, velocities, timings, endTimings, reliesOnParent, disableWarning, scene);
+            behaviour.init(material, positions, velocities, timings, endTimings, reliesOnParent, disableWarning, uid, scene);
 
             const { lifespan } = preparedInstruction;
             const timeSinceStart = 0;
 
-            const bulletGroup = new BulletGroup({material, mesh, behaviour, sounds, positions, velocities, timings, endTimings, lifespan, timeSinceStart, instruciton: preparedInstruction});
+            const bulletGroup = new BulletGroup({material, mesh, behaviour, sounds, positions, velocities, timings, endTimings, lifespan, timeSinceStart, uid, instruciton: preparedInstruction});
 
             const newID = makeName('bulletGroup');
             allBullets[newID] = bulletGroup;
@@ -214,5 +190,5 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
         });
     });
 
-    return { disposeSingle, dispose, addBulletGroup, clearAllBullets, isDead };
+    return { disposeSingle, dispose, addBulletGroup, clearAllBullets, preComputeBulletGroup, isDead };
 };

@@ -1,12 +1,45 @@
-import { useContext, useEffect, useState } from 'react';
+import { useRef, useContext, useEffect, useState } from 'react';
+import { useBeforeRender } from 'react-babylonjs';
+import { keyObject } from '../components/ControlsContainer';
 import { ControlsContext } from '../components/ControlsContainer';
 
 export const useKeydown = (key, onKeydown) => {
+
+    const keyDown = useRef(keyObject.metaDownKeys[key]);
+
+    useBeforeRender(() => {
+        if (keyObject.metaDownKeys[key]) {
+            if (keyDown.current === false) {
+                onKeydown();
+            }
+            keyDown.current = true;
+        } else {
+            keyDown.current = false;
+        }
+    });
+};
+
+export const useKeyup = (key, onKeyup) => {
+
+    const keyDown = useRef(keyObject.metaDownKeys[key]);
+    useBeforeRender(() => {
+        if (keyObject.metaDownKeys[key]) {
+            keyDown.current = true;
+        } else {
+            if (keyDown.current === true) {
+                onKeyup();
+            }
+            keyDown.current = false;
+        }
+    });
+};
+
+export const useKeydownMenu = (key, onKeydown) => {
     const { downKeys } = useContext(ControlsContext);
-    const [keyDown, setKeyDown] = useState(downKeys.includes(key));
+    const [keyDown, setKeyDown] = useState(downKeys[key]);
 
     useEffect(() => {
-        if (downKeys.includes(key)) {
+        if (downKeys[key]) {
             if (keyDown === false) {
                 onKeydown();
             }
@@ -18,11 +51,11 @@ export const useKeydown = (key, onKeydown) => {
     }, [downKeys]);
 };
 
-export const useKeyup = (key, onKeyup) => {
+export const useKeyupMenu = (key, onKeyup) => {
     const { downKeys } = useContext(ControlsContext);
-    const [keyDown, setKeyDown] = useState(downKeys.includes(key));
+    const [keyDown, setKeyDown] = useState(downKeys[key]);
     useEffect(() => {
-        if (downKeys.includes(key)) {
+        if (downKeys[key]) {
             setKeyDown(true);
         } else {
             if (keyDown === true) {

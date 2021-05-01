@@ -1,7 +1,7 @@
 import { Texture } from '@babylonjs/core';
 import { makeTextureFromArray, makeTextureFromBlank, makeTextureFromVectors } from '../BulletUtils';
 import { ARENA_MAX, ARENA_MIN } from '../../../utils/Constants';
-import { globalActorRefs } from '../../gameLogic/StaticRefs';
+import { globalActorRefs, preComputedBulletTextures, preComputedEndTimingsTextures } from '../../gameLogic/StaticRefs';
 import DifferentialPositionVelocityCollisionSystem from './DifferentialPositionVelocityCollisionSystem';
 
 export class BulletBehaviour {
@@ -26,17 +26,19 @@ export class BulletBehaviour {
         texture.setVector3('collideWithEnvironment', this.collideWithEnvironment);
     }
 
-    init(bulletMaterial, initialPositions, initialVelocities, timings, endTimings, reliesOnParent, disableWarning, scene) {
+    init(bulletMaterial, initialPositions, initialVelocities, timings, endTimings, reliesOnParent, disableWarning, uid, scene) {
         const num = timings.length;
-        const startPositionsState = makeTextureFromBlank(timings.length, scene, 1., -510., -510.) //All positions are invalid until enter time
-        const startCollisionsState = makeTextureFromBlank(timings.length, scene, 0, 0); //No collisions
-        const startVelocitiesState = makeTextureFromVectors(initialVelocities, scene, 1, 0);
+        const startPositionsState = preComputedBulletTextures[uid]?.positions || makeTextureFromBlank(timings.length, scene, 1., -510., -510.) //All positions are invalid until enter time
+        const startCollisionsState = preComputedBulletTextures[uid]?.collisions || makeTextureFromBlank(timings.length, scene, 0, 0); //No collisions
+        const startVelocitiesState = preComputedBulletTextures[uid]?.velocities || makeTextureFromVectors(initialVelocities, scene, 1, 0);
         
 
-        const initialPositionsTexture = (initialPositions instanceof Texture) ? initialPositions : 
-            makeTextureFromVectors(initialPositions, scene, 1, -510);
-        const timingsTexture = makeTextureFromArray(timings, scene);
-        const endTimingsTexture = makeTextureFromArray(endTimings, scene);
+        const initialPositionsTexture = 
+            preComputedBulletTextures[uid]?.initialPositions || 
+            ((initialPositions instanceof Texture) ? initialPositions : 
+            makeTextureFromVectors(initialPositions, scene, 1, -510));
+        const timingsTexture = preComputedBulletTextures[uid]?.timings || makeTextureFromArray(timings, scene);
+        const endTimingsTexture = preComputedEndTimingsTextures[uid] || makeTextureFromArray(endTimings, scene);
 
         this.diffSystem = new DifferentialPositionVelocityCollisionSystem(
             num,

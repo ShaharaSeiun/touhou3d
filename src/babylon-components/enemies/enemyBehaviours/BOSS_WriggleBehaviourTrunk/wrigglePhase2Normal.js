@@ -28,15 +28,10 @@ const greenBurst = () => ({
     wait: 0,
 })
 
-const greenBurst1 = greenBurst();
-const greenBurst2 = greenBurst();
-const greenBurst3 = greenBurst();
-const greenBurst4 = greenBurst();
-
-preComputeBulletGroup(greenBurst1)
-preComputeBulletGroup(greenBurst2)
-preComputeBulletGroup(greenBurst3)
-preComputeBulletGroup(greenBurst4)
+export const greenBurst1 = greenBurst();
+export const greenBurst2 = greenBurst();
+export const greenBurst3 = greenBurst();
+export const greenBurst4 = greenBurst();
 
 export const useWrigglePhase2Normal = (active, transformNodeRef) => {
     const addBulletGroup = useAddBulletGroup();

@@ -247,6 +247,12 @@ export const useLoadAssets = () => {
                 type: 'model',
             },
             {
+                rootUrl: '/assets/bullets/marisaBullet/',
+                sceneFilename: 'marisaBullet.glb',
+                name: 'marisaBullet',
+                type: 'model',
+            },
+            {
                 type: 'function',
                 name: 'egg',
                 generator: () => {

@@ -9,6 +9,7 @@ import { useControl } from '../../../../hooks/useControl';
 import { useTarget } from '../../../../hooks/useTarget';
 import { useNormalizedFrameSkip } from '../../../../hooks/useNormalizedFrameSkip';
 import { useName } from '../../../../hooks/useName';
+import { keyObject } from '../../../../../components/ControlsContainer';
 
 //15 bullets per second
 let bulletFrameSkip = 5;
@@ -66,7 +67,6 @@ export const ReimuLinearBulletEmitter = ({ powerClass, ...props }) => {
     const { addBulletGroup, disposeSingle } = useContext(BulletsContext);
     const shotFrame = useRef(0);
     const [shotId, setShotId] = useState();
-    const SHOOT = useControl('SHOOT');
     const target = useTarget();
     const frameSkip = useNormalizedFrameSkip(bulletFrameSkip);
     const name = useName('LinearBulletEmitter');
@@ -92,6 +92,7 @@ export const ReimuLinearBulletEmitter = ({ powerClass, ...props }) => {
 
         allBullets[shotId].behaviour.firing = false;
         allBullets[shotId].behaviour.target = target;
+        const SHOOT = keyObject.metaDownKeys['SHOOT'];
 
         if (SHOOT && !scene.paused) {
             playerShoot.play();

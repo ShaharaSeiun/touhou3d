@@ -1,10 +1,13 @@
 import { times } from "lodash"
-import { preComputedEndTimings } from "../../gameLogic/StaticRefs";
+import { preComputedEndTimings, preComputedEndTimingsTextures } from "../../gameLogic/StaticRefs";
+import { makeTextureFromArray } from "../BulletUtils";
 
-export const makeEndTimings = (endTimingsInstruction, lifespan, num) => {
+export const makeEndTimings = (endTimingsInstruction, lifespan, num, scene) => {
     let endTimings = [];
 
-    const precomputedEndTiming = preComputedEndTimings[JSON.stringify(endTimingsInstruction)];
+    const uid = endTimingsInstruction.uid || JSON.stringify(endTimingsInstruction)
+
+    const precomputedEndTiming = preComputedEndTimings[uid];
     if(precomputedEndTiming){
         return precomputedEndTiming;
     }
@@ -30,8 +33,8 @@ export const makeEndTimings = (endTimingsInstruction, lifespan, num) => {
     }
 
     if(!precomputedEndTiming){
-        preComputedEndTimings[JSON.stringify(endTimingsInstruction)] = _timings;
+        preComputedEndTimings[uid] = _timings;
+        preComputedEndTimingsTextures[uid] = makeTextureFromArray(_timings, scene)
     }
-
     return _timings;
 }

@@ -3,7 +3,7 @@ import { Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { VerticleMenu } from '../components/VerticleMenu';
-import { useKeydown } from '../hooks/useKeydown';
+import { useKeydownMenu } from '../hooks/useKeydown';
 import { useHistory } from 'react-router';
 
 const useStyles = makeStyles({
@@ -72,7 +72,7 @@ export const MainMenu = ({ menuOpenInit = false }) => {
         [history]
     );
 
-    useKeydown('ENTER', openMenu);
+    useKeydownMenu('ENTER', openMenu);
 
     const titlePos = menuOpen ? classes.titlePos2 : classes.titlePos1;
     const optionsPos = menuOpen ? classes.optionsPos2 : classes.optionsPos1;

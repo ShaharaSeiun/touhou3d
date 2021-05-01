@@ -4,7 +4,7 @@ import { randVectorToPosition } from '../../BabylonUtils';
 import { useAddBulletGroup } from '../../hooks/useAddBulletGroup';
 import { useDoSequence } from '../../hooks/useDoSequence';
 
-const small = (color) =>  ({
+const smallInstruction = (color) =>  ({
     type: 'shoot',
     materialOptions: {
         material: 'fresnel',
@@ -33,6 +33,17 @@ const small = (color) =>  ({
     lifespan: 10,
     wait: 0,
 })
+
+export const yellowSmall = smallInstruction([1, 1, 0]);
+
+const small = (color) => {
+    switch(JSON.stringify(color)){
+        case JSON.stringify([1, 1, 0]): 
+            return yellowSmall;
+        default:
+            throw new Error('no precomputed pattern for color ' + JSON.stringify(color));
+    }
+}
 
 export const Stage1MinionBehaviour = ({ children, leaveScene, spawn, color}) => {
     const transformNodeRef = useRef();

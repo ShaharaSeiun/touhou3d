@@ -5,6 +5,7 @@ import { addEnemy, globalActorRefs, removeEnemy } from '../gameLogic/StaticRefs'
 import { makeEnemyBehaviour } from './enemyBehaviours';
 import { makeEnemyMesh } from './enemyActors';
 import { makeEnemyMovement } from './enemyMovements';
+import { v4 } from 'uuid';
 
 
 export const Enemy = ({ name, radius, health, deathInstruction, removeEnemyFromScene, meshProps, behaviourProps, movementProps }) => {
@@ -63,7 +64,7 @@ export const Enemy = ({ name, radius, health, deathInstruction, removeEnemyFromS
         const EnemyMeshClass = makeEnemyMesh(meshProps.type);
         const MovementClass = makeEnemyMovement(movementProps.type)
 
-        setEnemyRender(<MovementClass {...movementProps}>
+        setEnemyRender(<MovementClass name={v4()} {...movementProps}>
             <BehaviourClass leaveScene={leaveScene} {...behaviourProps}>
                 <EnemyMeshClass radius={radius} {...meshProps} ref={enemyRef}/>
             </BehaviourClass>

@@ -13,21 +13,40 @@ const defaults = {
     GRAZE: 0,
     POINT: 0,
     TIME: 0,
+    character: "marisa",
+    difficulty: "LUNATIC"
 };
 
-export const globals = {...defaults};
+export const loadGlobals = () => {
+    Object.assign(globals, JSON.parse(ls('globals')));
+};
+
+export const resetGlobals = (forceSave = false) => {
+    Object.assign(globals, 
+    {   
+        HISCORE: 0,
+        SCORE: 0,
+        PLAYER: SETTINGS.PLAYER,
+        BOMB: SETTINGS.BOMB,
+        POWER: 0,
+        GRAZE: 0,
+        POINT: 0,
+        TIME: 0
+    })
+    if(forceSave) ls('globals', JSON.stringify(globals));
+};
+
+export const globals = JSON.parse(ls('globals')) || defaults;
 
 export const GlobalsContainer = ({ children }) => {
-    const setGlobal = (key, value) => {
+    const setGlobal = (key, value, forceSave = false) => {
         globals[key] = value;
+        if(forceSave) ls('globals', JSON.stringify(globals));
     };
-
-    const loadGlobals = useCallback(() => {
-        Object.assign(globals, defaults, JSON.parse(ls('globals')));
-    }, []);
-
+    
     useEffect(() => {
         const interval = window.setInterval(() => {
+            console.log(globals.character);
             ls('globals', JSON.stringify(globals));
         }, 1000);
         return () => {
@@ -35,5 +54,5 @@ export const GlobalsContainer = ({ children }) => {
         };
     }, []);
 
-    return <GlobalsContext.Provider value={{ setGlobal, loadGlobals }}>{children}</GlobalsContext.Provider>;
+    return <GlobalsContext.Provider value={{ setGlobal, loadGlobals, resetGlobals }}>{children}</GlobalsContext.Provider>;
 };

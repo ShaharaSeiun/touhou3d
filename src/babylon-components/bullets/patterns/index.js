@@ -12,22 +12,22 @@ import { RandVector3 } from '../../BabylonUtils';
 import { makeArcPattern } from './Arc';
 import { makeClawsPattern } from './Claws';
 import { makeSprayStableRandBurstPattern } from './SprayStableRandBurst';
-import { preComputedBulletPatterns } from '../../gameLogic/StaticRefs';
+import { preComputedBulletPatterns, preComputedBulletTextures } from '../../gameLogic/StaticRefs';
+import { makeReplacePattern } from './replace';
+import { computeSourceTextures } from '../BulletUtils';
 
 //if there's not a parent, then it's a precompute
-export const makeBulletPattern = (patternOptions, parent) => {
+export const makeBulletPattern = (patternOptions, parent, scene, supressNotPrecomputedWarning) => {
     let _pattern;
 
-    if(patternOptions.pattern === 'explicit'){
-        return patternOptions;
-    }
-
-    const precomputedBulletPattern = preComputedBulletPatterns[JSON.stringify(patternOptions)];
-    if(precomputedBulletPattern){
+    const uid = patternOptions.uid || JSON.stringify(patternOptions);
+    const precomputedBulletPattern = preComputedBulletPatterns[uid];
+    if(precomputedBulletPattern && !patternOptions.sourceBulletId){
         return precomputedBulletPattern;
     }
-    if(parent){
-        console.warn("Bullet pattern wasn't precomputed, this is gonna take a while", patternOptions);
+
+    if(parent && !patternOptions.sourceBulletId && !supressNotPrecomputedWarning){
+        console.warn("Bullet pattern wasn't precomputed, this is gonna take a while", patternOptions.pattern);
     }
 
     if (isFunction(patternOptions)) {
@@ -67,6 +67,9 @@ export const makeBulletPattern = (patternOptions, parent) => {
             case 'spray':
                 _pattern = makeSprayPattern(patternOptions, parent);
                 break;
+            case 'replace':
+                _pattern = makeReplacePattern(patternOptions, parent);
+                break;
             default:
                 throw new Error('Pattern type not supported: ' + patternOptions.pattern);
         }
@@ -102,9 +105,11 @@ export const makeBulletPattern = (patternOptions, parent) => {
         _pattern.timings = newTimings;
     }
 
-    if(!parent){
-        preComputedBulletPatterns[JSON.stringify(patternOptions)] = _pattern;
+    if(!precomputedBulletPattern){
+        preComputedBulletPatterns[uid] = _pattern;
+        preComputedBulletTextures[uid] = computeSourceTextures(_pattern, scene)
     }
 
+    _pattern.uid = uid;
     return _pattern;
 };

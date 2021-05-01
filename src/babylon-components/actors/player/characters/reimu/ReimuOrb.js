@@ -120,7 +120,7 @@ export const ReimuOrb = ({isBombing, powerClass, side, isInvulnerable}) => {
                 ref={sphereRef}
             >
                 <standardMaterial alpha={0.5} name={name + 'sphereMat'}>
-                    <texture assignTo="diffuseTexture" url={'/assets/debugTextures/yinyang.jpg'} />
+                    <texture assignTo="diffuseTexture" url={'/assets/player/reimu/yinyang.jpg'} />
                 </standardMaterial>
             </sphere>
         </transformNode>

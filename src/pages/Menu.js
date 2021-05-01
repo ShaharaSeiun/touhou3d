@@ -41,25 +41,23 @@ export const Menu = () => {
             className={classes.container}
             tabIndex={0}
         >
-            <Router>
-                <Switch>
-                    <Route exact path="/">
-                        <MainMenu />
-                    </Route>
-                    <Route exact path="/menu">
-                        <MainMenu menuOpenInit />
-                    </Route>
-                    <Route exact path="/menu/options">
-                        <Options />
-                    </Route>
-                    <Route exact path="/menu/game/difficultySelect">
-                        <DifficultySelect next={'/menu/game/characterSelect'} />
-                    </Route>
-                    <Route exact path="/menu/game/characterSelect">
-                        <CharacterSelect back={'/menu/game/difficultySelect'} next={'/game/stage1'} />
-                    </Route>
-                </Switch>
-            </Router>
+
+            <Route exact path="/">
+                <MainMenu />
+            </Route>
+            <Route exact path="/menu">
+                <MainMenu menuOpenInit />
+            </Route>
+            <Route exact path="/menu/options">
+                <Options />
+            </Route>
+            <Route exact path="/menu/game/difficultySelect">
+                <DifficultySelect next={'/menu/game/characterSelect'} />
+            </Route>
+            <Route exact path="/menu/game/characterSelect">
+                <CharacterSelect back={'/menu/game/difficultySelect'} next={'/game/stage1'} />
+            </Route>
+
         </Box>
     );
 };

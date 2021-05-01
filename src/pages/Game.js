@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import { Stage1 } from '../stages/Stage1';
 import { Scene } from 'react-babylonjs';
@@ -8,17 +8,19 @@ import { ControlsContainer } from '../components/ControlsContainer';
 import { BindControls } from '../babylon-components/BindControls';
 import { GeneralContainer } from '../babylon-components/gameLogic/GeneralContainer';
 import { Playground } from '../babylon-components/actors/Playground';
-import { Marisa } from '../babylon-components/actors/player/characters/marisa/Marisa';
 import { PlayerMovement } from '../babylon-components/actors/player/PlayerMovement';
 import { PlayerCamera } from '../babylon-components/actors/player/PlayerCamera';
 import { FightRoot } from '../babylon-components/actors/FightRoot';
 import '../babylon-components/Shaders';
 import Engine from '../babylon-components/Engine';
 import { UI } from '../babylon-components/ui/UI';
-import { GlobalsContainer } from '../components/GlobalsContainer';
+import { globals, loadGlobals, resetGlobals, GlobalsContainer } from '../components/GlobalsContainer';
+import { Player } from '../babylon-components/actors/player/characters/Player';
 
 export const Game = () => {
     const windowSize = useWindowSize();
+    useMemo(() => loadGlobals(), []);
+    useMemo(() => resetGlobals(), []);
 
     return (
         <Engine width={windowSize.width} height={windowSize.height} antialias canvasId="babylonJS">
@@ -36,7 +38,7 @@ export const Game = () => {
                                     />
                                     <Playground />
                                     <PlayerMovement>
-                                        <Marisa />
+                                        <Player character={globals.character} />
                                         <PlayerCamera />
                                     </PlayerMovement>
                                 </FightRoot>

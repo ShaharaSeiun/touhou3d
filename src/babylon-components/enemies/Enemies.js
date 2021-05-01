@@ -69,7 +69,6 @@ export const Enemies = ({ currentActionList, setEpochIndex }) => {
             if(Object.keys(enemies).length === 0){
                 setEpochIndex(epochIndex => epochIndex + 1);
                 listeningForEnemiesDead.current = false;
-                console.log("epoch set")
             }
         }
     });

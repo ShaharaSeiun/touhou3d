@@ -192,7 +192,7 @@ export const MasterSpark = (props) => {
     }, []);
 
     useBeforeRender(() => {
-        if(!beamActive) return;
+        if(!beamActive || !masterSparkTransformNode.current) return;
 
         const scale = Math.max(Math.random(), 0.5);
         masterSparkTransformNode.current.scaling = new Vector3(scale, scale, scale);
@@ -212,7 +212,7 @@ export const MasterSpark = (props) => {
     })
 
     return (
-        <transformNode name="masterSparkTransformNode" ref={transformNodeRef} {...props}>
+        <transformNode name="masterSparkTransformNode" ref={transformNodeRef} position={new Vector3(0, -0.2, 0)} {...props}>
             <plane
                 name={name + 'plane'}
                 scaling={new Vector3(50, 50, 50)}

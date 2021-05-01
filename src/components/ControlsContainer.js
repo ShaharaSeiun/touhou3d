@@ -3,7 +3,35 @@ import { useBeforeRender } from 'react-babylonjs';
 
 export const ControlsContext = React.createContext();
 
-let metaDownKeys = [];
+const defaultKeyMap = {
+    27: 'ESCAPE',
+    13: 'ENTER',
+    40: 'DOWN', //Down arrow
+    83: 'DOWN', //s
+    38: 'UP', //Up arrow
+    87: 'UP', //w
+    37: 'LEFT', //left arrow
+    65: 'LEFT', //a
+    39: 'RIGHT', //right arrow
+    68: 'RIGHT', //d
+    16: 'SLOW', //shift
+    32: 'BOMB', //space
+    1: 'SHOOT', //click
+    80: 'DIALOGUE', //p
+}
+
+const makeDefaultDownKeyMap = () => {
+    const keys = new Set(Object.values(defaultKeyMap))
+    const downKeyMap = {};
+    keys.forEach(key => {
+        downKeyMap[key] = false;
+    })
+    return downKeyMap;
+}
+
+export const keyObject = {
+    metaDownKeys: makeDefaultDownKeyMap()
+}
 
 export const ControlsContainer = ({ children, outsideOfRenderer }) => {
     const [downKeys, setDownKeys] = useState([]);
@@ -30,14 +58,13 @@ export const ControlsContainer = ({ children, outsideOfRenderer }) => {
             if (!(event.which in keyMap)) {
                 return;
             }
-
             const key = keyMap[event.which];
-            if (metaDownKeys.includes(key)) return;
+            
+            if (keyObject.metaDownKeys[key]) return;
 
-            const newMetaDownKeys = [...metaDownKeys];
-            newMetaDownKeys.push(key);
-
-            metaDownKeys = newMetaDownKeys;
+            const newMetaDownKeys = {...keyObject.metaDownKeys};
+            newMetaDownKeys[key] = true;
+            keyObject.metaDownKeys = newMetaDownKeys;
         },
         [keyMap]
     );
@@ -49,18 +76,17 @@ export const ControlsContainer = ({ children, outsideOfRenderer }) => {
             }
 
             const key = keyMap[event.which];
-            const index = metaDownKeys.indexOf(key);
+            if (!keyObject.metaDownKeys[key]) return;
 
-            if (index > -1) {
-                const newMetaDownKeys = metaDownKeys.filter((x) => x !== key);
-                metaDownKeys = newMetaDownKeys;
-            }
+            const newMetaDownKeys = {...keyObject.metaDownKeys};
+            newMetaDownKeys[key] = false;
+            keyObject.metaDownKeys = newMetaDownKeys;
         },
         [keyMap]
     );
 
     const keySync = useCallback(() => {
-        setDownKeys(metaDownKeys);
+        setDownKeys(keyObject.metaDownKeys);
     }, [setDownKeys]);
 
     useEffect(() => {
@@ -74,7 +100,7 @@ export const ControlsContainer = ({ children, outsideOfRenderer }) => {
     }, [outsideOfRenderer, keySync]);
 
     useBeforeRender(() => {
-        setDownKeys(metaDownKeys);
+        setDownKeys(keyObject.metaDownKeys);
     });
 
     return (

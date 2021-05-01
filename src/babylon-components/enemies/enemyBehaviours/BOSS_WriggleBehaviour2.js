@@ -26,7 +26,7 @@ const enemiesInstructions = []
 enemiesInstructions.push({
     type: "enemies",
     action: 'empty',
-    wait: 12
+    wait: 1
 })
 
 
