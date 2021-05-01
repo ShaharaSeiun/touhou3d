@@ -1,23 +1,23 @@
 import { Animation, Color3, EasingFunction, SineEase, Space, Vector3 } from '@babylonjs/core';
+import { times } from 'lodash';
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
-import { useName } from '../../../../hooks/useName';
 import { useKeydown, useKeyup } from '../../../../../hooks/useKeydown';
-import { useDoSequence } from '../../../../hooks/useDoSequence';
+import { PLAYER_INVULNERABLE_COOLDOWN } from '../../../../../utils/Constants';
 import { GlowContext } from '../../../../gameLogic/GeneralContainer';
+import { useDoSequence } from '../../../../hooks/useDoSequence';
+import { useName } from '../../../../hooks/useName';
+import { useTarget } from '../../../../hooks/useTarget';
+import { useTexture } from '../../../../hooks/useTexture';
 import { PlayerUILeft } from '../PlayerUILeft';
 import { PlayerUIRight } from '../PlayerUIRight';
-import { MarisaLinearBulletEmitter } from './MarisaLinearBulletEmitter';
 import { MarisaAccelerationBulletEmitter } from './MarisaAccelerationBulletEmitter';
-import { PLAYER_INVULNERABLE_COOLDOWN } from '../../../../../utils/Constants';
-import { times } from 'lodash';
-import { useTexture } from '../../../../hooks/useTexture';
-import { useTarget } from '../../../../hooks/useTarget';
+import { MarisaLinearBulletEmitter } from './MarisaLinearBulletEmitter';
 
 const UIPosition = new Vector3(0, -0.6, 0);
 const lightBlue = new Color3(0.2, 0.6, 1);
 
-export const MarisaMagicCircle = ({isBombing, powerClass, side, isInvulnerable}) => {
+export const MarisaMagicCircle = ({ isBombing, powerClass, side, isInvulnerable }) => {
     const name = useName("MarisaMagicCircle")
     const sphereTransformRef = useRef();
     const planeRef = useRef();
@@ -28,7 +28,7 @@ export const MarisaMagicCircle = ({isBombing, powerClass, side, isInvulnerable})
     const spherePosition = useMemo(() => new Vector3(sideCoefficient, 0, 0), [sideCoefficient])
     const focusPosition = useMemo(() => new Vector3(sideCoefficient * 0.5, 0, 0), [sideCoefficient])
     const unfocusPosition = useMemo(() => new Vector3(sideCoefficient, 0, 0), [sideCoefficient])
-    const accelerationInitialVelocity = useMemo(() => [sideCoefficient * 6, 0, 4], [sideCoefficient]);
+    const accelerationInitialVelocity = useMemo(() => [0, 0, 0.01], []);
     const glowLayer = useContext(GlowContext);
     const scene = useScene();
     const rune1 = useTexture("rune1");
@@ -60,18 +60,18 @@ export const MarisaMagicCircle = ({isBombing, powerClass, side, isInvulnerable})
     });
 
     //sphere blinking
-    const invulnerableTimings = useMemo(() => 
+    const invulnerableTimings = useMemo(() =>
         times(40, (num) => {
             return PLAYER_INVULNERABLE_COOLDOWN * num / 40
-        }), 
-    []);
+        }),
+        []);
 
     const invulnerableActions = useMemo(() => [
         ...times(39, (num) => {
             return () => {
                 planeRef.current.isVisible = num % 2 === 0
             }
-        }), 
+        }),
         () => {
             planeRef.current.isVisible = true
         }
@@ -97,7 +97,7 @@ export const MarisaMagicCircle = ({isBombing, powerClass, side, isInvulnerable})
     }, [glowLayer, name, scene])
 
     useBeforeRender(() => {
-        if(!target || !planeRef.current) return;
+        if (!target || !planeRef.current) return;
 
         planeRef.current.lookAt(target, 0, 0, 0, Space.WORLD);
     })
@@ -105,7 +105,7 @@ export const MarisaMagicCircle = ({isBombing, powerClass, side, isInvulnerable})
     return (
         <transformNode name={name + 'sphereTransform'} ref={sphereTransformRef} position={spherePosition}>
             {!isBombing && <UIClass position={UIPosition} />}
-            <MarisaLinearBulletEmitter position={linearBulletEmitterPosition} powerClass={powerClass} />
+            <MarisaLinearBulletEmitter side={side} position={linearBulletEmitterPosition} powerClass={powerClass} />
             {powerClass > 0 && (
                 <MarisaAccelerationBulletEmitter initialVelocity={accelerationInitialVelocity} powerClass={powerClass} />
             )}
@@ -114,14 +114,14 @@ export const MarisaMagicCircle = ({isBombing, powerClass, side, isInvulnerable})
                 scaling={new Vector3(0.5, 0.5, 0.5)}
                 ref={planeRef}
             >
-                <standardMaterial alpha={0.5} useAlphaFromDiffuseTexture disableLighting={true} diffuseTexture={rune1} emissiveColor={lightBlue} name={name + 'planeMat'}/>
+                <standardMaterial alpha={0.5} useAlphaFromDiffuseTexture disableLighting={true} diffuseTexture={rune1} emissiveColor={lightBlue} name={name + 'planeMat'} />
                 <plane
                     name={name + 'smallPlane'}
                     scaling={new Vector3(0.5, 0.5, 0.5)}
                     position={new Vector3(0, 0, 0.5)}
                     ref={smallPlaneRef}
                 >
-                    <standardMaterial alpha={0.5} useAlphaFromDiffuseTexture disableLighting={true} diffuseTexture={rune1} emissiveColor={lightBlue} name={name + 'planeMat'}/>
+                    <standardMaterial alpha={0.5} useAlphaFromDiffuseTexture disableLighting={true} diffuseTexture={rune1} emissiveColor={lightBlue} name={name + 'planeMat'} />
                 </plane>
             </plane>
         </transformNode>

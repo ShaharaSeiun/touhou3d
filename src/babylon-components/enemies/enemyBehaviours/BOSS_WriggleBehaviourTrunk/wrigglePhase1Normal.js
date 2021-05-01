@@ -1,6 +1,5 @@
 import { useContext, useMemo } from "react";
 import { bulletReplaceRotation } from "../../../bullets/BulletUtils";
-import { preComputeBulletGroup } from "../../../gameLogic/useBullets";
 import { AnimationContext } from "../../../gameLogic/GeneralContainer";
 import { useAddBulletGroup } from "../../../hooks/useAddBulletGroup";
 import { useAddEffect } from "../../../hooks/useAddEffect";

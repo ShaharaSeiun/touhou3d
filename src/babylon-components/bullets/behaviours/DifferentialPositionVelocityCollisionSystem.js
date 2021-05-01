@@ -1,5 +1,5 @@
-import { times } from "lodash";
 import { Constants, Vector2 } from '@babylonjs/core';
+import { times } from "lodash";
 import nextPOT from 'next-power-of-two';
 import { v4 } from 'uuid';
 import { CustomCustomProceduralTexture } from '../../CustomCustomProceduralTexture';
@@ -22,20 +22,20 @@ const makeProceduralTexture = (name, shader, WIDTH, scene) => {
 
 export default class DifferentialPositionVelocityCollisionSystem {
     constructor(
-        num, 
-        startPositionState, 
-        startVelocityState, 
-        startCollisionState, 
-        positionShader, 
-        velocityShader, 
-        collisionShader, 
-        downsampleCollisions, 
-        scene, 
+        num,
+        startPositionState,
+        startVelocityState,
+        startCollisionState,
+        positionShader,
+        velocityShader,
+        collisionShader,
+        downsampleCollisions,
+        scene,
         initialValuesFunction,
-        initialPositionValuesFunction = false, 
-        initialVelocityValuesFunction = false, 
+        initialPositionValuesFunction = false,
+        initialVelocityValuesFunction = false,
         initialCollisionValuesFunction = false
-    ){
+    ) {
         const WIDTH = Math.max(nextPOT(Math.ceil(Math.sqrt(num))), 2);
 
         this.positionTextures = times(2, () => makeProceduralTexture("position", positionShader, WIDTH, scene));
@@ -57,23 +57,23 @@ export default class DifferentialPositionVelocityCollisionSystem {
         })
 
         this.allTextures.forEach(initialValuesFunction)
-        
-        if(initialPositionValuesFunction){
+
+        if (initialPositionValuesFunction) {
             this.positionTextures.forEach(initialPositionValuesFunction);
         }
-        if(initialVelocityValuesFunction){
+        if (initialVelocityValuesFunction) {
             this.velocityTextures.forEach(initialVelocityValuesFunction);
         }
-        if(initialCollisionValuesFunction){
+        if (initialCollisionValuesFunction) {
             this.collisionTextures.forEach(initialCollisionValuesFunction);
         }
 
-        if(downsampleCollisions){
+        if (downsampleCollisions) {
             const [collisionResult, reducerLayers] = parallelReducer(this.collisionTextures[0], WIDTH, scene);
             this.collisionResult = collisionResult;
             this.reducerLayers = reducerLayers;
         }
-        else{
+        else {
             this.collisionResult = this.collisionTextures[0]
         }
 
@@ -140,8 +140,8 @@ export default class DifferentialPositionVelocityCollisionSystem {
         }
 
         bindSouceTextures(this.positionTextures[dest])
-        bindSouceTextures(this.velocityTextures[dest])   
-        bindSouceTextures(this.collisionTextures[dest])   
+        bindSouceTextures(this.velocityTextures[dest])
+        bindSouceTextures(this.collisionTextures[dest])
 
         if (this.reducerLayers) {
             this.reducerLayers[0].setTexture('source', this.collisionTextures[dest]);

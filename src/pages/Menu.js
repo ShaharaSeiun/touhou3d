@@ -1,15 +1,17 @@
-import React, { useContext, useEffect } from 'react';
 import { Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-
-import BackgroundImage from '../img/menu_bamboo.jpg';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { MainMenu } from './MainMenu';
-import { DifficultySelect } from './DifficultySelect';
-import { CharacterSelect } from './CharacterSelect';
-import { Options } from './Options';
+import React, { useContext, useEffect } from 'react';
+import { Route } from 'react-router-dom';
 import { ControlsContext } from '../components/ControlsContainer';
+import BackgroundImage from '../img/menu_bamboo.jpg';
 import Music from '../sounds/Music';
+import { NeedsToClick } from '../utils/NeedsToClick';
+import { CharacterSelect } from './CharacterSelect';
+import { DifficultySelect } from './DifficultySelect';
+import { MainMenu } from './MainMenu';
+import { Options } from './Options';
+import { Stats } from './Stats';
+
 
 const useStyles = makeStyles({
     container: {
@@ -19,7 +21,6 @@ const useStyles = makeStyles({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        fontSize: '5vh',
     },
 });
 
@@ -41,7 +42,7 @@ export const Menu = () => {
             className={classes.container}
             tabIndex={0}
         >
-
+            <NeedsToClick />
             <Route exact path="/">
                 <MainMenu />
             </Route>
@@ -56,6 +57,9 @@ export const Menu = () => {
             </Route>
             <Route exact path="/menu/game/characterSelect">
                 <CharacterSelect back={'/menu/game/difficultySelect'} next={'/game/stage1'} />
+            </Route>
+            <Route exact path="/menu/game/stats">
+                <Stats />
             </Route>
 
         </Box>

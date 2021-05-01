@@ -1,18 +1,17 @@
 import { Vector3 } from '@babylonjs/core';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
+import { keyObject } from '../../../../../components/ControlsContainer';
 import { playerShoot } from '../../../../../sounds/SFX';
 import { PLAYER_BULLETS_WHEEL_LENGTH } from '../../../../../utils/Constants';
 import { BulletsContext } from '../../../../gameLogic/GeneralContainer';
 import { allBullets } from '../../../../gameLogic/StaticRefs';
-import { useControl } from '../../../../hooks/useControl';
-import { useTarget } from '../../../../hooks/useTarget';
-import { useNormalizedFrameSkip } from '../../../../hooks/useNormalizedFrameSkip';
 import { useName } from '../../../../hooks/useName';
-import { keyObject } from '../../../../../components/ControlsContainer';
+import { useNormalizedFrameSkip } from '../../../../hooks/useNormalizedFrameSkip';
+import { useTarget } from '../../../../hooks/useTarget';
 
-//15 bullets per second
-let bulletFrameSkip = 5;
+//5 bullets per second
+let bulletFrameSkip = 15;
 
 const makeShotInstruction = (powerClass, initialVelocity) => {
     let shotSources;
@@ -21,13 +20,13 @@ const makeShotInstruction = (powerClass, initialVelocity) => {
         case 0:
             throw new Error('Acceleration bullets should not be enabled for a power class of 0');
         case 1:
-            shotSources = [new Vector3(0, 0, 0.15)];
+            shotSources = [new Vector3(0, -1, 0.15)];
             break;
         case 2:
-            shotSources = [new Vector3(0, 0, 0.15)];
+            shotSources = [new Vector3(0, -1, 0.15)];
             break;
         case 3:
-            shotSources = [new Vector3(0, 0.3, 0.15), new Vector3(0, -0.3, 0.15)];
+            shotSources = [new Vector3(0, -1, 0.15)];
             break;
         default:
             throw new Error('Unknown power class ' + powerClass);
@@ -36,8 +35,9 @@ const makeShotInstruction = (powerClass, initialVelocity) => {
     const instruction = {
         type: 'shoot',
         materialOptions: {
-            material: 'texture',
-            texture: 'reimu_ofuda_blue',
+            material: 'fresnel',
+            color: [0.2, 0.6, 1],
+            alpha: 0.05,
             hasAlpha: true,
             doubleSided: true,
         },
@@ -46,13 +46,15 @@ const makeShotInstruction = (powerClass, initialVelocity) => {
             num: PLAYER_BULLETS_WHEEL_LENGTH * shotSources.length,
         },
         meshOptions: {
-            mesh: 'card',
+            mesh: 'marisaBullet',
+            radius: 2
         },
         behaviourOptions: {
             behaviour: 'playerShotAcceleration',
             initialShotVector: initialVelocity,
             shotSources: shotSources,
             shotSpeed: 20,
+            bulletValue: 10
         },
         soundOptions: false,
         lifespan: Infinity,

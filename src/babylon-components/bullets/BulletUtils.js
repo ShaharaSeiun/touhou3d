@@ -5,9 +5,8 @@ import { MAX_BULLETS_PER_GROUP } from '../../utils/Constants';
 import { sum } from '../../utils/Utils';
 import { glsl } from '../BabylonUtils';
 import { CustomCustomProceduralTexture } from '../CustomCustomProceduralTexture';
-import { allBullets, preComputedBulletPatterns, preComputedEndTimings } from '../gameLogic/StaticRefs';
+import { allBullets, preComputedBulletPatterns } from '../gameLogic/StaticRefs';
 import { makeName } from '../hooks/useName';
-import { makeBulletPattern } from './patterns';
 
 export const addReducerPixelShader = glsl`
     uniform sampler2D source;
@@ -30,8 +29,8 @@ export const addReducerPixelShader = glsl`
     }
 `;
 
-export const bulletReplaceRotation = (sourceId, {rotation = Math.PI/2, velocityMultiplier = 1}, optionsToChange = {}) => {
-    const newInstruction = {...allBullets[sourceId].instruciton}
+export const bulletReplaceRotation = (sourceId, { rotation = Math.PI / 2, velocityMultiplier = 1 }, optionsToChange = {}) => {
+    const newInstruction = { ...allBullets[sourceId].instruciton }
 
     const positions = allBullets[sourceId].behaviour.diffSystem.positionTextures[0];
     const velocities = allBullets[sourceId].velocities.map(velocity => {
@@ -56,7 +55,7 @@ export const bulletReplaceRotation = (sourceId, {rotation = Math.PI/2, velocityM
     })
     delete outInstruction.endTimings;
     doubleAssign(outInstruction, optionsToChange)
-    doubleAssign(outInstruction, { 
+    doubleAssign(outInstruction, {
         behaviourOptions: {
             reliesOnParent: false,
             disableWarning: true
@@ -67,9 +66,9 @@ export const bulletReplaceRotation = (sourceId, {rotation = Math.PI/2, velocityM
 }
 
 export const bulletReplaceRotationFromPrecompute = (precomputeId, sourceId, optionsToChange = {}) => {
-    const newInstruction = {...allBullets[sourceId].instruciton}
+    const newInstruction = { ...allBullets[sourceId].instruciton }
 
-    const {velocities, timings} = preComputedBulletPatterns[precomputeId]
+    const { velocities, timings } = preComputedBulletPatterns[precomputeId]
     const positions = allBullets[sourceId].behaviour.diffSystem.positionTextures[0];
 
     const outInstruction = Object.assign(newInstruction, {
@@ -86,7 +85,7 @@ export const bulletReplaceRotationFromPrecompute = (precomputeId, sourceId, opti
     })
     delete outInstruction.endTimings;
     doubleAssign(outInstruction, optionsToChange)
-    doubleAssign(outInstruction, { 
+    doubleAssign(outInstruction, {
         behaviourOptions: {
             reliesOnParent: false,
             disableWarning: true
@@ -138,13 +137,13 @@ export const parallelReducer = (source, sourceResolution, scene) => {
 };
 
 export const doubleAssign = (object1, object2) => {
-    for(let key in object2){
+    for (let key in object2) {
         let mergeTarget = {}
-        if(key in object1){
+        if (key in object1) {
             mergeTarget = object1[key];
         }
-        const newValue = object2[key] instanceof Object ? 
-            Object.assign(mergeTarget, object2[key]) : 
+        const newValue = object2[key] instanceof Object ?
+            Object.assign(mergeTarget, object2[key]) :
             object2[key];
         object1[key] = newValue;
     }
@@ -154,9 +153,9 @@ export const doubleAssign = (object1, object2) => {
 export const doubleClone = (object) => {
     const newObject = {};
 
-    for(let key in object){
-        const newValue = object[key] instanceof Object ? 
-            {...object[key]} : 
+    for (let key in object) {
+        const newValue = object[key] instanceof Object ?
+            { ...object[key] } :
             object[key];
         newObject[key] = newValue;
     }
@@ -326,6 +325,7 @@ export const convertEnemyBulletCollisions = (buffer) => {
         const pointGraze = buffer[i];
         const bombLife = buffer[i + 1];
         const powerSpecial = buffer[i + 2];
+
         const environmentPlayer = buffer[i + 3];
         const player = Math.floor(environmentPlayer / MAX_BULLETS_PER_GROUP);
         if (pointGraze || bombLife || powerSpecial || player) {
@@ -346,18 +346,18 @@ export const convertEnemyBulletCollisions = (buffer) => {
 
 export const computeSourceTextures = (pattern, scene) => {
     const outTextures = {};
-    if(pattern.positions){
+    if (pattern.positions) {
         outTextures.initialPositions = makeTextureFromVectors(pattern.positions, scene, 1, -510);
     }
-    if(pattern.velocities){
+    if (pattern.velocities) {
         outTextures.velocities = makeTextureFromVectors(pattern.velocities, scene, 1, 0);
     }
-    if(pattern.timings){
+    if (pattern.timings) {
         outTextures.timings = makeTextureFromArray(pattern.timings, scene);
         outTextures.positions = makeTextureFromBlank(pattern.timings.length, scene, 1., -510., -510.)
         outTextures.collisions = makeTextureFromBlank(pattern.timings.length, scene, 0, 0); //No collisions
     }
-    
+
     return outTextures;
 }
 
@@ -367,7 +367,7 @@ export const makeReplaceInstruction = (oldInstruction, overrides) => {
     const destUid = v4();
 
     const newInstruction = doubleClone(oldInstruction);
-    doubleAssign(newInstruction, { 
+    doubleAssign(newInstruction, {
         patternOptions: {
             pattern: 'replace',
             sourceUid,

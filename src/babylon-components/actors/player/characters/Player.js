@@ -1,53 +1,26 @@
-import { Animation, BezierCurveEase, Color3, Vector3 } from '@babylonjs/core';
+import { Animation, BezierCurveEase, Vector3 } from '@babylonjs/core';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
+import { globals, GlobalsContext } from '../../../../components/GlobalsContainer';
+import { useKeydown } from '../../../../hooks/useKeydown';
+import { PLAYER_BOMB_DURATION, PLAYER_INVULNERABLE_COOLDOWN } from '../../../../utils/Constants';
+import { AnimationContext } from '../../../gameLogic/GeneralContainer';
+import { useEffects } from '../../../gameLogic/useEffects';
+import { useAddBulletGroup } from '../../../hooks/useAddBulletGroup';
+import { useDoSequence } from '../../../hooks/useDoSequence';
 import { useName } from '../../../hooks/useName';
 import { useTexture } from '../../../hooks/useTexture';
-import { useKeydown } from '../../../../hooks/useKeydown';
-import { useEffects } from '../../../gameLogic/useEffects';
-import { useDoSequence } from '../../../hooks/useDoSequence';
-import { AnimationContext } from '../../../gameLogic/GeneralContainer';
-import { globals, GlobalsContext } from '../../../../components/GlobalsContainer';
-import { calcPowerClass } from '../PlayerUtils';
 import { InvulnerabilityField } from '../InvulnerabilityField';
-import { PLAYER_BOMB_DURATION, PLAYER_INVULNERABLE_COOLDOWN } from '../../../../utils/Constants';
-import { useAddBulletGroup } from '../../../hooks/useAddBulletGroup';
-import { BULLET_TYPE } from '../../../bullets/behaviours/EnemyBulletBehaviour';
-import { ReimuOrb } from './reimu/ReimuOrb';
-import { MarisaMagicCircle } from './marisa/MarisaMagicCircle';
-import { FantasySeal } from './reimu/FantasySeal';
-import { MasterSpark } from './marisa/MasterSpark';
-import { Reimu } from './reimu/Reimu';
+import { calcPowerClass } from '../PlayerUtils';
 import { Marisa } from './marisa/Marisa';
+import { MarisaMagicCircle } from './marisa/MarisaMagicCircle';
+import { MasterSpark } from './marisa/MasterSpark';
+import { playerContinueInstruction, playerDeathInstruction } from './PlayerInstructions';
+import { FantasySeal } from './reimu/FantasySeal';
+import { Reimu } from './reimu/Reimu';
+import { ReimuOrb } from './reimu/ReimuOrb';
 
-const deathInstruction = {
-    type: 'shoot',
-    materialOptions: {
-        material: 'item',
-        texture: 'power',
-        doubleSided: true,
-        hasAlpha: true,
-    },
-    patternOptions: {
-        pattern: 'arc',
-        num: 7,
-        from: [1, 0, 10],
-        to: [-1, 0, 10],
-        speed: 80,
-        radius: 5
-    },
-    meshOptions: {
-        mesh: 'item',
-    },
-    behaviourOptions: {
-        behaviour: 'item',
-        bulletType: BULLET_TYPE.POWER,
-    },
-    lifespan: 20,
-    wait: 0,
-}
-
-export const Player = ({character}) => {
+export const Player = ({ character }) => {
     const transformNodeRef = useRef();
     const sphereTransformNodeRef = useRef();
     const startPlayer = useMemo(() => globals.PLAYER, [])
@@ -63,7 +36,7 @@ export const Player = ({character}) => {
     const addBulletGroup = useAddBulletGroup();
 
     const EmitterClass = useMemo(() => {
-        switch (character){
+        switch (character) {
             case 'reimu':
                 return ReimuOrb;
             case 'marisa':
@@ -74,7 +47,7 @@ export const Player = ({character}) => {
     }, [character])
 
     const BombClass = useMemo(() => {
-        switch (character){
+        switch (character) {
             case 'reimu':
                 return FantasySeal;
             case 'marisa':
@@ -85,7 +58,7 @@ export const Player = ({character}) => {
     }, [character])
 
     const MeshClass = useMemo(() => {
-        switch (character){
+        switch (character) {
             case 'reimu':
                 return Reimu;
             case 'marisa':
@@ -94,7 +67,7 @@ export const Player = ({character}) => {
                 throw new Error('unknown character: ' + character);
         }
     }, [character])
-    
+
     useKeydown('BOMB', () => {
         if (!globals.BOMB || isBombing) return;
         setGlobal('BOMB', globals.BOMB - 1);
@@ -132,14 +105,17 @@ export const Player = ({character}) => {
     );
 
     useDoSequence(isBombing, transformNodeRef, bombingTimings, bombingActions);
-    
+
     useEffect(() => {
-        if(player !== startPlayer){
+        if (player !== startPlayer) {
             setIsInvulnerable(true);
-            addBulletGroup(
+            if (globals.POWER) addBulletGroup(
                 transformNodeRef.current,
-                deathInstruction
+                player === 0 ? playerContinueInstruction() : playerDeathInstruction(globals.POWER),
+                false,
+                true
             )
+            setGlobal('POWER', 0);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [player])
@@ -164,13 +140,13 @@ export const Player = ({character}) => {
         <transformNode name={name} ref={transformNodeRef}>
             <MeshClass />
             <transformNode name={name + 'sphereTransformNode'} position={new Vector3(0, 0, 1)} ref={sphereTransformNodeRef}>
-                <EmitterClass isBombing={isBombing} powerClass={powerClass} side={'right'} isInvulnerable={isInvulnerable}/>
-                <EmitterClass isBombing={isBombing} powerClass={powerClass} side={'left'} isInvulnerable={isInvulnerable}/>
+                <EmitterClass isBombing={isBombing} powerClass={powerClass} side={'right'} isInvulnerable={isInvulnerable} />
+                <EmitterClass isBombing={isBombing} powerClass={powerClass} side={'left'} isInvulnerable={isInvulnerable} />
             </transformNode>
             <transformNode name="bombObjectTransformNode" position={new Vector3(0, 0, 1)}>
                 <InvulnerabilityField
                     active={isInvulnerable || isBombing}
-                    radius={isInvulnerable ? [5, 500, 5] : 2} 
+                    radius={isInvulnerable ? [5, 500, 5] : 2}
                     texture={isInvulnerable ? deathTexture : false}
                 />
                 {isBombing && (

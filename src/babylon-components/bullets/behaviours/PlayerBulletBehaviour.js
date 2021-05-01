@@ -2,14 +2,14 @@ import { globalActorRefs } from '../../gameLogic/StaticRefs';
 import { BulletBehaviour } from './BulletBehaviour';
 
 export class PlayerBulletBehaviour extends BulletBehaviour {
-    constructor(positionShader, velocityShader, parent, collideWithEnvironment, initialValuesFunction) {
+    constructor(positionShader, velocityShader, parent, collideWithEnvironment, initialValuesFunction, bulletValue) {
         const playerInitialValuesFunction = (texture) => {
             if (initialValuesFunction) initialValuesFunction(texture);
             texture.setFloats('enemyPositions', globalActorRefs.enemyPositionBuffer);
             texture.setFloats('enemyRadii', globalActorRefs.enemyRadiiBuffer);
         }
 
-        super(positionShader, velocityShader, parent, collideWithEnvironment, playerInitialValuesFunction);
+        super(positionShader, velocityShader, parent, collideWithEnvironment, playerInitialValuesFunction, 1, bulletValue);
         this.collisionShader = 'playerBulletCollision';
         this.isEnemyBullet = false;
         this.isPlayerBullet = true;

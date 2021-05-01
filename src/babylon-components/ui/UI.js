@@ -1,18 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useKeydown } from '../../hooks/useKeydown';
+import { selectSound } from '../../sounds/SFX';
 import { PauseContext, UIContext } from '../gameLogic/GeneralContainer';
+import { BossUI } from './BossUI';
 import { CharacterDialogueText } from './CharacterDialogueText';
 import { CharacterPortrait } from './CharacterPortrait';
-import { StageStartQuote } from './StageStartQuote';
+import { DeadUI } from './DeadUI';
 import { IngameMenu } from './IngameMenu';
-import { selectSound } from '../../sounds/SFX';
 import { Notice } from './Notice';
-import { BossUI } from './BossUI';
+import { StageStartQuote } from './StageStartQuote';
 
 const mainCharacters = ['reimu'];
 
 export const UI = () => {
-    const { charactersInDialogue, activeCharacter, activeCharacterEmotion, activeCharacterText, stageStartQuote, bossUI, spellCardUI } = useContext(
+    const { isDead, setIsDead, charactersInDialogue, activeCharacter, activeCharacterEmotion, activeCharacterText, stageStartQuote, bossUI, spellCardUI } = useContext(
         UIContext
     );
     const { paused, setPaused } = useContext(PauseContext);
@@ -61,8 +62,9 @@ export const UI = () => {
             ))}
             {activeCharacter && <CharacterDialogueText character={activeCharacter} text={activeCharacterText} />}
             {stageStartQuote && <StageStartQuote text={stageStartQuote} />}
-            {paused && <IngameMenu />}
-            {bossUI && <BossUI bossUIProps={bossUI} spellCardUIProps={spellCardUI}/>}
+            {paused && !isDead && <IngameMenu />}
+            {bossUI && <BossUI bossUIProps={bossUI} spellCardUIProps={spellCardUI} />}
+            {isDead && <DeadUI setIsDead={setIsDead} />}
             <Notice />
         </>
     );

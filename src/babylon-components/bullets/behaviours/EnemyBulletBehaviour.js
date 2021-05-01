@@ -12,14 +12,14 @@ export const BULLET_TYPE = {
 };
 
 export class EnemyBulletBehaviour extends BulletBehaviour {
-    constructor(positionShader, velocityShader, parent, collideWithEnvironment, initialValuesFunction, radius, bulletType = 0) {
+    constructor(positionShader, velocityShader, parent, collideWithEnvironment, initialValuesFunction, radius, bulletType = 0, bulletValue = 1) {
         const enemyInitialValuesFunction = (texture) => {
             if (initialValuesFunction) initialValuesFunction(texture);
             texture.setFloats('bombPositions', globalActorRefs.bombPositionBuffer);
             texture.setFloats('bombRadii', globalActorRefs.bombRadiiBuffer);
         }
 
-        super(positionShader, velocityShader, parent, collideWithEnvironment, enemyInitialValuesFunction, radius);
+        super(positionShader, velocityShader, parent, collideWithEnvironment, enemyInitialValuesFunction, radius, bulletValue);
         this.collisionShader = 'enemyBulletCollision';
         this.isEnemyBullet = true;
         this.isPlayerBullet = false;
@@ -37,22 +37,22 @@ export class EnemyBulletBehaviour extends BulletBehaviour {
 
         switch (this.bulletType) {
             case 0:
-                typeVector1.x = 1;
+                typeVector1.x = this.bulletValue;
                 break; //bullet
             case 1:
-                typeVector1.y = 1;
+                typeVector1.y = this.bulletValue;
                 break; //life
             case 2:
-                typeVector1.z = 1;
+                typeVector1.z = this.bulletValue;
                 break; //bomb
             case 3:
-                typeVector2.x = 1;
+                typeVector2.x = this.bulletValue;
                 break; //power
             case 4:
-                typeVector2.y = 1;
+                typeVector2.y = this.bulletValue;
                 break; //point
             case 5:
-                typeVector2.z = 1;
+                typeVector2.z = this.bulletValue;
                 break; //special
             default:
                 throw new Error('Invalid bullet type ' + this.bulletType);

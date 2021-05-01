@@ -41,11 +41,11 @@ export const itemBehaviourVelocityPixelShader = glsl`
 `;
 
 class Itembehaviour extends EnemyBulletBehaviour {
-    constructor(bulletType, environmentCollision, radius, parent) {
-        super('itemBehaviourPosition', 'itemBehaviourVelocity', parent, environmentCollision, null, radius, bulletType || 4);
+    constructor(bulletType, bulletValue, environmentCollision, radius, parent) {
+        super('itemBehaviourPosition', 'itemBehaviourVelocity', parent, environmentCollision, null, radius, bulletType || 4, bulletValue || 1);
     }
 }
 
 export const makeItembehaviour = (behaviourOptions, environmentCollision, radius, parent) => {
-    return new Itembehaviour(behaviourOptions.bulletType, environmentCollision, radius, parent);
+    return new Itembehaviour(behaviourOptions.bulletType, behaviourOptions.bulletValue, environmentCollision, radius, parent);
 };

@@ -1,13 +1,13 @@
-import React, { useState, useMemo } from 'react';
-import { useBullets } from './useBullets';
-import { useLoadAssets } from './useLoadAssets';
-import { useEffects } from './useEffects';
 import { Vector3 } from '@babylonjs/core';
-import { useUI } from './useUI';
-import { useGlowLayer } from './useGlowLayer';
-import { usePause } from './usePause';
-import { allSyncs } from '../CustomCustomProceduralTexture';
+import React, { useMemo, useState } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
+import { allSyncs } from '../CustomCustomProceduralTexture';
+import { useBullets } from './useBullets';
+import { useEffects } from './useEffects';
+import { useGlowLayer } from './useGlowLayer';
+import { useLoadAssets } from './useLoadAssets';
+import { usePause } from './usePause';
+import { useUI } from './useUI';
 
 export const BulletsContext = React.createContext();
 export const EffectsContext = React.createContext();
@@ -21,10 +21,10 @@ export const AnimationContext = React.createContext();
 export const GeneralContainer = ({ children }) => {
     const target = useMemo(() => new Vector3(0, 0, 10), []);
     const [environmentCollision, setEnvironmentCollision] = useState(new Vector3(1, 0, 0));
-
+    const [isDead, setIsDead] = useState(false);
     const assets = useLoadAssets();
     const addEffect = useEffects(assets);
-    const bulletsObject = useBullets(assets, environmentCollision, addEffect);
+    const bulletsObject = useBullets(assets, environmentCollision, addEffect, isDead, setIsDead);
     const UIProps = useUI();
     const glowLayer = useGlowLayer();
     const { registerAnimation, unregisterAnimation, ...pauseProps } = usePause();
@@ -63,7 +63,7 @@ export const GeneralContainer = ({ children }) => {
                 <EffectsContext.Provider value={addEffect}>
                     <TargetContext.Provider value={target}>
                         <GlowContext.Provider value={glowLayer}>
-                            <UIContext.Provider value={UIProps}>
+                            <UIContext.Provider value={{ isDead, setIsDead, ...UIProps }}>
                                 <PauseContext.Provider value={pauseProps}>
                                     <AnimationContext.Provider value={{ registerAnimation, unregisterAnimation }}>{children}</AnimationContext.Provider>
                                 </PauseContext.Provider>

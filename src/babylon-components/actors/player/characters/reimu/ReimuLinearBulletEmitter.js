@@ -1,15 +1,14 @@
 import { Vector3 } from '@babylonjs/core';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
+import { keyObject } from '../../../../../components/ControlsContainer';
 import { playerShoot } from '../../../../../sounds/SFX';
 import { PLAYER_BULLETS_WHEEL_LENGTH } from '../../../../../utils/Constants';
 import { BulletsContext } from '../../../../gameLogic/GeneralContainer';
 import { allBullets } from '../../../../gameLogic/StaticRefs';
-import { useControl } from '../../../../hooks/useControl';
-import { useTarget } from '../../../../hooks/useTarget';
-import { useNormalizedFrameSkip } from '../../../../hooks/useNormalizedFrameSkip';
 import { useName } from '../../../../hooks/useName';
-import { keyObject } from '../../../../../components/ControlsContainer';
+import { useNormalizedFrameSkip } from '../../../../hooks/useNormalizedFrameSkip';
+import { useTarget } from '../../../../hooks/useTarget';
 
 //15 bullets per second
 let bulletFrameSkip = 5;

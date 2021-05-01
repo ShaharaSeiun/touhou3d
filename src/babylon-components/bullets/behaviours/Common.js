@@ -1,4 +1,4 @@
-import { BULLET_WARNING, GRAZE_DISTANCE, MAX_BOMBS, MAX_BULLETS_PER_GROUP, MAX_ENEMIES } from '../../../utils/Constants';
+import { BULLET_WARNING, DEV_COLLISIONS_CHANGE_POSITION, GRAZE_DISTANCE, MAX_BOMBS, MAX_BULLETS_PER_GROUP, MAX_ENEMIES } from '../../../utils/Constants';
 import { glsl } from '../../BabylonUtils';
 
 export const uniformSnippet = glsl`
@@ -45,6 +45,8 @@ export const postVelocityComputeSnippet = glsl`
 export const collisionSnippet = glsl`
     float collidedWithAnything = clamp(collision.w, 0.0, 1.0);
     float noCollision = 1. - collidedWithAnything;
+
+    ${DEV_COLLISIONS_CHANGE_POSITION ? "" : "collidedWithAnything = 0.0;"}
 
     out_Position = (collidedWithAnything * vec4(-510., -510., -510., 1.)) + (noCollision * out_Position);
 `;

@@ -1,4 +1,4 @@
-import { Wriggle2 } from "../stage1def/Wriggle2";
+import { DefaultFairy } from "../stage1def/DefaultFairy";
 
 /* eslint no-unused-vars: 0 */
 
@@ -10,7 +10,7 @@ const testdef = () => {
     map.epochs[0].push({
         type: "enemies",
         action: 'spawn',
-        enemy: Wriggle2([1, 0.5, 1], [-1, 0.5, 0]),
+        enemy: DefaultFairy([1, 0.5, 1], [-1, 0.5, 0]),
         wait: 0
     })
 

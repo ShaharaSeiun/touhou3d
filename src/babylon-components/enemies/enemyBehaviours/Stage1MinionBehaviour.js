@@ -4,7 +4,7 @@ import { randVectorToPosition } from '../../BabylonUtils';
 import { useAddBulletGroup } from '../../hooks/useAddBulletGroup';
 import { useDoSequence } from '../../hooks/useDoSequence';
 
-const smallInstruction = (color) =>  ({
+const smallInstruction = (color) => ({
     type: 'shoot',
     materialOptions: {
         material: 'fresnel',
@@ -35,17 +35,20 @@ const smallInstruction = (color) =>  ({
 })
 
 export const yellowSmall = smallInstruction([1, 1, 0]);
+export const whiteSmall = smallInstruction([1, 1, 1]);
 
 const small = (color) => {
-    switch(JSON.stringify(color)){
-        case JSON.stringify([1, 1, 0]): 
+    switch (JSON.stringify(color)) {
+        case JSON.stringify([1, 1, 0]):
             return yellowSmall;
+        case JSON.stringify([1, 1, 1]):
+            return whiteSmall;
         default:
             throw new Error('no precomputed pattern for color ' + JSON.stringify(color));
     }
 }
 
-export const Stage1MinionBehaviour = ({ children, leaveScene, spawn, color}) => {
+export const Stage1MinionBehaviour = ({ children, leaveScene, spawn, color }) => {
     const transformNodeRef = useRef();
     const startPosition = useMemo(() => spawn ? randVectorToPosition(spawn) : new Vector3(0, 0, 0), [spawn]);
     const actionsTimings = useMemo(() => [2, 15], []);

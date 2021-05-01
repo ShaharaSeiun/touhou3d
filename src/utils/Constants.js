@@ -19,6 +19,8 @@ export const PLAYER_INVULNERABLE_COOLDOWN = 2;
 export const PLAYER_BOMB_DURATION = 8;
 export const TARGET_LENGTH = 15;
 
+export const DEV_COLLISIONS_CHANGE_POSITION = true;
+
 export const BULLET_WARNING = 0.2;
 
 export const CHARACTER_CONSTS = {

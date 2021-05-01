@@ -17,6 +17,7 @@ import {
 import { debugFragmentShader, debugVertexShader } from './bullets/materials/Debug';
 import { slowToStopBehaviourPositionPixelShader, slowToStopBehaviourVelocityPixelShader } from './bullets/behaviours/SlowToStop';
 import { actorFresnelFragmentShader, actorFresnelVertexShader } from './enemies/enemyActors/materials/ActorFresnel';
+import { playerShotAccelerationBehaviourPositionPixelShader, playerShotAccelerationBehaviourVelocityPixelShader } from './bullets/behaviours/PlayerShotAccelerationBehaviour';
 
 Effect.ShadersStore['actorFresnelVertexShader'] = actorFresnelVertexShader;
 Effect.ShadersStore['actorFresnelFragmentShader'] = actorFresnelFragmentShader;
@@ -41,6 +42,9 @@ Effect.ShadersStore['playerShotBehaviourVelocityPixelShader'] = playerShotBehavi
 
 Effect.ShadersStore['playerShotTrackingBehaviourPositionPixelShader'] = playerShotTrackingBehaviourPositionPixelShader;
 Effect.ShadersStore['playerShotTrackingBehaviourVelocityPixelShader'] = playerShotTrackingBehaviourVelocityPixelShader;
+
+Effect.ShadersStore['playerShotAccelerationBehaviourPositionPixelShader'] = playerShotAccelerationBehaviourPositionPixelShader;
+Effect.ShadersStore['playerShotAccelerationBehaviourVelocityPixelShader'] = playerShotAccelerationBehaviourVelocityPixelShader;
 
 Effect.ShadersStore['fresnelVertexShader'] = fresnelVertexShader;
 Effect.ShadersStore['fresnelFragmentShader'] = fresnelFragmentShader;

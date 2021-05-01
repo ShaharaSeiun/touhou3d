@@ -1,35 +1,61 @@
 import { Vector3 } from '@babylonjs/core';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
+import { keyObject } from '../../../../../components/ControlsContainer';
 import { playerShoot } from '../../../../../sounds/SFX';
 import { PLAYER_BULLETS_WHEEL_LENGTH } from '../../../../../utils/Constants';
 import { BulletsContext } from '../../../../gameLogic/GeneralContainer';
 import { allBullets } from '../../../../gameLogic/StaticRefs';
-import { useControl } from '../../../../hooks/useControl';
-import { useTarget } from '../../../../hooks/useTarget';
-import { useNormalizedFrameSkip } from '../../../../hooks/useNormalizedFrameSkip';
 import { useName } from '../../../../hooks/useName';
-import { preComputeBulletGroup } from '../../../../gameLogic/useBullets';
-import { keyObject } from '../../../../../components/ControlsContainer';
+import { useNormalizedFrameSkip } from '../../../../hooks/useNormalizedFrameSkip';
+import { useTarget } from '../../../../hooks/useTarget';
 
 //15 bullets per second
 let bulletFrameSkip = 5;
 
-const makeShotInstruction = (powerClass) => {
+const makeShotInstruction = (powerClass, side) => {
     let shotSources;
+    let initialVelocities;
+    const sideCoefficient = side === 'right' ? 1 : -1;
 
     switch (powerClass) {
         case 0:
+            shotSources = [new Vector3(0, 0, 0.15)];
+            initialVelocities = [new Vector3(0, 0, 0)]
+            break;
         case 1:
             shotSources = [new Vector3(0, 0, 0.15)];
+            initialVelocities = [new Vector3(0, 0, 0)]
             break;
         case 2:
+            shotSources = [
+                new Vector3(0, 0, 0.15),
+                new Vector3(sideCoefficient * 0.15, 0.15, 0.15),
+                new Vector3(sideCoefficient * 0.15, -0.15, 0.15)
+            ];
+            initialVelocities = [
+                new Vector3(0, 0, 0),
+                new Vector3(sideCoefficient * 2, 0, 0),
+                new Vector3(sideCoefficient * 2, 0, 0)
+            ]
+            break;
         case 3:
             shotSources = [
-                new Vector3(0.3 * Math.cos(2.09 * 0), 0.3 * Math.sin(2.09 * 0), 0.15),
-                new Vector3(0.3 * Math.cos(2.09 * 1), 0.3 * Math.sin(2.09 * 1), 0.15),
-                new Vector3(0.3 * Math.cos(2.09 * 2), 0.3 * Math.sin(2.09 * 2), 0.15),
+                new Vector3(0, 0, 0.15),
+                new Vector3(sideCoefficient * 0.15, 0.15, 0.15),
+                new Vector3(sideCoefficient * 0.15, -0.15, 0.15),
+                new Vector3(sideCoefficient * 0.3, 0.3, 0.15),
+                new Vector3(sideCoefficient * 0.3, 0, 0.15),
+                new Vector3(sideCoefficient * 0.3, -0.3, 0.15)
             ];
+            initialVelocities = [
+                new Vector3(0, 0, 0),
+                new Vector3(sideCoefficient * 2, 0, 0),
+                new Vector3(sideCoefficient * 2, 0, 0),
+                new Vector3(sideCoefficient * 4, 0, 0),
+                new Vector3(sideCoefficient * 4, 0, 0),
+                new Vector3(sideCoefficient * 4, 0, 0)
+            ]
             break;
         default:
             throw new Error('Unknown power class ' + powerClass);
@@ -53,7 +79,8 @@ const makeShotInstruction = (powerClass) => {
         },
         behaviourOptions: {
             behaviour: 'playerShot',
-            shotSources: shotSources,
+            initialVelocities,
+            shotSources,
             shotSpeed: 20,
         },
         soundOptions: false,
@@ -64,27 +91,48 @@ const makeShotInstruction = (powerClass) => {
     return instruction;
 };
 
-export const marisaShotPower0 = makeShotInstruction(0);
-export const marisaShotPower1 = makeShotInstruction(1);
-export const marisaShotPower2 = makeShotInstruction(2);
-export const marisaShotPower3 = makeShotInstruction(3);
+export const marisaShotPower0L = makeShotInstruction(0, "left");
+export const marisaShotPower1L = makeShotInstruction(1, "left");
+export const marisaShotPower2L = makeShotInstruction(2, "left");
+export const marisaShotPower3L = makeShotInstruction(3, "left");
+export const marisaShotPower0R = makeShotInstruction(0, "right");
+export const marisaShotPower1R = makeShotInstruction(1, "right");
+export const marisaShotPower2R = makeShotInstruction(2, "right");
+export const marisaShotPower3R = makeShotInstruction(3, "right");
 
-const shotInstruction = (power) => {
-    switch (power) {
-        case 0:
-            return marisaShotPower0;
-        case 1:
-            return marisaShotPower1;
-        case 2:
-            return marisaShotPower2;
-        case 3:
-            return marisaShotPower3;
-        default:
-            throw new Error('Unknown power class')
+const shotInstruction = (power, side) => {
+    if (side === "left") {
+        switch (power) {
+            case 0:
+                return marisaShotPower0L;
+            case 1:
+                return marisaShotPower1L;
+            case 2:
+                return marisaShotPower2L;
+            case 3:
+                return marisaShotPower3L;
+            default:
+                throw new Error('Unknown power class')
+        }
     }
+    if (side === "right") {
+        switch (power) {
+            case 0:
+                return marisaShotPower0R;
+            case 1:
+                return marisaShotPower1R;
+            case 2:
+                return marisaShotPower2R;
+            case 3:
+                return marisaShotPower3R;
+            default:
+                throw new Error('Unknown power class')
+        }
+    }
+
 }
 
-export const MarisaLinearBulletEmitter = ({ powerClass, ...props }) => {
+export const MarisaLinearBulletEmitter = ({ powerClass, side, ...props }) => {
     const transformNodeRef = useRef();
     const { addBulletGroup, disposeSingle } = useContext(BulletsContext);
     const shotFrame = useRef(0);
@@ -96,7 +144,7 @@ export const MarisaLinearBulletEmitter = ({ powerClass, ...props }) => {
     useEffect(() => {
         if (!transformNodeRef.current) return;
 
-        const id = addBulletGroup(transformNodeRef.current, shotInstruction(powerClass), false, true);
+        const id = addBulletGroup(transformNodeRef.current, shotInstruction(powerClass, side), false, true);
         setShotId(id);
 
         return () => {
@@ -105,7 +153,7 @@ export const MarisaLinearBulletEmitter = ({ powerClass, ...props }) => {
                 disposeSingle(id);
             }, 5000);
         };
-    }, [addBulletGroup, disposeSingle, powerClass]);
+    }, [addBulletGroup, disposeSingle, powerClass, side]);
 
     useBeforeRender((scene) => {
         if (!transformNodeRef.current) return;

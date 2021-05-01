@@ -1,12 +1,12 @@
 import { Vector3 } from '@babylonjs/core';
-import React, { useMemo, useRef} from 'react';
+import React, { useMemo, useRef } from 'react';
+import { RotateAndShootMinionDef } from "../../../stages/common/RotateAndShootMinionDef";
 import { randVectorToPosition } from '../../BabylonUtils';
-import { useDoSequence } from '../../hooks/useDoSequence';
 import { useAddBulletGroup } from '../../hooks/useAddBulletGroup';
+import { useDoSequence } from '../../hooks/useDoSequence';
 import { useName } from '../../hooks/useName';
-import { RotateAndShootMinionDef } from "../../../stages/common/RotateAndShootMinionDef"
-import { makeActionListTimeline } from '../EnemyUtils';
 import { Enemies } from '../Enemies';
+import { makeActionListTimeline } from '../EnemyUtils';
 
 const multiBurst = {
     type: 'shoot',
@@ -55,7 +55,7 @@ const cone = {
     behaviourOptions: {
         behaviour: 'linear',
     },
-    soundOptions:{
+    soundOptions: {
         mute: true
     },
     lifespan: 10,
@@ -74,25 +74,25 @@ enemiesInstructions.push({
 enemiesInstructions.push({
     type: "enemies",
     action: 'spawn',
-    enemy: RotateAndShootMinionDef(new Vector3(0.1, 0, 0)),
+    enemy: RotateAndShootMinionDef({ spawn: new Vector3(0.1, 0, 0) }),
     wait: 0
 })
 enemiesInstructions.push({
     type: "enemies",
     action: 'spawn',
-    enemy: RotateAndShootMinionDef(new Vector3(-0.1, 0, 0)),
+    enemy: RotateAndShootMinionDef({ spawn: new Vector3(-0.1, 0, 0) }),
     wait: 0
 })
 enemiesInstructions.push({
     type: "enemies",
     action: 'spawn',
-    enemy: RotateAndShootMinionDef(new Vector3(0, 0.1, 0)),
+    enemy: RotateAndShootMinionDef({ spawn: new Vector3(0, 0.1, 0) }),
     wait: 0
 })
 enemiesInstructions.push({
     type: "enemies",
     action: 'spawn',
-    enemy: RotateAndShootMinionDef(new Vector3(0, -0.1, 0)),
+    enemy: RotateAndShootMinionDef({ spawn: new Vector3(0, -0.1, 0) }),
     wait: 0
 })
 

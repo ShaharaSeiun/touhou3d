@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo } from "react";
 import { bossDeathQuiet } from "../../../../sounds/SFX";
-import { bulletReplaceRotation, makeReplaceInstruction } from "../../../bullets/BulletUtils";
+import { makeReplaceInstruction } from "../../../bullets/BulletUtils";
 import { AnimationContext, UIContext } from "../../../gameLogic/GeneralContainer";
 import { useAddBulletGroup } from "../../../hooks/useAddBulletGroup";
 import { useAddEffect } from "../../../hooks/useAddEffect";

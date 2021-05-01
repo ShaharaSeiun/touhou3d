@@ -7,12 +7,12 @@ import {
     ParticleHelper,
     ParticleSystemSet,
     Vector2,
-    Vector3,
+    Vector3
 } from '@babylonjs/core';
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
-import { makeSpriteSheetAnimation } from '../BabylonUtils';
 import { capFirst } from '../../utils/Utils';
+import { makeSpriteSheetAnimation } from '../BabylonUtils';
 
 export const useLoadAssets = () => {
     const scene = useScene();
@@ -260,23 +260,23 @@ export const useLoadAssets = () => {
                     const length = 4
                     const width = 2
 
-                    const y = (x) => width * (x) * (x - length) / ((length*length)/2)
+                    const y = (x) => width * (x) * (x - length) / ((length * length) / 2)
 
                     const myShape = [];
-                
-                    for(let i = 0; i <= segments; i++){
-                        myShape.push(new Vector3(y(i*length/segments), i*length/segments, 0))
+
+                    for (let i = 0; i <= segments; i++) {
+                        myShape.push(new Vector3(y(i * length / segments), i * length / segments, 0))
                     }
 
                     const mesh = MeshBuilder.CreateLathe(
-                        "egg", 
+                        "egg",
                         {
                             shape: myShape,
                             tessellation: segments * 2
                         }
                     );
 
-                    const rotationMatrix = Matrix.RotationX(Math.PI/2);
+                    const rotationMatrix = Matrix.RotationX(Math.PI / 2);
                     mesh.bakeTransformIntoVertices(rotationMatrix);
                     mesh.isVisible = false;
                     return mesh;
@@ -321,7 +321,7 @@ export const useLoadAssets = () => {
                         scene
                     );
 
-                    const rotationMatrix = Matrix.RotationX(Math.PI/2);
+                    const rotationMatrix = Matrix.RotationX(Math.PI / 2);
                     meshOuter.bakeTransformIntoVertices(rotationMatrix);
 
                     const mesh = Mesh.MergeMeshes([meshInner, meshOuter], true);

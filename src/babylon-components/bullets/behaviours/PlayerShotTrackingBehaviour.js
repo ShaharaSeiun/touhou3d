@@ -107,7 +107,7 @@ class PlayerShotTrackingBehaviour extends PlayerBulletBehaviour {
                 texture.setTexture('sourceSampler', sourceSampler);
                 texture.setFloat('numSources', behaviourOptions.shotSources.length);
             },
-            true
+            behaviourOptions.bulletValue
         );
 
         this.bulletFrame = 0;

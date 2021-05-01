@@ -12,9 +12,9 @@ const mod = function (num, n) {
 export const VerticleMenuSingle = ({ selected, menuKey, slanted, index }) => {
     const styleAddin = selected
         ? {
-              color: 'white',
-              WebkitTextStrokeColor: 'black',
-          }
+            color: 'white',
+            WebkitTextStrokeColor: 'black',
+        }
         : {};
 
     return (
@@ -22,8 +22,6 @@ export const VerticleMenuSingle = ({ selected, menuKey, slanted, index }) => {
             style={{
                 left: slanted ? -index * 3 + 'vh' : 0,
                 transition: 'left 2s',
-                WebkitTextStrokeWidth: '1px',
-                WebkitTextStrokeColor: 'white',
                 ...styleAddin,
             }}
             key={menuKey}
@@ -36,9 +34,9 @@ export const VerticleMenuSingle = ({ selected, menuKey, slanted, index }) => {
 export const VerticleMenuArray = ({ selected, menuKey, menuValue, slanted, index }) => {
     const styleAddin = selected
         ? {
-              color: 'white',
-              WebkitTextStrokeColor: 'black',
-          }
+            color: 'white',
+            WebkitTextStrokeColor: 'black',
+        }
         : {};
 
     const [choice, setChoice] = useState(SETTINGS[menuKey.toUpperCase()]);
@@ -69,8 +67,6 @@ export const VerticleMenuArray = ({ selected, menuKey, menuValue, slanted, index
             style={{
                 left: slanted ? -index * 3 + 'vh' : 0,
                 transition: 'left 2s',
-                WebkitTextStrokeWidth: '1px',
-                WebkitTextStrokeColor: 'white',
             }}
             key={menuKey}
         >
@@ -82,9 +78,9 @@ export const VerticleMenuArray = ({ selected, menuKey, menuValue, slanted, index
 
                         const styleAddin = selected
                             ? {
-                                  color: 'white',
-                                  WebkitTextStrokeColor: 'black',
-                              }
+                                color: 'white',
+                                WebkitTextStrokeColor: 'black',
+                            }
                             : {};
 
                         return (

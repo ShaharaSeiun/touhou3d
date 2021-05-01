@@ -1,4 +1,5 @@
 import { Vector3 } from '@babylonjs/core';
+import { times } from 'lodash';
 import { PLAYER_BULLETS_WHEEL_LENGTH } from '../../../utils/Constants';
 import { glsl } from '../../BabylonUtils';
 import { makeTextureFromVectors } from '../BulletUtils';
@@ -49,6 +50,7 @@ export const playerShotBehaviourVelocityPixelShader = glsl`
     uniform float frame;
     uniform float numSources;
     uniform vec3 shotVector;
+    uniform sampler2D initialVelocitySampler;
 
     void main() {
         ${mainHeaderSnippet}
@@ -59,22 +61,40 @@ export const playerShotBehaviourVelocityPixelShader = glsl`
         float bulletEnabled = float((id > (currentWindowStart - 0.1)) && (id < (currentWindowEnd - 0.1))) * firing;
         float bulletNotEnabled = 1. - bulletEnabled;
 
-        gl_FragColor = (bulletNotEnabled * vec4(velocity, 1.)) + (bulletEnabled * vec4(shotVector, 1.));
+        float idInSource = id - currentWindowStart;
+
+        int instance = int(idInSource);
+        int width = textureSize(initialVelocitySampler, 0).x;
+        int x = instance % width;
+        int y = instance / width;                            // integer division
+        float u = (float(x) + 0.5) / float(width);           // map into 0-1 range
+        float v = (float(y) + 0.5) / float(width);
+        
+        vec3 velocityOffset = texture(initialVelocitySampler, vec2(u, v)).xyz;
+
+        gl_FragColor = (bulletNotEnabled * vec4(velocity, 1.)) + (bulletEnabled * vec4(shotVector + velocityOffset, 1.));
     }
 `;
 
 class PlayerShotBehaviour extends PlayerBulletBehaviour {
     constructor(behaviourOptions, environmentCollision, parent) {
         const sourceSampler = makeTextureFromVectors(behaviourOptions.shotSources);
+        const initialVelocitySampler = makeTextureFromVectors(
+            behaviourOptions.initialVelocities || times(behaviourOptions.shotSources.length, () => new Vector3(0, 0, 0))
+        );
 
-        super('playerShotBehaviourPosition', 'playerShotBehaviourVelocity', parent, environmentCollision, (texture) => {
-            texture.setFloat('frame', 0);
-            texture.setFloat('firing', 0);
-            texture.setVector3('shotVector', new Vector3(0, 0, 0));
-            texture.setVector3('sourceOffset', new Vector3(0, 0, 0));
-            texture.setTexture('sourceSampler', sourceSampler);
-            texture.setFloat('numSources', behaviourOptions.shotSources.length);
-        });
+        super('playerShotBehaviourPosition', 'playerShotBehaviourVelocity', parent, environmentCollision,
+            (texture) => {
+                texture.setFloat('frame', 0);
+                texture.setFloat('firing', 0);
+                texture.setVector3('shotVector', new Vector3(0, 0, 0));
+                texture.setVector3('sourceOffset', new Vector3(0, 0, 0));
+                texture.setTexture('sourceSampler', sourceSampler);
+                texture.setTexture('initialVelocitySampler', initialVelocitySampler);
+                texture.setFloat('numSources', behaviourOptions.shotSources.length);
+            },
+            behaviourOptions.bulletValue
+        );
 
         this.bulletFrame = 0;
         this.shotSourcesNum = behaviourOptions.shotSources.length;

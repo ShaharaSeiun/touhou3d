@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
-import { determineOrder } from '../../utils/Utils'
+import { determineOrder } from '../../utils/Utils';
 
-export const useUI = () => {
+export const useUI = (isDead) => {
     const [charactersInDialogue, setCharactersInDialogue] = useState([]);
     const [activeCharacter, setActiveCharacter] = useState();
     const [activeCharacterEmotion, setActiveCharacterEmotion] = useState('neutral');
@@ -12,7 +12,7 @@ export const useUI = () => {
 
     const setBossUI = useCallback((bossUIProps) => {
         bossUIProps.lives.forEach(life => {
-            if(life.spellCards.length !== 1 && determineOrder(life.spellCards) !== 'descending'){
+            if (life.spellCards.length !== 1 && determineOrder(life.spellCards) !== 'descending') {
                 throw new Error('spell cards health for boss UI must be in descending order');
             }
         })
@@ -30,9 +30,9 @@ export const useUI = () => {
         setActiveCharacterText,
         stageStartQuote,
         setStageStartQuote,
-        bossUI, 
+        bossUI,
         setBossUI,
-        spellCardUI, 
-        setSpellCardUI
+        spellCardUI,
+        setSpellCardUI,
     };
 };

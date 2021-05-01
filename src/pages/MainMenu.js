@@ -1,10 +1,10 @@
-import React, { useMemo, useState } from 'react';
 import { Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-
+import React, { useMemo, useState } from 'react';
+import { useHistory } from 'react-router';
 import { VerticleMenu } from '../components/VerticleMenu';
 import { useKeydownMenu } from '../hooks/useKeydown';
-import { useHistory } from 'react-router';
+
 
 const useStyles = makeStyles({
     titlePos1: {
@@ -13,7 +13,6 @@ const useStyles = makeStyles({
     titlePos2: {
         left: '10vw',
     },
-
     title: {
         transition: 'left 1s',
         writingMode: 'vertical-rl',
@@ -24,12 +23,11 @@ const useStyles = makeStyles({
         position: 'absolute',
         width: '20vw',
         height: '100vh',
-        fontSize: '15vh',
-        WebkitTextStrokeWidth: '1px',
-        WebkitTextStrokeColor: 'white',
+        fontSize: '10vw',
     },
     title2: {
         writingMode: 'initial',
+        fontSize: '10vw',
     },
     options: {
         position: 'absolute',
@@ -80,7 +78,7 @@ export const MainMenu = ({ menuOpenInit = false }) => {
     return (
         <>
             <Box className={classes.title + ' ' + titlePos}>
-                東方
+                弾幕
                 <Box className={classes.title2}>3D</Box>
             </Box>
             <Box className={classes.options + ' ' + optionsPos}>

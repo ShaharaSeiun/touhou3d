@@ -19,10 +19,10 @@ export const DifficultySelect = ({ next }) => {
 
     const difficultyOptions = useMemo(
         () => ({
-            Easy: () => choose('EASY'),
-            Normal: () => choose('NORMAL'),
-            Hard: () => choose('HARD'),
-            Lunatic: () => choose('LUNATIC'),
+            Easy: () => choose('Easy'),
+            Normal: () => choose('Normal'),
+            Hard: () => choose('Hard'),
+            Lunatic: () => choose('Lunatic'),
         }),
         [choose]
     );

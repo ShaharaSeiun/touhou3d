@@ -1,27 +1,26 @@
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useContext } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { globals, GlobalsContext } from '../../components/GlobalsContainer';
-import { enemyDamage, itemGet, playerGraze, playerDeath } from '../../sounds/SFX';
+import { enemyDamage, itemGet, playerDeath, playerGraze } from '../../sounds/SFX';
 import { MAX_ENEMIES, PLAYER_INVULNERABLE_COOLDOWN } from '../../utils/Constants';
 import { makeBulletBehaviour } from '../bullets/behaviours';
 import { BulletGroup } from '../bullets/BulletGroup';
-import { convertPlayerBulletCollisions, convertEnemyBulletCollisions, prepareBulletInstruction } from '../bullets/BulletUtils';
+import { convertEnemyBulletCollisions, convertPlayerBulletCollisions, prepareBulletInstruction } from '../bullets/BulletUtils';
 import { makeEndTimings } from '../bullets/endTimings';
 import { makeBulletMaterial } from '../bullets/materials';
 import { makeBulletMesh } from '../bullets/meshes';
 import { makeBulletPattern } from '../bullets/patterns';
 import { makeBulletSound } from '../bullets/sounds';
 import { makeName } from '../hooks/useName';
-import { globalActorRefs, allBullets, killEnemy } from './StaticRefs';
+import { allBullets, globalActorRefs, killEnemy } from './StaticRefs';
 
 let playHitSound = false;
 let framesSincePlayHit = 0;
 let playerInvulnerable = false
 
-export const useBullets = (assets, environmentCollision, addEffect) => {
+export const useBullets = (assets, environmentCollision, addEffect, isDead, setIsDead) => {
     const scene = useScene();
     const { setGlobal } = useContext(GlobalsContext);
-    const { isDead, setIsDead } = useState(false);
 
     const disposeSingle = useCallback((id) => {
         allBullets[id].dispose();
@@ -38,7 +37,7 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
     const clearAllBullets = useCallback(() => {
         Object.keys(allBullets).forEach((bulletGroupIndex) => {
             const bulletGroup = allBullets[bulletGroupIndex];
-            if(bulletGroup.behaviour.isEnemyBullet){
+            if (bulletGroup.behaviour.isEnemyBullet) {
                 bulletGroup.lifespan = 0;
             }
         });
@@ -48,7 +47,7 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
         const preparedInstruction = prepareBulletInstruction(instruction);
         const { positions, velocities, timings } = makeBulletPattern(preparedInstruction.patternOptions, false, scene);
         const endTimings = makeEndTimings(preparedInstruction.endTimings, preparedInstruction.lifespan, timings.length, scene);
-        return { positions, velocities, timings, endTimings, instruciton: preparedInstruction}
+        return { positions, velocities, timings, endTimings, instruciton: preparedInstruction }
     }, [scene])
 
     const addBulletGroup = useCallback(
@@ -56,11 +55,11 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
             if (!parent) throw new Error('parent not ready!');
 
             const preparedInstruction = prepareBulletInstruction(instruction);
-            if(sourceBulletId) preparedInstruction.patternOptions.sourceBulletId = sourceBulletId;
+            if (sourceBulletId) preparedInstruction.patternOptions.sourceBulletId = sourceBulletId;
 
             const { positions, velocities, timings, uid } = makeBulletPattern(preparedInstruction.patternOptions, parent, scene, supressNotPrecomputedWarning);
             const material = makeBulletMaterial(preparedInstruction.materialOptions, parent, assets, scene);
-            const {mesh, radius} = makeBulletMesh(preparedInstruction.meshOptions, assets, scene);
+            const { mesh, radius } = makeBulletMesh(preparedInstruction.meshOptions, assets, scene);
             const behaviour = makeBulletBehaviour(preparedInstruction.behaviourOptions, environmentCollision, radius, parent);
             const endTimings = makeEndTimings(preparedInstruction.endTimings, preparedInstruction.lifespan, timings.length, scene)
             const sounds = preparedInstruction.soundOptions && !preparedInstruction.soundOptions.mute && makeBulletSound(preparedInstruction.soundOptions, timings);
@@ -70,12 +69,13 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
 
             const reliesOnParent = preparedInstruction.behaviourOptions.reliesOnParent;
             const disableWarning = preparedInstruction.behaviourOptions.disableWarning || false;
+
             behaviour.init(material, positions, velocities, timings, endTimings, reliesOnParent, disableWarning, uid, scene);
 
             const { lifespan } = preparedInstruction;
             const timeSinceStart = 0;
 
-            const bulletGroup = new BulletGroup({material, mesh, behaviour, sounds, positions, velocities, timings, endTimings, lifespan, timeSinceStart, uid, instruciton: preparedInstruction});
+            const bulletGroup = new BulletGroup({ material, mesh, behaviour, sounds, positions, velocities, timings, endTimings, lifespan, timeSinceStart, uid, instruciton: preparedInstruction });
 
             const newID = makeName('bulletGroup');
             allBullets[newID] = bulletGroup;
@@ -85,7 +85,7 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
     );
 
     useBeforeRender(() => {
-        if(isDead) return;
+        if (isDead) return;
 
         //Collisions
         if (playHitSound && framesSincePlayHit % 6 === 0) {
@@ -94,7 +94,7 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
             framesSincePlayHit = 0;
         }
         framesSincePlayHit++;
-        
+
         Object.values(allBullets).forEach((bulletGroup) => {
             if (bulletGroup.behaviour.isPlayerBullet) {
                 bulletGroup.behaviour.diffSystem.collisionResult.readPixels().then((buffer) => {
@@ -102,7 +102,7 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
                     collisions.forEach((collision) => {
                         if (collision.collisionID >= MAX_ENEMIES && collision.collisionID < MAX_ENEMIES * 2) {
                             const enemyID = collision.collisionID - MAX_ENEMIES;
-                            globalActorRefs.enemies[enemyID].health--;
+                            globalActorRefs.enemies[enemyID].health -= bulletGroup.behaviour.bulletValue;
                             playHitSound = true;
                             if (globalActorRefs.enemies[enemyID]) {
                                 addEffect(collision.hit, 'hitParticles');
@@ -124,17 +124,16 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
                             itemGet.play();
                         }
                         if (collision.player) {
-                            if(!playerInvulnerable){
-                                if(globals.PLAYER === 1){
-                                    setIsDead(true)
-                                }
-                                else{
-                                    setGlobal('PLAYER', globals.PLAYER - 1);
-                                    playerInvulnerable = true;
-                                    window.setTimeout(() => {
-                                        playerInvulnerable = false;
-                                    }, PLAYER_INVULNERABLE_COOLDOWN * 1000)
-                                    playerDeath.play()
+                            if (!playerInvulnerable) {
+                                setGlobal('PLAYER', globals.PLAYER - 1);
+                                playerInvulnerable = true;
+                                window.setTimeout(() => {
+                                    playerInvulnerable = false;
+                                }, PLAYER_INVULNERABLE_COOLDOWN * 1000)
+                                playerDeath.play()
+
+                                if (globals.PLAYER === 0) {
+                                    window.setTimeout(() => setIsDead(true), 300)
                                 }
                             }
                         }
@@ -148,13 +147,14 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
         });
 
         globalActorRefs.enemies.forEach(enemy => {
-            if(enemy.dead) return;
+            if (enemy.dead) return;
             if (enemy.health <= 0) {
                 killEnemy(enemy.id);
             }
         })
 
         //Lifespans
+        if (scene.paused) return;
         const deltaS = scene.paused ? 0 : scene.getEngine().getDeltaTime() / 1000;
 
         const toRemove = [];
@@ -166,11 +166,11 @@ export const useBullets = (assets, environmentCollision, addEffect) => {
                 toRemove.push(bulletGroupIndex);
             } else {
                 bulletGroup.behaviour.update(deltaS);
-                if(bulletGroup.sounds)
+                if (bulletGroup.sounds)
                     bulletGroup.sounds.update(deltaS);
             }
         });
-        
+
         if (toRemove.length > 0) dispose(toRemove);
 
         globalActorRefs.enemies.forEach((enemy, i) => {

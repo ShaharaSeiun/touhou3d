@@ -1,5 +1,5 @@
 import { Vector3 } from '@babylonjs/core';
-import { MAX_ENEMIES, PLAYER_BULLETS_WHEEL_LENGTH } from '../../../utils/Constants';
+import { PLAYER_BULLETS_WHEEL_LENGTH } from '../../../utils/Constants';
 import { glsl, RandVector3 } from '../../BabylonUtils';
 import { makeTextureFromVectors } from '../BulletUtils';
 import { collisionSnippet, mainHeaderSnippet, uniformSnippet } from './Common';
@@ -60,7 +60,7 @@ export const playerShotAccelerationBehaviourVelocityPixelShader = glsl`
         float bulletEnabled = float((id > (currentWindowStart - 0.1)) && (id < (currentWindowEnd - 0.1))) * firing;
         float bulletNotEnabled = 1. - bulletEnabled;
 
-        velocity = velocity + normalize(velocity) * delta;
+        velocity = velocity + (vec3(0., 0., 50.) * delta);
 
         gl_FragColor = vec4((bulletNotEnabled * velocity) + (bulletEnabled * shotVector), 1.);
     }
@@ -83,7 +83,7 @@ class PlayerShotAccelerationBehaviour extends PlayerBulletBehaviour {
                 texture.setTexture('sourceSampler', sourceSampler);
                 texture.setFloat('numSources', behaviourOptions.shotSources.length);
             },
-            true
+            behaviourOptions.bulletValue
         );
 
         this.bulletFrame = 0;

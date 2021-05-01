@@ -2,6 +2,7 @@ import { makeItembehaviour } from './ItemBehaviour';
 import { makeLinearBehaviour } from './LinearBehaviour';
 import { makePlayerShotBehaviour } from './PlayerShotBehaviour';
 import { makePlayerShotTrackingBehaviour } from './PlayerShotTrackingBehaviour';
+import { makePlayerShotAccelerationBehaviour } from './PlayerShotAccelerationBehaviour';
 import { makeSlowToStopBehaviour } from './SlowToStop';
 
 export const makeBulletBehaviour = (behaviourOptions, environmentCollision, radius, parent) => {
@@ -16,6 +17,8 @@ export const makeBulletBehaviour = (behaviourOptions, environmentCollision, radi
             return makePlayerShotBehaviour(behaviourOptions, environmentCollision, parent);
         case 'playerShotTracking':
             return makePlayerShotTrackingBehaviour(behaviourOptions, environmentCollision, parent);
+        case 'playerShotAcceleration':
+            return makePlayerShotAccelerationBehaviour(behaviourOptions, environmentCollision, parent);
         default:
             throw new Error('Unsupported bullet behaviour option: ' + behaviourOptions.behaviour);
     }

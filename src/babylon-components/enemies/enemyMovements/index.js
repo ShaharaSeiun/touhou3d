@@ -5,7 +5,7 @@ import { FromToMovement } from "./FromToMovement";
 import { RotateMovement } from "./RotateMovement";
 
 export const makeEnemyMovement = (type) => {
-    switch(type) {
+    switch (type) {
         case "agroThenAfraid":
             return AgroThenAfraidMovement
         case "fromTo":

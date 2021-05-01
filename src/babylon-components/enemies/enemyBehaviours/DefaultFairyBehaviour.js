@@ -1,10 +1,10 @@
 import { Vector3 } from '@babylonjs/core';
 import React, { useMemo, useRef } from 'react';
-import { useDoSequence } from '../../hooks/useDoSequence';
 import { useAddBulletGroup } from '../../hooks/useAddBulletGroup';
+import { useDoSequence } from '../../hooks/useDoSequence';
 import { useName } from '../../hooks/useName';
 
-const smallTowardsPlayer = {
+export const smallTowardsPlayer = {
     type: 'shoot',
     materialOptions: {
         material: 'fresnel',
@@ -27,7 +27,7 @@ const smallTowardsPlayer = {
     wait: 0,
 }
 
-const mediumTowardsPlayer = {
+export const mediumTowardsPlayer = {
     type: 'shoot',
     materialOptions: {
         material: 'fresnel',
@@ -63,31 +63,31 @@ export const DefaultFairyBehaviour = ({ children, leaveScene, spawn }) => {
             () => {
                 addBulletGroup(
                     transformNodeRef.current,
-                    smallTowardsPlayer
+                    smallTowardsPlayer,
                 )
             },
             () => {
                 addBulletGroup(
                     transformNodeRef.current,
-                    mediumTowardsPlayer
+                    mediumTowardsPlayer,
                 )
             },
             () => {
                 addBulletGroup(
                     transformNodeRef.current,
-                    mediumTowardsPlayer
+                    mediumTowardsPlayer,
                 )
             },
             () => {
                 addBulletGroup(
                     transformNodeRef.current,
-                    mediumTowardsPlayer
+                    mediumTowardsPlayer,
                 )
             },
             () => {
                 addBulletGroup(
                     transformNodeRef.current,
-                    mediumTowardsPlayer
+                    mediumTowardsPlayer,
                 )
             },
             leaveScene,
@@ -99,7 +99,7 @@ export const DefaultFairyBehaviour = ({ children, leaveScene, spawn }) => {
     useDoSequence(true, transformNodeRef, actionsTimings, actions);
 
     return (
-        <transformNode name = {name} position={startPosition} ref={transformNodeRef}>
+        <transformNode name={name} position={startPosition} ref={transformNodeRef}>
             {children}
         </transformNode>
     );
