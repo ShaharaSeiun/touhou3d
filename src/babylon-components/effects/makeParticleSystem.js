@@ -1,18 +1,16 @@
-import { Color3, Color4, GPUParticleSystem, ThinEngine } from '@babylonjs/core';
-import { makeName } from '../hooks/useName';
-import { Vector3 } from '@babylonjs/core';
 import {
-    BoxParticleEmitter,
-    HemisphericParticleEmitter,
-    SphereParticleEmitter,
-    SphereDirectedParticleEmitter,
-    CylinderParticleEmitter,
-    ConeParticleEmitter,
-    PointParticleEmitter,
-    MeshParticleEmitter,
-    CylinderDirectedParticleEmitter,
+    BoxParticleEmitter, Color3, Color4, ConeParticleEmitter,
+
+
+    CylinderDirectedParticleEmitter, CylinderParticleEmitter, GPUParticleSystem, HemisphericParticleEmitter,
+
+
+
+
+
+    MeshParticleEmitter, PointParticleEmitter, SphereDirectedParticleEmitter, SphereParticleEmitter, ThinEngine, Vector3, _TypeStore
 } from '@babylonjs/core';
-import { _TypeStore } from '@babylonjs/core';
+import { makeName } from '../hooks/useName';
 
 const safeParticleParse = function (parsedParticleSystem, particleSystem, sceneOrEngine, rootUrl, sharedTexture) {
     var scene;
@@ -314,6 +312,7 @@ const safeClone = function (system, name, newEmitter) {
 
 export const makeParticleSystem = (assets, particleSystemName, emitter) => {
     const particleSystem = assets[particleSystemName];
+    if (!particleSystem) throw new Error("Couldn't find particle system " + particleSystemName)
     particleSystem.emitter = emitter;
 
     return particleSystem;

@@ -1,8 +1,7 @@
-import { Constants, Matrix, Quaternion, RawTexture, Vector2, Vector3 } from '@babylonjs/core';
+import { Constants, RawTexture, Vector2, Vector3 } from '@babylonjs/core';
 import nextPowerOfTwo from 'next-power-of-two';
 import { v4 } from 'uuid';
 import { MAX_BULLETS_PER_GROUP } from '../../utils/Constants';
-import { sum } from '../../utils/Utils';
 import { glsl } from '../BabylonUtils';
 import { CustomCustomProceduralTexture } from '../CustomCustomProceduralTexture';
 import { allBullets, preComputedBulletPatterns } from '../gameLogic/StaticRefs';
@@ -28,42 +27,6 @@ export const addReducerPixelShader = glsl`
         gl_FragColor = outValue;
     }
 `;
-
-export const bulletReplaceRotation = (sourceId, { rotation = Math.PI / 2, velocityMultiplier = 1 }, optionsToChange = {}) => {
-    const newInstruction = { ...allBullets[sourceId].instruciton }
-
-    const positions = allBullets[sourceId].behaviour.diffSystem.positionTextures[0];
-    const velocities = allBullets[sourceId].velocities.map(velocity => {
-        const rotationQuaternion = Quaternion.RotationYawPitchRoll(rotation, 0, 0)
-        const rotationMatrix = new Matrix();
-        rotationQuaternion.toRotationMatrix(rotationMatrix);
-        return Vector3.TransformCoordinates(velocity, rotationMatrix).scale(velocityMultiplier);
-    });
-    const timings = sum(allBullets[sourceId].endTimings, allBullets[sourceId].timings);
-
-    const outInstruction = Object.assign(newInstruction, {
-        patternOptions: {
-            pattern: 'explicit',
-            positions: positions,
-            velocities: velocities,
-            timings: timings
-        },
-        soundOptions: {
-            sound: 'enemyChangeBullet'
-        },
-        wait: 0,
-    })
-    delete outInstruction.endTimings;
-    doubleAssign(outInstruction, optionsToChange)
-    doubleAssign(outInstruction, {
-        behaviourOptions: {
-            reliesOnParent: false,
-            disableWarning: true
-        },
-    })
-
-    return outInstruction
-}
 
 export const bulletReplaceRotationFromPrecompute = (precomputeId, sourceId, optionsToChange = {}) => {
     const newInstruction = { ...allBullets[sourceId].instruciton }

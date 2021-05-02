@@ -4,9 +4,9 @@ import { allBullets, preComputedBulletPatterns, preComputedEndTimings } from "..
 
 export const makeRotateVelocityReplacement = (patternOptions, parent) => {
     const sourcePattern = preComputedBulletPatterns[patternOptions.sourceUid];
-    if(!sourcePattern) throw new Error("source pattern not found " + patternOptions.sourceUid);
+    if (!sourcePattern) throw new Error("source pattern not found " + patternOptions.sourceUid);
     const sourceEndTimings = preComputedEndTimings[patternOptions.sourceUid];
-    if(!sourceEndTimings) throw new Error("source endTimings not found " + patternOptions.sourceUid);
+    if (!sourceEndTimings) throw new Error("source endTimings not found " + patternOptions.sourceUid);
 
     const velocities = sourcePattern.velocities.map(velocity => {
         const rotationQuaternion = Quaternion.RotationYawPitchRoll(patternOptions.rotation || 0, 0, 0)
@@ -16,7 +16,7 @@ export const makeRotateVelocityReplacement = (patternOptions, parent) => {
     });
     const timings = sum(sourceEndTimings, sourcePattern.timings);
 
-    return {velocities, timings}
+    return { velocities, timings }
 }
 
 export const fulfilRotateVelocityReplacement = (patternOptions, parent) => {

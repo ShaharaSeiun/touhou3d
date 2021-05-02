@@ -1,9 +1,9 @@
 {
     "systems": [
         {
-            "name": "hitParticles",
-            "id": "6da0d879-73b5-42a8-b5fe-e9e782a8a3f9",
-            "capacity": 100,
+            "name": "chargeWriggle",
+            "id": "b771c02b-a2be-40d0-a8b5-2ee85e1d7aa2",
+            "capacity": 500,
             "emitter": [
                 0,
                 0,
@@ -11,11 +11,11 @@
             ],
             "particleEmitterType": {
                 "type": "SphereParticleEmitter",
-                "radius": 0.1,
-                "radiusRange": 1,
+                "radius": 10,
+                "radiusRange": 0,
                 "directionRandomizer": 0
             },
-            "textureName": "glow.png",
+            "textureName": "leaves.png",
             "invertY": true,
             "animations": [],
             "beginAnimationOnStart": false,
@@ -28,17 +28,17 @@
             "billboardMode": 7,
             "minAngularSpeed": -0.5,
             "maxAngularSpeed": 0.5,
-            "minSize": 0.1,
-            "maxSize": 0.2,
+            "minSize": 0.5,
+            "maxSize": 2,
             "minScaleX": 1,
             "maxScaleX": 1,
             "minScaleY": 1,
             "maxScaleY": 1,
-            "minEmitPower": 30,
-            "maxEmitPower": 60,
-            "minLifeTime": 1,
-            "maxLifeTime": 1,
-            "emitRate": 100,
+            "minEmitPower": -2,
+            "maxEmitPower": -2,
+            "minLifeTime": 0.5,
+            "maxLifeTime": 0.5,
+            "emitRate": 500,
             "gravity": [
                 0,
                 0,
@@ -50,15 +50,15 @@
                 10
             ],
             "color1": [
-                0.65,
-                0,
-                0.3,
+                1,
+                1,
+                1,
                 1
             ],
             "color2": [
-                0.32,
                 0,
-                0.1,
+                0.8,
+                0,
                 1
             ],
             "colorDead": [

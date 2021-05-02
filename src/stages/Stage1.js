@@ -8,13 +8,13 @@ import { makeActionListTimeline } from '../babylon-components/enemies/EnemyUtils
 import { BulletsContext } from '../babylon-components/gameLogic/GeneralContainer';
 import { UIExecutor } from '../babylon-components/ui/UIExecutor';
 import Music from '../sounds/Music';
-import stage1def from './stage1def';
 import { setupStage1 } from './Stage1Setup';
+import testdef from './testdef';
 
 export const Stage1 = () => {
     const scene = useScene();
     const [epochIndex, setEpochIndex] = useState(0);
-    const stageSource = useMemo(() => stage1def(), []);
+    const stageSource = useMemo(() => testdef(), []);
     const currentActionList = useMemo(() => makeActionListTimeline(stageSource.epochs[epochIndex]), [stageSource, epochIndex]);
     const enemyActionList = useMemo(() => currentActionList.filter((action) => action.type === 'enemies'), [currentActionList]);
     const UIActionList = useMemo(() => currentActionList.filter((action) => action.type === 'UI'), [currentActionList]);

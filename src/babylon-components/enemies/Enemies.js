@@ -2,8 +2,8 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
 import { filterInPlace } from '../../utils/Utils';
 import { useAddEffect } from '../hooks/useAddEffect';
-import { Enemy } from './Enemy';
 import { makeName } from '../hooks/useName';
+import { Enemy } from './Enemy';
 
 export const Enemies = ({ currentActionList, setEpochIndex }) => {
     //eslint-disable-next-line react-hooks/exhaustive-deps
@@ -18,7 +18,10 @@ export const Enemies = ({ currentActionList, setEpochIndex }) => {
 
         if (deathLocation) {
             const deathStartLocation = deathLocation.clone();
-            addEffect(deathStartLocation, 'deathParticles');
+            addEffect(deathStartLocation, {
+                type: 'particles',
+                name: 'death'
+            });
         }
 
         delete metaEnemies.current[enemyName];
@@ -65,8 +68,8 @@ export const Enemies = ({ currentActionList, setEpochIndex }) => {
             setEnemies(metaEnemies.current);
         }
 
-        if(listeningForEnemiesDead.current){
-            if(Object.keys(enemies).length === 0){
+        if (listeningForEnemiesDead.current) {
+            if (Object.keys(enemies).length === 0) {
                 setEpochIndex(epochIndex => epochIndex + 1);
                 listeningForEnemiesDead.current = false;
             }
@@ -75,10 +78,10 @@ export const Enemies = ({ currentActionList, setEpochIndex }) => {
 
     return Object.keys(enemies).map((enemyName) => {
         const enemyObj = enemies[enemyName];
-        return <Enemy 
-            removeEnemyFromScene={removeEnemyFromScene} 
-            key={enemyName} 
-            name={enemyName} 
+        return <Enemy
+            removeEnemyFromScene={removeEnemyFromScene}
+            key={enemyName}
+            name={enemyName}
             {...enemyObj}
         />
     });

@@ -1,6 +1,8 @@
 import { useCallback, useContext, useEffect, useMemo } from 'react';
+import { ControlsContext } from '../../components/ControlsContainer';
 import { useKeydown } from '../../hooks/useKeydown';
 import { UIContext } from '../gameLogic/GeneralContainer';
+import { globalCallbacks } from '../gameLogic/StaticRefs';
 
 export const UIExecutor = ({ currentActionList, setEpochIndex }) => {
     const actionList = useMemo(() => [...currentActionList], [currentActionList]);
@@ -12,6 +14,7 @@ export const UIExecutor = ({ currentActionList, setEpochIndex }) => {
         setActiveCharacterText,
         setStageStartQuote,
     } = useContext(UIContext);
+    const { disableControl, enableControl } = useContext(ControlsContext)
 
     const doUIAction = useCallback(
         (action) => {
@@ -20,6 +23,8 @@ export const UIExecutor = ({ currentActionList, setEpochIndex }) => {
                     setCharactersInDialogue(action.actors);
                     setActiveCharacter(action.actors[0]);
                     setActiveCharacterText(action.text);
+                    disableControl("SHOOT");
+                    disableControl("BOMB");
                     break;
                 case 'talk':
                     setActiveCharacter(action.actor);
@@ -43,12 +48,18 @@ export const UIExecutor = ({ currentActionList, setEpochIndex }) => {
                     setActiveCharacterText(false);
                     setActiveCharacterEmotion(false);
                     setEpochIndex(epochIndex => epochIndex + 1);
+                    enableControl("SHOOT");
+                    enableControl("BOMB");
+                    break;
+                //UTILS
+                case "globalCallback":
+                    globalCallbacks[action.callback]();
                     break;
                 default:
                     throw new Error('Unknown UI command: ' + action.action);
             }
         },
-        [charactersInDialogue, setActiveCharacter, setActiveCharacterEmotion, setActiveCharacterText, setCharactersInDialogue, setEpochIndex, setStageStartQuote]
+        [charactersInDialogue, disableControl, enableControl, setActiveCharacter, setActiveCharacterEmotion, setActiveCharacterText, setCharactersInDialogue, setEpochIndex, setStageStartQuote]
     );
 
     const nextUIAction = () => {
@@ -62,7 +73,7 @@ export const UIExecutor = ({ currentActionList, setEpochIndex }) => {
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentActionList]);
 
-    useKeydown('DIALOGUE', () => {
+    useKeydown('ENTER', () => {
         nextUIAction();
     });
 

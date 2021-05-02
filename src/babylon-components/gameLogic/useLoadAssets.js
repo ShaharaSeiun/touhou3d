@@ -62,23 +62,28 @@ export const useLoadAssets = () => {
                 type: 'particles',
             },
             {
+                json: 'newPhaseWriggleParticles',
+                name: 'newPhaseWriggleParticles',
+                type: 'particles',
+            },
+            {
                 json: 'hitParticles',
                 name: 'hitParticles',
                 type: 'particles',
             },
             {
-                json: 'chargeBomb',
-                name: 'chargeBomb',
+                json: 'chargeBombReimuParticles',
+                name: 'chargeBombReimuParticles',
                 type: 'particles',
             },
             {
-                json: 'chargeBombMarisa',
-                name: 'chargeBombMarisa',
+                json: 'chargeBombMarisaParticles',
+                name: 'chargeBombMarisaParticles',
                 type: 'particles',
             },
             {
-                json: 'chargeWriggle',
-                name: 'chargeWriggle',
+                json: 'chargeWriggleParticles',
+                name: 'chargeWriggleParticles',
                 type: 'particles',
             },
             {

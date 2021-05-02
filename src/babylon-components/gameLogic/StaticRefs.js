@@ -2,13 +2,14 @@ import { Matrix, Vector3 } from '@babylonjs/core';
 import { times } from 'lodash';
 import { MAX_BOMBS, MAX_BULLETS_PER_GROUP, MAX_ENEMIES } from '../../utils/Constants';
 
+export const globalCallbacks = {};
 export const allBullets = {};
 
 export const makeEnemyDefaultVals = () => ({
     position: new Vector3(-510, -510, -510),
     health: -510,
     radius: 0,
-    onDeath: () => {},
+    onDeath: () => { },
     dead: true,
 });
 
@@ -43,18 +44,18 @@ export const removeBomb = (id) => {
 }
 
 export const setBombPosition = (id, position) => {
-    if(globalActorRefs.bombs[id].dead) return;
+    if (globalActorRefs.bombs[id].dead) return;
     globalActorRefs.bombs[id].position = position;
 }
 
 export const setBombRadius = (id, radius) => {
-    if(globalActorRefs.bombs[id].dead) return;
+    if (globalActorRefs.bombs[id].dead) return;
     globalActorRefs.bombs[id].radius = radius;
 }
 
 export const addEnemy = (position, radius, onDeath, health) => {
     const indexToAdd = globalActorRefs.enemyIndex;
-    if(!globalActorRefs.enemies[indexToAdd].dead) throw new Error(">" + MAX_ENEMIES + "In scene")
+    if (!globalActorRefs.enemies[indexToAdd].dead) throw new Error(">" + MAX_ENEMIES + "In scene")
     globalActorRefs.enemies[indexToAdd] = {
         position,
         health,

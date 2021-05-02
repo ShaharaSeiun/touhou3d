@@ -2,10 +2,10 @@ import { fulfilRotateVelocityReplacement, makeRotateVelocityReplacement } from "
 
 export const makeReplacePattern = (patternOptions, parent) => {
     let _pattern;
-    if(patternOptions.sourceBulletId){
+    if (patternOptions.sourceBulletId) {
         _pattern = fulfilReplacePattern(patternOptions, parent);
     }
-    else{
+    else {
         switch (patternOptions.type) {
             case 'rotateVelocity':
                 _pattern = makeRotateVelocityReplacement(patternOptions, parent);

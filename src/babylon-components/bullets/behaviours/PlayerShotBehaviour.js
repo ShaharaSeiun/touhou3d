@@ -49,6 +49,7 @@ export const playerShotBehaviourVelocityPixelShader = glsl`
     uniform float firing;
     uniform float frame;
     uniform float numSources;
+    uniform float focused;
     uniform vec3 shotVector;
     uniform sampler2D initialVelocitySampler;
 
@@ -70,7 +71,7 @@ export const playerShotBehaviourVelocityPixelShader = glsl`
         float u = (float(x) + 0.5) / float(width);           // map into 0-1 range
         float v = (float(y) + 0.5) / float(width);
         
-        vec3 velocityOffset = texture(initialVelocitySampler, vec2(u, v)).xyz;
+        vec3 velocityOffset = texture(initialVelocitySampler, vec2(u, v)).xyz * (1. - focused);
 
         gl_FragColor = (bulletNotEnabled * vec4(velocity, 1.)) + (bulletEnabled * vec4(shotVector + velocityOffset, 1.));
     }
@@ -92,6 +93,7 @@ class PlayerShotBehaviour extends PlayerBulletBehaviour {
                 texture.setTexture('sourceSampler', sourceSampler);
                 texture.setTexture('initialVelocitySampler', initialVelocitySampler);
                 texture.setFloat('numSources', behaviourOptions.shotSources.length);
+                texture.setFloat('focused', behaviourOptions.focused ? 1 : 0);
             },
             behaviourOptions.bulletValue
         );
@@ -118,6 +120,8 @@ class PlayerShotBehaviour extends PlayerBulletBehaviour {
             newVelocities.setFloat('frame', this.bulletFrame);
             newPositions.setFloat('firing', +(this.firing && !this.disabled));
             newVelocities.setFloat('firing', +(this.firing && !this.disabled));
+            newPositions.setFloat('focused', +this.focused);
+            newVelocities.setFloat('focused', +this.focused);
             newPositions.setVector3('shotVector', shotVector);
             newVelocities.setVector3('shotVector', shotVector);
             newPositions.setVector3('sourceOffset', sourceOffset);

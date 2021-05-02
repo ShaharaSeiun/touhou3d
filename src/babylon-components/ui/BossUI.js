@@ -2,15 +2,15 @@ import { Animation, DynamicTexture, Vector3 } from '@babylonjs/core';
 import { clamp } from 'lodash';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
+import { usePrevious } from '../../hooks/usePrevious';
 import { CHARACTER_CONSTS } from '../../utils/Constants';
 import { capFirst, rerange } from '../../utils/Utils';
 import { arcOnCtx, textOnCtx } from '../BabylonUtils';
 import { globalActorRefs } from '../gameLogic/StaticRefs';
 import { useTexture } from '../hooks/useTexture';
-import { usePrevious } from '../../hooks/usePrevious';
 
 export const BossUI = ({ bossUIProps, spellCardUIProps }) => {
-    const {bossName} = bossUIProps;
+    const { bossName } = bossUIProps;
     const bossUIRef = useRef();
     const spellCardRef = useRef();
     const previousSpellCardUIProps = usePrevious(spellCardUIProps);
@@ -33,25 +33,24 @@ export const BossUI = ({ bossUIProps, spellCardUIProps }) => {
 
 
         const currentLife = bossUIProps.lives.find(life => {
-            return life.healthStart >= bossHealth
+            return bossHealth >= life.healthEnd
         })
 
-        if(!currentLife) return;
+        if (!currentLife) return;
 
-        const normalHealthRemaining = bossHealth - (currentLife.spellCards[0] + currentLife.healthEnd);
-        const normalHealthPerc = clamp(normalHealthRemaining/(currentLife.healthStart - (currentLife.spellCards[0] + currentLife.healthEnd)), 0, 1)
+        const normalHealthRemaining = bossHealth - (currentLife.spellCards[0]);
+        const normalHealthPerc = clamp(normalHealthRemaining / (currentLife.healthStart - (currentLife.spellCards[0])), 0, 1)
         const normalPerc = rerange(normalHealthPerc, 0, 1, currentLife.spellCards.length / 8, 1)
 
         arcOnCtx(ctx, currentLife.spellCards.length / 8, normalPerc, "#000000")
 
-        currentLife.spellCards.forEach((spellCardHealthStart, i) => {
-            const inverseI = (currentLife.spellCards.length - 1) - i; 
-            const nextBossHealth = (currentLife.spellCards?.[i + 1] || 0);
+        currentLife.spellCards.reverse().forEach((spellCardHealthStart, i) => {
+            const nextBossHealth = (currentLife.spellCards?.[i - 1] || currentLife.healthEnd);
             const spellCardHealthTotal = spellCardHealthStart - nextBossHealth;
             const spellHealthRemaining = (bossHealth - nextBossHealth);
-            const spellCarcPerc = clamp(spellHealthRemaining/spellCardHealthTotal, 0, 1)
-            if(spellCarcPerc > 0){
-                arcOnCtx(ctx, 0, (inverseI / 8) + (spellCarcPerc / 8), `rgb(${64 * inverseI + 127}, 0, 0)`)
+            const spellCarcPerc = clamp(spellHealthRemaining / spellCardHealthTotal, 0, 1)
+            if (spellCarcPerc > 0) {
+                arcOnCtx(ctx, 0, (i / 8) + (spellCarcPerc / 8), `rgb(${64 * i + 127}, 0, 0)`)
             }
         })
 
@@ -61,9 +60,9 @@ export const BossUI = ({ bossUIProps, spellCardUIProps }) => {
     })
 
     useEffect(() => {
-        if(!spellCardUIProps?.character) return;
-        if(spellCardUIProps.spellCard === previousSpellCardUIProps?.spellCard) return;
-        
+        if (!spellCardUIProps?.character) return;
+        if (spellCardUIProps.spellCard === previousSpellCardUIProps?.spellCard) return;
+
 
         Animation.CreateAndStartAnimation(
             'spellCardPortraitAlphaAnim',
@@ -85,7 +84,7 @@ export const BossUI = ({ bossUIProps, spellCardUIProps }) => {
             new Vector3(4, 2, 0),
             Animation.ANIMATIONLOOPMODE_CONSTANT
         );
-        
+
         spellCardTexture.hasAlpha = true;
         const ctx = spellCardTexture.getContext();
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -119,38 +118,38 @@ export const BossUI = ({ bossUIProps, spellCardUIProps }) => {
             );
         }, 1500)
     }, [bossName, previousSpellCardUIProps, spellCardTexture, spellCardUIProps])
-    
+
     return (
         <>
-        <plane ref={bossUIRef} name="bossUIPlane" width={5} height={5} position={new Vector3(-510, -510, -510)} renderingGroupId={1}>
-            <standardMaterial
-                disableLighting={true}
-                useAlphaFromDiffuseTexture
-                name="bossUIMaterial"
-                diffuseTexture={textTexture}
-                emissiveTexture={textTexture}
-            />
-        </plane>
-        <plane ref={characterPortraitRef} name={'spellCardCharacterPortrait'} position={characterPortraitPosition} width={8} height={12} renderingGroupId={1}>
-            <standardMaterial
-                alpha={0}
-                disableLighting={true}
-                useAlphaFromDiffuseTexture
-                name={'spellCardCharacterPortraitMat'}
-                diffuseTexture={characterTexture}
-                emissiveTexture={characterTexture}
-            />
-        </plane>
-        <plane ref={spellCardRef} name={'spellCard'} position={spellCardPosition} width={8} height={0.5} renderingGroupId={1}>
-            <standardMaterial
-                alpha={1}
-                disableLighting={true}
-                useAlphaFromDiffuseTexture
-                name={'spellCardMat'}
-                diffuseTexture={spellCardTexture}
-                emissiveTexture={spellCardTexture}
-            />
-        </plane>
+            <plane ref={bossUIRef} name="bossUIPlane" width={5} height={5} position={new Vector3(-510, -510, -510)} renderingGroupId={1}>
+                <standardMaterial
+                    disableLighting={true}
+                    useAlphaFromDiffuseTexture
+                    name="bossUIMaterial"
+                    diffuseTexture={textTexture}
+                    emissiveTexture={textTexture}
+                />
+            </plane>
+            <plane ref={characterPortraitRef} name={'spellCardCharacterPortrait'} position={characterPortraitPosition} width={8} height={12} renderingGroupId={1}>
+                <standardMaterial
+                    alpha={0}
+                    disableLighting={true}
+                    useAlphaFromDiffuseTexture
+                    name={'spellCardCharacterPortraitMat'}
+                    diffuseTexture={characterTexture}
+                    emissiveTexture={characterTexture}
+                />
+            </plane>
+            <plane ref={spellCardRef} name={'spellCard'} position={spellCardPosition} width={8} height={0.5} renderingGroupId={1}>
+                <standardMaterial
+                    alpha={1}
+                    disableLighting={true}
+                    useAlphaFromDiffuseTexture
+                    name={'spellCardMat'}
+                    diffuseTexture={spellCardTexture}
+                    emissiveTexture={spellCardTexture}
+                />
+            </plane>
         </>
     );
 };

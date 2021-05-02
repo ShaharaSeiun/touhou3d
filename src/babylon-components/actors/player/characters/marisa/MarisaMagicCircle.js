@@ -1,6 +1,6 @@
 import { Animation, Color3, EasingFunction, SineEase, Space, Vector3 } from '@babylonjs/core';
 import { times } from 'lodash';
-import React, { useContext, useEffect, useMemo, useRef } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { useKeydown, useKeyup } from '../../../../../hooks/useKeydown';
 import { PLAYER_INVULNERABLE_COOLDOWN } from '../../../../../utils/Constants';
@@ -28,35 +28,47 @@ export const MarisaMagicCircle = ({ isBombing, powerClass, side, isInvulnerable 
     const spherePosition = useMemo(() => new Vector3(sideCoefficient, 0, 0), [sideCoefficient])
     const focusPosition = useMemo(() => new Vector3(sideCoefficient * 0.5, 0, 0), [sideCoefficient])
     const unfocusPosition = useMemo(() => new Vector3(sideCoefficient, 0, 0), [sideCoefficient])
+    const [focused, setFocused] = useState(false);
     const accelerationInitialVelocity = useMemo(() => [0, 0, 0.01], []);
     const glowLayer = useContext(GlowContext);
     const scene = useScene();
     const rune1 = useTexture("rune1");
     const target = useTarget();
 
+    useEffect(() => {
+        if (focused) {
+            Animation.CreateAndStartAnimation(
+                'anim',
+                sphereTransformRef.current,
+                'position',
+                60,
+                15,
+                sphereTransformRef.current.position,
+                focusPosition,
+                Animation.ANIMATIONLOOPMODE_CONSTANT
+            );
+        }
+        else {
+            Animation.CreateAndStartAnimation(
+                'anim',
+                sphereTransformRef.current,
+                'position',
+                60,
+                15,
+                sphereTransformRef.current.position,
+                unfocusPosition,
+                Animation.ANIMATIONLOOPMODE_CONSTANT
+            );
+        }
+    }, [focusPosition, focused, unfocusPosition])
+
     useKeydown('SLOW', () => {
-        Animation.CreateAndStartAnimation(
-            'anim',
-            sphereTransformRef.current,
-            'position',
-            60,
-            15,
-            sphereTransformRef.current.position,
-            focusPosition,
-            Animation.ANIMATIONLOOPMODE_CONSTANT
-        );
+        setFocused(true)
+
     });
+
     useKeyup('SLOW', () => {
-        Animation.CreateAndStartAnimation(
-            'anim',
-            sphereTransformRef.current,
-            'position',
-            60,
-            15,
-            sphereTransformRef.current.position,
-            unfocusPosition,
-            Animation.ANIMATIONLOOPMODE_CONSTANT
-        );
+        setFocused(false)
     });
 
     //sphere blinking
@@ -105,7 +117,7 @@ export const MarisaMagicCircle = ({ isBombing, powerClass, side, isInvulnerable 
     return (
         <transformNode name={name + 'sphereTransform'} ref={sphereTransformRef} position={spherePosition}>
             {!isBombing && <UIClass position={UIPosition} />}
-            <MarisaLinearBulletEmitter side={side} position={linearBulletEmitterPosition} powerClass={powerClass} />
+            <MarisaLinearBulletEmitter focused={focused} side={side} position={linearBulletEmitterPosition} powerClass={powerClass} />
             {powerClass > 0 && (
                 <MarisaAccelerationBulletEmitter initialVelocity={accelerationInitialVelocity} powerClass={powerClass} />
             )}

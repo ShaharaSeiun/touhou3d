@@ -2,8 +2,11 @@ import { makeStyles } from "@material-ui/core";
 import { useEffect } from "react";
 import { useScene } from "react-babylonjs";
 
-let didInit = false
 let initFunc;
+
+const didInit = {
+    current: false
+}
 
 const useStyles = makeStyles({
     needsToClick: {
@@ -26,17 +29,18 @@ export const NeedsToClick = () => {
     const scene = useScene()
 
     useEffect(() => {
+        if (didInit.current) return;
         let elem = document.createElement("div");
         elem.className = classes.needsToClick;
         elem.innerHTML = "CLICK/TAP THE SCREEN <br><br> (Also, F11 for fullscreen if you want)"
         document.body.appendChild(elem);
 
         initFunc = () => {
-            if (didInit) return;
+            if (didInit.current) return;
             document.body.removeEventListener('keydown', initFunc);
             document.body.removeEventListener('click', initFunc);
             document.body.removeEventListener('touchstart', initFunc);
-            didInit = true;
+            didInit.current = true;
             document.body.removeChild(elem);
             elem = null;
             if (scene) scene.paused = false;

@@ -4,6 +4,7 @@ import { useBeforeRender } from 'react-babylonjs';
 import { globals, GlobalsContext } from '../../../../components/GlobalsContainer';
 import { useKeydown } from '../../../../hooks/useKeydown';
 import { PLAYER_BOMB_DURATION, PLAYER_INVULNERABLE_COOLDOWN } from '../../../../utils/Constants';
+import { capFirst } from '../../../../utils/Utils';
 import { AnimationContext } from '../../../gameLogic/GeneralContainer';
 import { useEffects } from '../../../gameLogic/useEffects';
 import { useAddBulletGroup } from '../../../hooks/useAddBulletGroup';
@@ -79,7 +80,11 @@ export const Player = ({ character }) => {
     const bombingActions = useMemo(
         () => [
             () => {
-                addEffect(sphereTransformNodeRef.current, character + 'BombCharge');
+                addEffect(sphereTransformNodeRef.current, {
+                    type: 'particles',
+                    name: 'chargeBomb' + capFirst(character),
+                    duration: 1000
+                });
 
                 let easingFunction = new BezierCurveEase(0.33, 0.01, 0.66, 0.99);
                 registerAnimation(
@@ -109,9 +114,15 @@ export const Player = ({ character }) => {
     useEffect(() => {
         if (player !== startPlayer) {
             setIsInvulnerable(true);
-            if (globals.POWER) addBulletGroup(
+            if (globals.POWER && player !== 0) addBulletGroup(
                 transformNodeRef.current,
-                player === 0 ? playerContinueInstruction() : playerDeathInstruction(globals.POWER),
+                playerDeathInstruction(globals.POWER),
+                false,
+                true
+            )
+            if (player === 0) addBulletGroup(
+                transformNodeRef.current,
+                playerContinueInstruction(),
                 false,
                 true
             )

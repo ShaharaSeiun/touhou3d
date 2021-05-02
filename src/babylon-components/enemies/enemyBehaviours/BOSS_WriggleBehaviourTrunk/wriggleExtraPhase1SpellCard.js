@@ -1,5 +1,4 @@
 import { useContext, useEffect, useMemo } from "react";
-import { bossDeathQuiet } from "../../../../sounds/SFX";
 import { makeReplaceInstruction } from "../../../bullets/BulletUtils";
 import { AnimationContext, UIContext } from "../../../gameLogic/GeneralContainer";
 import { useAddBulletGroup } from "../../../hooks/useAddBulletGroup";
@@ -139,12 +138,11 @@ export const useWriggleExtraPhase1SpellCard = (active, transformNodeRef) => {
     const { setSpellCardUI } = useContext(UIContext)
     const { registerAnimation } = useContext(AnimationContext);
     const addEffect = useAddEffect()
-    
+
     useEffect(() => {
-        if(active){
-            bossDeathQuiet.play();
+        if (active) {
             setSpellCardUI({
-                character: 'wriggle', 
+                character: 'wriggle',
                 spellCard: `Wriggle Sign   "Nightbug Tornado"`
             })
         }
@@ -155,7 +153,11 @@ export const useWriggleExtraPhase1SpellCard = (active, transformNodeRef) => {
     const actions = useMemo(() =>
         [
             () => {
-                addEffect(transformNodeRef.current, 'wriggleCharge')
+                addEffect(transformNodeRef.current, {
+                    type: 'particles',
+                    name: 'chargeWriggle',
+                    duration: 1000
+                })
             },
             () => {
                 const id = addBulletGroup(

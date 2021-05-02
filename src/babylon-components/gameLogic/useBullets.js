@@ -105,7 +105,10 @@ export const useBullets = (assets, environmentCollision, addEffect, isDead, setI
                             globalActorRefs.enemies[enemyID].health -= bulletGroup.behaviour.bulletValue;
                             playHitSound = true;
                             if (globalActorRefs.enemies[enemyID]) {
-                                addEffect(collision.hit, 'hitParticles');
+                                addEffect(collision.hit, {
+                                    type: 'particles',
+                                    name: 'hit'
+                                });
                             }
                         }
                     });

@@ -1,13 +1,12 @@
 import { useContext, useEffect, useMemo } from "react";
-import { bossDeathQuiet } from "../../../../sounds/SFX";
-import { bulletReplaceRotation } from "../../../bullets/BulletUtils";
+import { makeReplaceInstruction } from "../../../bullets/BulletUtils";
 import { AnimationContext, UIContext } from "../../../gameLogic/GeneralContainer";
 import { useAddBulletGroup } from "../../../hooks/useAddBulletGroup";
 import { useAddEffect } from "../../../hooks/useAddEffect";
 import { useDoSequence } from "../../../hooks/useDoSequence";
 import { moveTo } from "../BehaviourCommon";
 
-const spray = {
+export const wrigglePhase1Spray = {
     type: 'shoot',
     materialOptions: {
         material: 'fresnel',
@@ -30,7 +29,7 @@ const spray = {
     wait: 0,
 }
 
-export const spray2 = {
+export const wrigglePhase1Spray2 = {
     type: 'shoot',
     materialOptions: {
         material: 'fresnel',
@@ -40,7 +39,8 @@ export const spray2 = {
         pattern: 'sprayStableRandBurst',
         num: 300,
         timeLength: 7,
-        speed: 15
+        speed: 15,
+        uid: 'wrigglePhase1SprayInit',
     },
     meshOptions: {
         mesh: 'egg',
@@ -53,20 +53,30 @@ export const spray2 = {
     wait: 0,
     endTimings: {
         timing: 'uniform',
-        time: 2
+        time: 2,
+        uid: 'wrigglePhase1SprayInit',
     },
 }
+
+export const wrigglePhase1Spray2Turn = makeReplaceInstruction(wrigglePhase1Spray2, {
+    patternOptions: {
+        type: 'rotateVelocity',
+        rotation: Math.PI / 3,
+    },
+    behaviourOptions: {
+        behaviour: 'linear',
+    },
+})
 
 export const useWrigglePhase1SpellCard = (active, transformNodeRef) => {
     const { setSpellCardUI } = useContext(UIContext)
     const { registerAnimation } = useContext(AnimationContext);
     const addEffect = useAddEffect()
-    
+
     useEffect(() => {
-        if(active){
-            bossDeathQuiet.play();
+        if (active) {
             setSpellCardUI({
-                character: 'wriggle', 
+                character: 'wriggle',
                 spellCard: `Lamp Sign   "Firefly Phenomenon"`
             })
         }
@@ -77,24 +87,25 @@ export const useWrigglePhase1SpellCard = (active, transformNodeRef) => {
     const actions = useMemo(() =>
         [
             () => {
-                addEffect(transformNodeRef.current, 'wriggleCharge')
+                addEffect(transformNodeRef.current, {
+                    type: 'particles',
+                    name: 'chargeWriggle',
+                    duration: 1000
+                })
             },
             () => {
                 addBulletGroup(
                     transformNodeRef.current,
-                    spray
+                    wrigglePhase1Spray
                 )
                 const id = addBulletGroup(
                     transformNodeRef.current,
-                    spray2
+                    wrigglePhase1Spray2
                 )
                 addBulletGroup(
                     transformNodeRef.current,
-                    bulletReplaceRotation(id, { rotation: Math.PI/3 }, {
-                        behaviourOptions:{
-                            behaviour: 'linear'
-                        } 
-                    })
+                    wrigglePhase1Spray2Turn,
+                    id
                 )
             },
             () => {

@@ -30,7 +30,8 @@ const makeDefaultDownKeyMap = () => {
 }
 
 export const keyObject = {
-    metaDownKeys: makeDefaultDownKeyMap()
+    metaDownKeys: makeDefaultDownKeyMap(),
+    disabledMap: {}
 }
 
 export const ControlsContainer = ({ children, outsideOfRenderer }) => {
@@ -50,7 +51,6 @@ export const ControlsContainer = ({ children, outsideOfRenderer }) => {
         16: 'SLOW', //shift
         32: 'BOMB', //space
         1: 'SHOOT', //click
-        80: 'DIALOGUE', //p
     });
 
     const keyDownHandler = useCallback(
@@ -59,10 +59,11 @@ export const ControlsContainer = ({ children, outsideOfRenderer }) => {
                 return;
             }
             const key = keyMap[event.which];
-            
-            if (keyObject.metaDownKeys[key]) return;
 
-            const newMetaDownKeys = {...keyObject.metaDownKeys};
+            if (keyObject.metaDownKeys[key]) return;
+            if (keyObject.disabledMap[key]) return;
+
+            const newMetaDownKeys = { ...keyObject.metaDownKeys };
             newMetaDownKeys[key] = true;
             keyObject.metaDownKeys = newMetaDownKeys;
         },
@@ -78,7 +79,7 @@ export const ControlsContainer = ({ children, outsideOfRenderer }) => {
             const key = keyMap[event.which];
             if (!keyObject.metaDownKeys[key]) return;
 
-            const newMetaDownKeys = {...keyObject.metaDownKeys};
+            const newMetaDownKeys = { ...keyObject.metaDownKeys };
             newMetaDownKeys[key] = false;
             keyObject.metaDownKeys = newMetaDownKeys;
         },
@@ -88,6 +89,14 @@ export const ControlsContainer = ({ children, outsideOfRenderer }) => {
     const keySync = useCallback(() => {
         setDownKeys(keyObject.metaDownKeys);
     }, [setDownKeys]);
+
+    const disableControl = useCallback((control) => {
+        keyObject.disabledMap[control] = true;
+    }, [])
+
+    const enableControl = useCallback((control) => {
+        delete keyObject.disabledMap[control];
+    }, [])
 
     useEffect(() => {
         if (!outsideOfRenderer) return;
@@ -111,6 +120,8 @@ export const ControlsContainer = ({ children, outsideOfRenderer }) => {
                 downKeys,
                 keyDownHandler,
                 keyUpHandler,
+                disableControl,
+                enableControl
             }}
         >
             {children}

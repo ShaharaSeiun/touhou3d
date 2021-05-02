@@ -91,48 +91,7 @@ const makeShotInstruction = (powerClass, side) => {
     return instruction;
 };
 
-export const marisaShotPower0L = makeShotInstruction(0, "left");
-export const marisaShotPower1L = makeShotInstruction(1, "left");
-export const marisaShotPower2L = makeShotInstruction(2, "left");
-export const marisaShotPower3L = makeShotInstruction(3, "left");
-export const marisaShotPower0R = makeShotInstruction(0, "right");
-export const marisaShotPower1R = makeShotInstruction(1, "right");
-export const marisaShotPower2R = makeShotInstruction(2, "right");
-export const marisaShotPower3R = makeShotInstruction(3, "right");
-
-const shotInstruction = (power, side) => {
-    if (side === "left") {
-        switch (power) {
-            case 0:
-                return marisaShotPower0L;
-            case 1:
-                return marisaShotPower1L;
-            case 2:
-                return marisaShotPower2L;
-            case 3:
-                return marisaShotPower3L;
-            default:
-                throw new Error('Unknown power class')
-        }
-    }
-    if (side === "right") {
-        switch (power) {
-            case 0:
-                return marisaShotPower0R;
-            case 1:
-                return marisaShotPower1R;
-            case 2:
-                return marisaShotPower2R;
-            case 3:
-                return marisaShotPower3R;
-            default:
-                throw new Error('Unknown power class')
-        }
-    }
-
-}
-
-export const MarisaLinearBulletEmitter = ({ powerClass, side, ...props }) => {
+export const MarisaLinearBulletEmitter = ({ powerClass, side, focused, ...props }) => {
     const transformNodeRef = useRef();
     const { addBulletGroup, disposeSingle } = useContext(BulletsContext);
     const shotFrame = useRef(0);
@@ -144,7 +103,7 @@ export const MarisaLinearBulletEmitter = ({ powerClass, side, ...props }) => {
     useEffect(() => {
         if (!transformNodeRef.current) return;
 
-        const id = addBulletGroup(transformNodeRef.current, shotInstruction(powerClass, side), false, true);
+        const id = addBulletGroup(transformNodeRef.current, makeShotInstruction(powerClass, side), false, true);
         setShotId(id);
 
         return () => {
@@ -160,6 +119,7 @@ export const MarisaLinearBulletEmitter = ({ powerClass, side, ...props }) => {
 
         shotFrame.current += 1;
 
+        allBullets[shotId].behaviour.focused = focused;
         allBullets[shotId].behaviour.firing = false;
         allBullets[shotId].behaviour.target = target;
         const SHOOT = keyObject.metaDownKeys['SHOOT'];

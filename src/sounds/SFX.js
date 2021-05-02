@@ -1,5 +1,5 @@
-import MultiSound from './MultiSound';
 import LoopingSound from './LoopingSound';
+import MultiSound from './MultiSound';
 
 export const choiceSound = new MultiSound('/sfx/select00.wav', 0.2);
 export const selectSound = new MultiSound('/sfx/ok00.wav', 0.2);
@@ -8,7 +8,7 @@ export const bossDeathQuiet = new MultiSound('/sfx/se_enep01.wav', 0.05);
 export const bossDeathLoud = new MultiSound('/sfx/se_enep01.wav', 0.8);
 export const enemyDamage = new MultiSound('/sfx/se_damage00.wav', 0.2, 2);
 export const enemyDeath = new MultiSound('/sfx/se_enep00.wav', 0.2);
-export const enemyShoot = new MultiSound('/sfx/se_tan00.wav', 0.05);
+export const enemyShoot = new MultiSound('/sfx/se_tan00.wav', 0.05, 1, 10);
 export const enemyChangeBullet = new MultiSound('/sfx/se_kira00.wav', 0.05);
 export const minionSpawn = new MultiSound('/sfx/se_option.wav', 0.20);
 export const itemGet = new MultiSound('/sfx/se_item00.wav', 0.05);
