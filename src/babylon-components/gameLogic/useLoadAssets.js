@@ -203,9 +203,24 @@ export const useLoadAssets = () => {
                 type: 'texture',
             },
             {
+                url: '/assets/player/marisa/marisaDeath.png',
+                name: 'marisaDeath',
+                type: 'texture',
+            },
+            {
                 url: '/assets/items/point.png',
                 name: 'point',
                 type: 'texture',
+            },
+            {
+                url: '/assets/crossHair/crosshair.png',
+                name: 'crosshair',
+                type: 'texture'
+            },
+            {
+                url: '/assets/crossHair/targeting.png',
+                name: 'targeting',
+                type: 'texture'
             },
             {
                 url: '/assets/items/power.png',

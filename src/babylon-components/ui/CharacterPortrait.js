@@ -15,6 +15,8 @@ export const CharacterPortrait = ({ name, side, active, emotion, index }) => {
     const matRef = useRef();
     const planeRef = useRef();
 
+
+
     useEffect(() => {
         matRef.current.alpha = active ? 1 : 0.5;
         //eslint-disable-next-line react-hooks/exhaustive-deps

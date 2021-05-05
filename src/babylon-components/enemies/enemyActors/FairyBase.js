@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from 'react';
 import { Vector3 } from '@babylonjs/core';
-import { useName } from '../../hooks/useName';
-import { useBeforeRender } from 'react-babylonjs';
 import { clamp } from 'lodash';
+import React, { useEffect, useRef } from 'react';
+import { useBeforeRender } from 'react-babylonjs';
 import { useAssets } from '../../hooks/useAssets';
+import { useName } from '../../hooks/useName';
 
 export const FairyBase = React.forwardRef(({ asset, radius, ...props }, ref) => {
     const transBaseName = useName('fairyTransformBase');

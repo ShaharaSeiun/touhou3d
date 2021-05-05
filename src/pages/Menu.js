@@ -1,15 +1,17 @@
 import { Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Route } from 'react-router-dom';
 import { ControlsContext } from '../components/ControlsContainer';
 import BackgroundImage from '../img/menu_bamboo.jpg';
 import Music from '../sounds/Music';
 import { NeedsToClick } from '../utils/NeedsToClick';
 import { CharacterSelect } from './CharacterSelect';
+import { Controls } from './Controls';
 import { DifficultySelect } from './DifficultySelect';
 import { MainMenu } from './MainMenu';
 import { Options } from './Options';
+import { Score } from './Score';
 import { Stats } from './Stats';
 
 
@@ -32,9 +34,15 @@ export const Menu = () => {
     const classes = useStyles();
 
     const { keyUpHandler, keyDownHandler } = useContext(ControlsContext);
+    const [handlerDiv, setHandlerDiv] = useState();
+    useEffect(() => {
+        if (!handlerDiv) return;
+        handlerDiv.focus();
+    })
 
     return (
         <Box
+            ref={(newRef) => setHandlerDiv(newRef)}
             onKeyUp={keyUpHandler}
             onKeyDown={keyDownHandler}
             onPointerUp={keyUpHandler}
@@ -52,6 +60,9 @@ export const Menu = () => {
             <Route exact path="/menu/options">
                 <Options />
             </Route>
+            <Route exact path="/menu/controls">
+                <Controls />
+            </Route>
             <Route exact path="/menu/game/difficultySelect">
                 <DifficultySelect next={'/menu/game/characterSelect'} />
             </Route>
@@ -60,6 +71,9 @@ export const Menu = () => {
             </Route>
             <Route exact path="/menu/game/stats">
                 <Stats />
+            </Route>
+            <Route exact path="/menu/game/score">
+                <Score />
             </Route>
 
         </Box>

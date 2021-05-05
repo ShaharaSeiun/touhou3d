@@ -37,6 +37,7 @@ export const addBomb = (id, position, radius) => {
         position: position,
         radius: radius
     }
+
 }
 
 export const removeBomb = (id) => {

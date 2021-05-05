@@ -1,10 +1,10 @@
 import { Animation, Color3, EasingFunction, SineEase, Space, Vector3 } from '@babylonjs/core';
 import { times } from 'lodash';
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { useKeydown, useKeyup } from '../../../../../hooks/useKeydown';
 import { PLAYER_INVULNERABLE_COOLDOWN } from '../../../../../utils/Constants';
-import { GlowContext } from '../../../../gameLogic/GeneralContainer';
+import { useGlowLayer } from '../../../../gameLogic/useGlowLayer';
 import { useDoSequence } from '../../../../hooks/useDoSequence';
 import { useName } from '../../../../hooks/useName';
 import { useTarget } from '../../../../hooks/useTarget';
@@ -30,7 +30,7 @@ export const MarisaMagicCircle = ({ isBombing, powerClass, side, isInvulnerable 
     const unfocusPosition = useMemo(() => new Vector3(sideCoefficient, 0, 0), [sideCoefficient])
     const [focused, setFocused] = useState(false);
     const accelerationInitialVelocity = useMemo(() => [0, 0, 0.01], []);
-    const glowLayer = useContext(GlowContext);
+    const glowLayer = useGlowLayer()
     const scene = useScene();
     const rune1 = useTexture("rune1");
     const target = useTarget();

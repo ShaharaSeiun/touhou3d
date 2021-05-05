@@ -6,6 +6,7 @@ import { useKeydown } from '../../../../hooks/useKeydown';
 import { PLAYER_BOMB_DURATION, PLAYER_INVULNERABLE_COOLDOWN } from '../../../../utils/Constants';
 import { capFirst } from '../../../../utils/Utils';
 import { AnimationContext } from '../../../gameLogic/GeneralContainer';
+import { playerInvulnerable } from '../../../gameLogic/useBullets';
 import { useEffects } from '../../../gameLogic/useEffects';
 import { useAddBulletGroup } from '../../../hooks/useAddBulletGroup';
 import { useDoSequence } from '../../../hooks/useDoSequence';
@@ -73,6 +74,7 @@ export const Player = ({ character }) => {
         if (!globals.BOMB || isBombing) return;
         setGlobal('BOMB', globals.BOMB - 1);
         setIsBombing(true);
+        playerInvulnerable.current = true;
     });
 
     const bombingTimings = useMemo(() => [0, PLAYER_BOMB_DURATION], []);
@@ -103,6 +105,7 @@ export const Player = ({ character }) => {
             },
             () => {
                 setIsBombing(false);
+                playerInvulnerable.current = false;
             },
         ],
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -154,12 +157,12 @@ export const Player = ({ character }) => {
                 <EmitterClass isBombing={isBombing} powerClass={powerClass} side={'right'} isInvulnerable={isInvulnerable} />
                 <EmitterClass isBombing={isBombing} powerClass={powerClass} side={'left'} isInvulnerable={isInvulnerable} />
             </transformNode>
+            <InvulnerabilityField
+                active={isInvulnerable || isBombing}
+                radius={isInvulnerable ? [5, 500, 5] : 2}
+                texture={isInvulnerable ? deathTexture : false}
+            />
             <transformNode name="bombObjectTransformNode" position={new Vector3(0, 0, 1)}>
-                <InvulnerabilityField
-                    active={isInvulnerable || isBombing}
-                    radius={isInvulnerable ? [5, 500, 5] : 2}
-                    texture={isInvulnerable ? deathTexture : false}
-                />
                 {isBombing && (
                     <BombClass />
                 )}

@@ -37,7 +37,6 @@ export const NeedsToClick = () => {
 
         initFunc = () => {
             if (didInit.current) return;
-            document.body.removeEventListener('keydown', initFunc);
             document.body.removeEventListener('click', initFunc);
             document.body.removeEventListener('touchstart', initFunc);
             didInit.current = true;
@@ -47,7 +46,6 @@ export const NeedsToClick = () => {
         }
 
         if (scene) scene.paused = true;
-        document.body.addEventListener('keydown', initFunc);
         document.body.addEventListener('click', initFunc);
         document.body.addEventListener('touchstart', initFunc);
     }, [classes.needsToClick, scene]);

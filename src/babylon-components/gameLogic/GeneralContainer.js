@@ -14,7 +14,6 @@ export const EffectsContext = React.createContext();
 export const AssetsContext = React.createContext();
 export const TargetContext = React.createContext();
 export const UIContext = React.createContext();
-export const GlowContext = React.createContext();
 export const PauseContext = React.createContext();
 export const AnimationContext = React.createContext();
 
@@ -26,7 +25,7 @@ export const GeneralContainer = ({ children }) => {
     const addEffect = useEffects(assets);
     const bulletsObject = useBullets(assets, environmentCollision, addEffect, isDead, setIsDead);
     const UIProps = useUI();
-    const glowLayer = useGlowLayer();
+    useGlowLayer();
     const { registerAnimation, unregisterAnimation, ...pauseProps } = usePause();
 
     //Supports readpixels
@@ -62,13 +61,11 @@ export const GeneralContainer = ({ children }) => {
             <BulletsContext.Provider value={{ ...bulletsObject, setEnvironmentCollision }}>
                 <EffectsContext.Provider value={addEffect}>
                     <TargetContext.Provider value={target}>
-                        <GlowContext.Provider value={glowLayer}>
-                            <UIContext.Provider value={{ isDead, setIsDead, ...UIProps }}>
-                                <PauseContext.Provider value={pauseProps}>
-                                    <AnimationContext.Provider value={{ registerAnimation, unregisterAnimation }}>{children}</AnimationContext.Provider>
-                                </PauseContext.Provider>
-                            </UIContext.Provider>
-                        </GlowContext.Provider>
+                        <UIContext.Provider value={{ isDead, setIsDead, ...UIProps }}>
+                            <PauseContext.Provider value={pauseProps}>
+                                <AnimationContext.Provider value={{ registerAnimation, unregisterAnimation }}>{children}</AnimationContext.Provider>
+                            </PauseContext.Provider>
+                        </UIContext.Provider>
                     </TargetContext.Provider>
                 </EffectsContext.Provider>
             </BulletsContext.Provider>

@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from 'react';
 import { Animation, EasingFunction, SineEase, Vector3 } from '@babylonjs/core';
+import React, { useEffect, useRef } from 'react';
+import { useScene } from 'react-babylonjs';
 import { useName } from '../../hooks/useName';
 import { useTexture } from '../../hooks/useTexture';
 import { FairyBase } from './FairyBase';
-import { useScene } from 'react-babylonjs';
 
 const planePosition = new Vector3(0, 0, 0.5);
 
@@ -12,7 +12,7 @@ export const FairyBaseWithMagicCircle = React.forwardRef(({ ...props }, ref) => 
     const name = useName("fairyBaseWithMagicCircle")
     const texture = useTexture("blueMagicCircle")
     const scene = useScene();
-    
+
     useEffect(() => {
         const sineAnimation = new Animation(name + "sineAnimation", "scaling", 30, Animation.ANIMATIONTYPE_VECTOR3, Animation.ANIMATIONLOOPMODE_CYCLE);
         const keysSineAnimation = [];
@@ -27,12 +27,13 @@ export const FairyBaseWithMagicCircle = React.forwardRef(({ ...props }, ref) => 
 
         planeRef.current.animations.push(sineAnimation);
         scene.beginAnimation(planeRef.current, 0, 60, true);
+
     }, [name, scene])
 
     return (
         <transformNode name={name}>
             <plane position={planePosition} ref={planeRef} name={name + 'circlePlane'} width={2} height={2}>
-                <standardMaterial useAlphaFromDiffuseTexture backFaceCulling={false} name={name + 'mat'}  diffuseTexture={texture}/>
+                <standardMaterial useAlphaFromDiffuseTexture backFaceCulling={false} name={name + 'mat'} diffuseTexture={texture} />
             </plane>
             <FairyBase ref={ref} {...props} />
         </transformNode>

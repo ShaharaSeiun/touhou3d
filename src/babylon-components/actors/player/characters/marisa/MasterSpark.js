@@ -1,13 +1,14 @@
 import { Animation, Color3, Vector3 } from '@babylonjs/core'
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useBeforeRender, useScene } from 'react-babylonjs'
-import { AnimationContext, GlowContext } from '../../../../gameLogic/GeneralContainer'
+import { playerBombCharge2, playerMasterSpark } from '../../../../../sounds/SFX'
+import { AnimationContext } from '../../../../gameLogic/GeneralContainer'
+import { addBomb, globalActorRefs, removeBomb, setBombPosition, setBombRadius } from '../../../../gameLogic/StaticRefs'
+import { useGlowLayer } from '../../../../gameLogic/useGlowLayer'
 import { useDoSequence } from '../../../../hooks/useDoSequence'
 import { useName } from '../../../../hooks/useName'
 import { useTexture } from '../../../../hooks/useTexture'
 import { MasterSparkBeam } from './MasterSparkBeam'
-import { playerBombCharge2, playerMasterSpark } from '../../../../../sounds/SFX';
-import { addBomb, globalActorRefs, removeBomb, setBombPosition, setBombRadius } from '../../../../gameLogic/StaticRefs'
 
 export const MasterSpark = (props) => {
     const name = useName()
@@ -22,7 +23,7 @@ export const MasterSpark = (props) => {
     const transformNodeRef = useRef();
     const scene = useScene()
     const { registerAnimation } = useContext(AnimationContext)
-    const glowLayer = useContext(GlowContext);
+    const glowLayer = useGlowLayer();
     const [beamActive, setBeamActive] = useState();
 
     useEffect(() => {
@@ -161,10 +162,10 @@ export const MasterSpark = (props) => {
             )
         },
         () => {
-            for(let i = 0; i < 7; i++){
+            for (let i = 0; i < 7; i++) {
                 addBomb(i, transformNodeRef.current.getAbsolutePosition().add(new Vector3(0, 0, i * 3)), 0)
             }
-            
+
             playerMasterSpark.play();
             registerAnimation(
                 Animation.CreateAndStartAnimation(
@@ -185,28 +186,28 @@ export const MasterSpark = (props) => {
 
     useEffect(() => {
         return () => {
-            for(let i = 0; i < 7; i++){
+            for (let i = 0; i < 7; i++) {
                 removeBomb(i)
             }
         }
     }, []);
 
     useBeforeRender(() => {
-        if(!beamActive || !masterSparkTransformNode.current) return;
+        if (!beamActive || !masterSparkTransformNode.current) return;
 
-        const scale = Math.max(Math.random(), 0.5);
+        const scale = Math.max(Math.random() * 2, 1.0);
         masterSparkTransformNode.current.scaling = new Vector3(scale, scale, scale);
 
-        for(let i = 0; i < 7; i++){
+        for (let i = 0; i < 7; i++) {
             setBombPosition(i, transformNodeRef.current.getAbsolutePosition().add(new Vector3(0, 0, i * 3)))
-            setBombRadius(i, scale * 50);
+            setBombRadius(i, scale * 4);
         }
 
         globalActorRefs.enemies.forEach((enemy, id) => {
             if (enemy.dead) return;
             const lazerPos = transformNodeRef.current.getAbsolutePosition()
-            if(Math.abs(enemy.position.x - lazerPos.x) < 4 && Math.abs(enemy.position.y - lazerPos.y) < 4){
-                enemy.health--;
+            if (Math.abs(enemy.position.x - lazerPos.x) < 4 && Math.abs(enemy.position.y - lazerPos.y) < 4) {
+                enemy.health -= 2;
             }
         });
     })

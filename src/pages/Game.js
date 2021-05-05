@@ -3,6 +3,7 @@ import { Color3 } from '@babylonjs/core/Maths/math.color';
 import React, { Suspense, useMemo } from 'react';
 import { Scene } from 'react-babylonjs';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { Boundaries } from '../babylon-components/actors/Boundaries';
 import { FightRoot } from '../babylon-components/actors/FightRoot';
 import { Player } from '../babylon-components/actors/player/characters/Player';
 import { PlayerCamera } from '../babylon-components/actors/player/PlayerCamera';
@@ -78,6 +79,7 @@ export const Game = () => {
                                         <Player character={globals.character} />
                                         <PlayerCamera />
                                     </PlayerMovement>
+                                    <Boundaries />
                                 </FightRoot>
                                 <Router>
                                     <Switch>

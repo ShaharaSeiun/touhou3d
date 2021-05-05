@@ -21,6 +21,7 @@ export const UI = () => {
     const [characters, setCharacters] = useState([]);
 
     useKeydown('ESCAPE', () => {
+        if (isDead) return;
         selectSound.play();
         setPaused((paused) => !paused);
     });

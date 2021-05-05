@@ -1,9 +1,9 @@
 import { Effect, ShaderMaterial, Vector3 } from '@babylonjs/core';
-import React, { useContext, useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { glsl } from '../../../../BabylonUtils';
-import { GlowContext } from '../../../../gameLogic/GeneralContainer';
-import { useAssets } from '../../../../hooks/useAssets'
+import { useGlowLayer } from '../../../../gameLogic/useGlowLayer';
+import { useAssets } from '../../../../hooks/useAssets';
 
 Effect.ShadersStore['beamVertexShader'] = glsl`
     attribute vec3 position;
@@ -68,11 +68,11 @@ Effect.ShadersStore['beamFragmentShader'] = glsl`
 export const MasterSparkBeam = React.forwardRef((props, ref) => {
     const beam = useAssets("beam");
     const beamMesh = useMemo(() => beam?._children?.[0], [beam])
-    const glowLayer = useContext(GlowContext);
+    const glowLayer = useGlowLayer();
     const scene = useScene()
 
     useEffect(() => {
-        if(!beam) return;
+        if (!beam) return;
         const material = new ShaderMaterial(
             'beamMaterial',
             scene,
@@ -93,15 +93,15 @@ export const MasterSparkBeam = React.forwardRef((props, ref) => {
         glowLayer.referenceMeshToUseItsOwnMaterial(beamMesh);
         beam.parent = ref.current;
     }, [beam, beamMesh, glowLayer, ref, scene])
-    
+
     useBeforeRender(() => {
-        if(!beamMesh) return;
+        if (!beamMesh) return;
         beamMesh.material.hOffset += 6.263895263;
         beamMesh.material.setFloat("hOffset", beamMesh.material.hOffset);
 
     })
 
     return (
-        <transformNode name="masterSparkBeam" ref={ref} {...props}/>
+        <transformNode name="masterSparkBeam" ref={ref} {...props} />
     )
 })

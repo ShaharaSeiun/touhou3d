@@ -12,9 +12,10 @@ import { useTexture } from '../hooks/useTexture';
 export const BossUI = ({ bossUIProps, spellCardUIProps }) => {
     const { bossName } = bossUIProps;
     const bossUIRef = useRef();
-    const spellCardRef = useRef();
-    const previousSpellCardUIProps = usePrevious(spellCardUIProps);
     const characterPortraitRef = useRef();
+    const spellCardRef = useRef();
+
+    const previousSpellCardUIProps = usePrevious(spellCardUIProps);
     const textTexture = useMemo(() => new DynamicTexture('bossUITexture', { width: 512, height: 512 }), []);
     const spellCardTexture = useMemo(() => new DynamicTexture('spellCardTexture', { width: 1024, height: 64 }), []);
     const characterTexture = useTexture(spellCardUIProps ? spellCardUIProps.character + 'CharacterNeutral' : 'wriggleCharacterNeutral');

@@ -1,10 +1,10 @@
-import React from 'react'
 import {
     Engine,
-    Observable,
-} from '@babylonjs/core'
-
+    Observable
+} from '@babylonjs/core';
+import React from 'react';
 import { EngineCanvasContext } from 'react-babylonjs';
+
 
 
 class ReactBabylonjsEngine extends React.Component {
@@ -19,12 +19,12 @@ class ReactBabylonjsEngine extends React.Component {
     }
 
     componentDidMount() {
-        const context = this.canvas.getContext('webgl2');
+        const context = this.canvas.getContext('webgl2', { stencil: true });
 
         this.engine = new Engine(
             context,
             this.props.antialias === true ? true : false, // default false
-            this.props.engineOptions,
+            { stencil: true },
             this.props.adaptToDeviceRatio === true ? true : false // default false
         )
 

@@ -16,7 +16,9 @@ import { allBullets, globalActorRefs, killEnemy } from './StaticRefs';
 
 let playHitSound = false;
 let framesSincePlayHit = 0;
-let playerInvulnerable = false
+export const playerInvulnerable = {
+    current: false
+}
 
 export const useBullets = (assets, environmentCollision, addEffect, isDead, setIsDead) => {
     const scene = useScene();
@@ -127,11 +129,11 @@ export const useBullets = (assets, environmentCollision, addEffect, isDead, setI
                             itemGet.play();
                         }
                         if (collision.player) {
-                            if (!playerInvulnerable) {
+                            if (!playerInvulnerable.current) {
                                 setGlobal('PLAYER', globals.PLAYER - 1);
-                                playerInvulnerable = true;
+                                playerInvulnerable.current = true;
                                 window.setTimeout(() => {
-                                    playerInvulnerable = false;
+                                    playerInvulnerable.current = false;
                                 }, PLAYER_INVULNERABLE_COOLDOWN * 1000)
                                 playerDeath.play()
 

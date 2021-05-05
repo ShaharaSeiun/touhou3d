@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
 import { globals } from '../../../../components/GlobalsContainer';
 import { textOnCtx } from '../../../BabylonUtils';
+import { UIPlane } from '../../../ui/UIPlane';
 
 export const PlayerUILeft = ({ ...props }) => {
     const textTexture = useMemo(() => new DynamicTexture('UILeftTexture', { width: 1024, height: 512 }), []);
@@ -27,7 +28,7 @@ export const PlayerUILeft = ({ ...props }) => {
     });
 
     return (
-        <plane name="UILeftPlane" {...props} width={1} height={0.5}>
+        <UIPlane name="UILeftPlane" {...props} width={1} height={0.5}>
             <standardMaterial
                 disableLighting={true}
                 useAlphaFromDiffuseTexture
@@ -35,6 +36,6 @@ export const PlayerUILeft = ({ ...props }) => {
                 diffuseTexture={textTexture}
                 emissiveTexture={textTexture}
             />
-        </plane>
+        </UIPlane>
     );
 };

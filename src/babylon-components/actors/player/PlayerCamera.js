@@ -1,8 +1,10 @@
 import { Matrix, Quaternion, Vector3 } from '@babylonjs/core';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useBeforeRender, useEngine } from 'react-babylonjs';
-import { useTarget } from '../../hooks/useTarget';
 import { TARGET_LENGTH } from '../../../utils/Constants';
+import { useTarget } from '../../hooks/useTarget';
+import { useTexture } from '../../hooks/useTexture';
+import { UIPlane } from '../../ui/UIPlane';
 
 export const PlayerCamera = () => {
     const engine = useEngine();
@@ -11,6 +13,7 @@ export const PlayerCamera = () => {
     const transformNodeRef = useRef();
     const targetRef = useRef();
     const target = useTarget();
+    const texture = useTexture('crosshair');
 
     const cameraHandler = useCallback((e) => {
         if (!transformNodeRef.current) return;
@@ -53,11 +56,14 @@ export const PlayerCamera = () => {
     return (
         <transformNode ref={transformNodeRef} name="cameraTransform" position={new Vector3(0, 0, 0)}>
             <transformNode ref={targetRef} name="targetTransform" position={new Vector3(0, 0, TARGET_LENGTH)}>
-                <plane renderingGroupId={1} width={0.3} height={0.3} name="targetPlane">
-                    <standardMaterial useAlphaFromDiffuseTexture disableLighting name={'targetMat'}>
-                        <texture hasAlpha assignTo="diffuseTexture" url={'/assets/crossHair/crosshair.png'} />
-                    </standardMaterial>
-                </plane>
+                <UIPlane position={new Vector3(0, 0, -(TARGET_LENGTH - 1))} renderingGroupId={1} width={0.03} height={0.03} name="targetPlane">
+                    <standardMaterial
+                        useAlphaFromDiffuseTexture
+                        disableLighting={true}
+                        name={'targetMat'}
+                        diffuseTexture={texture}
+                        emissiveTexture={texture} />
+                </UIPlane>
             </transformNode>
             <targetCamera fov={1.0472} ref={cameraRef} name="camera" minZ={0.01} maxZ={100} position={new Vector3(0, 0, 0)} />
         </transformNode>

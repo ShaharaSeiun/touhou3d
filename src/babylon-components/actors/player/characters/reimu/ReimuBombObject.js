@@ -2,8 +2,9 @@ import { Animation, Color3, StandardMaterial, Vector3 } from '@babylonjs/core';
 import { useContext, useEffect, useMemo, useRef } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { playerBombShoot } from '../../../../../sounds/SFX';
-import { AnimationContext, GlowContext } from '../../../../gameLogic/GeneralContainer';
+import { AnimationContext } from '../../../../gameLogic/GeneralContainer';
 import { addBomb, globalActorRefs, killEnemy, removeBomb, setBombPosition, setBombRadius } from '../../../../gameLogic/StaticRefs';
+import { useGlowLayer } from '../../../../gameLogic/useGlowLayer';
 import { useDoSequence } from '../../../../hooks/useDoSequence';
 import { useName } from '../../../../hooks/useName';
 import { TrailMesh } from '../../../../TrailMesh';
@@ -17,10 +18,10 @@ export const ReimuBombObject = ({ id, color, delay, ...props }) => {
     const trail = useRef();
     const name = useName('bombObject');
     const { registerAnimation } = useContext(AnimationContext);
-    const glowLayer = useContext(GlowContext);
+    const glowLayer = useGlowLayer();
 
     useEffect(() => {
-        addBomb(id, sphereRef.current.getAbsolutePosition(), sphereRef.current.scaling.x/2)
+        addBomb(id, sphereRef.current.getAbsolutePosition(), sphereRef.current.scaling.x / 2)
 
         return () => {
             removeBomb(id)
@@ -143,7 +144,7 @@ export const ReimuBombObject = ({ id, color, delay, ...props }) => {
         }
 
         setBombPosition(id, sphereRef.current.getAbsolutePosition())
-        setBombRadius(id, sphereRef.current.scaling.x/2);
+        setBombRadius(id, sphereRef.current.scaling.x / 2);
     });
 
     return (

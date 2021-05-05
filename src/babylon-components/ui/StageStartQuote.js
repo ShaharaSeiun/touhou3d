@@ -12,6 +12,9 @@ export const StageStartQuote = ({ text }) => {
     );
     const matRef = useRef();
 
+    const planeRef = useRef()
+
+
     useEffect(() => {
         textTexture.hasAlpha = true;
         const ctx = textTexture.getContext();
@@ -39,7 +42,7 @@ export const StageStartQuote = ({ text }) => {
     }, [text, textTexture]);
 
     return (
-        <plane name="dialoguePlane" position={new Vector3(0, 4, -0.5)} width={8} height={8}>
+        <plane ref={planeRef} name="dialoguePlane" position={new Vector3(0, 4, -0.5)} width={8} height={8}>
             <standardMaterial
                 ref={matRef}
                 disableLighting={true}

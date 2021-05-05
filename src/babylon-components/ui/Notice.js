@@ -1,11 +1,12 @@
 import { Animation, DynamicTexture, Vector3 } from '@babylonjs/core';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { textOnCtx } from '../BabylonUtils';
-import { usePrevious } from '../../hooks/usePrevious';
-import { globals } from '../../components/GlobalsContainer';
 import { useBeforeRender } from 'react-babylonjs';
-import { calcPowerClass } from '../actors/player/PlayerUtils';
+import { globals } from '../../components/GlobalsContainer';
+import { usePrevious } from '../../hooks/usePrevious';
 import { playerPowerUp } from '../../sounds/SFX';
+import { calcPowerClass } from '../actors/player/PlayerUtils';
+import { textOnCtx } from '../BabylonUtils';
+import { UIPlane } from './UIPlane';
 
 export const Notice = () => {
     const textTexture = useMemo(
@@ -63,7 +64,7 @@ export const Notice = () => {
     });
 
     return (
-        <plane name="NoticePlane" position={new Vector3(0, 10, 3)} width={4} height={2}>
+        <UIPlane name="NoticePlane" position={new Vector3(0, 10, 3)} width={4} height={2}>
             <standardMaterial
                 ref={matRef}
                 alpha={0}
@@ -73,6 +74,6 @@ export const Notice = () => {
                 diffuseTexture={textTexture}
                 emissiveTexture={textTexture}
             />
-        </plane>
+        </UIPlane>
     );
 };

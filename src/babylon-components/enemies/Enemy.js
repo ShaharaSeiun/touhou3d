@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
-import { useAddBulletGroup } from '../hooks/useAddBulletGroup';
-import { addEnemy, globalActorRefs, removeEnemy } from '../gameLogic/StaticRefs';
-import { makeEnemyBehaviour } from './enemyBehaviours';
-import { makeEnemyMesh } from './enemyActors';
-import { makeEnemyMovement } from './enemyMovements';
 import { v4 } from 'uuid';
+import { addEnemy, globalActorRefs, removeEnemy } from '../gameLogic/StaticRefs';
+import { useAddBulletGroup } from '../hooks/useAddBulletGroup';
+import { makeEnemyMesh } from './enemyActors';
+import { Targeting } from './enemyActors/Targeting';
+import { makeEnemyBehaviour } from './enemyBehaviours';
+import { makeEnemyMovement } from './enemyMovements';
 
 
 export const Enemy = ({ name, radius, health, deathInstruction, removeEnemyFromScene, meshProps, behaviourProps, movementProps }) => {
@@ -16,7 +17,7 @@ export const Enemy = ({ name, radius, health, deathInstruction, removeEnemyFromS
     const addBulletGroup = useAddBulletGroup();
 
     const leaveScene = useCallback(() => {
-        if(positionID === undefined || positionID === null || globalActorRefs.enemies[positionID].dead) return;
+        if (positionID === undefined || positionID === null || globalActorRefs.enemies[positionID].dead) return;
         removeEnemy(positionID);
         removeEnemyFromScene(name);
     }, [removeEnemyFromScene, name, positionID]);
@@ -28,7 +29,7 @@ export const Enemy = ({ name, radius, health, deathInstruction, removeEnemyFromS
             radius,
             () => {
                 const deathPosition = enemy.getAbsolutePosition()
-                if(deathInstruction) addBulletGroup({
+                if (deathInstruction) addBulletGroup({
                     getAbsolutePosition: () => {
                         return deathPosition;
                     }
@@ -58,15 +59,16 @@ export const Enemy = ({ name, radius, health, deathInstruction, removeEnemyFromS
     });
 
     useEffect(() => {
-        
-    
+
+
         const BehaviourClass = makeEnemyBehaviour(behaviourProps.type);
         const EnemyMeshClass = makeEnemyMesh(meshProps.type);
         const MovementClass = makeEnemyMovement(movementProps.type)
 
         setEnemyRender(<MovementClass name={v4()} {...movementProps}>
             <BehaviourClass leaveScene={leaveScene} {...behaviourProps}>
-                <EnemyMeshClass radius={radius} {...meshProps} ref={enemyRef}/>
+                <Targeting radius={radius} />
+                <EnemyMeshClass radius={radius} {...meshProps} ref={enemyRef} />
             </BehaviourClass>
         </MovementClass>)
     }, [meshProps, behaviourProps, movementProps, leaveScene, radius])

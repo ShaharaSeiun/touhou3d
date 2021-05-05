@@ -4,12 +4,20 @@ import TableBody from '@material-ui/core/TableBody';
 import MuiTableCell from "@material-ui/core/TableCell";
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import React, { useContext, useEffect } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router';
-import { StatsContext } from '../components/StatsContainer';
 import { useBack } from '../hooks/useBack';
 import { useKeydownMenu } from '../hooks/useKeydown';
+import { useLS } from '../hooks/useLS';
 
+const STATS_KEYS = [
+    "HIGHEST_SCORE",
+    "DIFFICULTY_LEVEL",
+    "CONTINUES_USED",
+    "DEATHS",
+    "BOMBS_USED",
+    "FRAMES_DROPPED",
+]
 
 const TableCell = withStyles({
     root: {
@@ -23,11 +31,7 @@ export const Stats = () => {
     useKeydownMenu("ENTER", () => {
         history.push("/")
     })
-    const { loadedStats, loadStats } = useContext(StatsContext)
-
-    useEffect(() => {
-        loadStats();
-    }, [loadStats])
+    const ls = useLS()
 
 
     return <Box>
@@ -42,8 +46,8 @@ export const Stats = () => {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {Object.keys(loadedStats).map(key => {
-                    const stat = loadedStats[key];
+                {STATS_KEYS.map(key => {
+                    const stat = ls(key);
                     return <TableRow key={key}>
                         <TableCell component="th" scope="row">
                             {key}

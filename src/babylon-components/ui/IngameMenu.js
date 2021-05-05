@@ -5,6 +5,7 @@ import { choiceSound, selectSound } from '../../sounds/SFX';
 import { mod } from '../../utils/Utils';
 import { textOnCtx } from '../BabylonUtils';
 import { PauseContext } from '../gameLogic/GeneralContainer';
+import { UIPlane } from './UIPlane';
 
 export const IngameMenu = () => {
     const textTexture = useMemo(
@@ -15,6 +16,7 @@ export const IngameMenu = () => {
             }),
         []
     );
+
     const [selectedOption, setSelectedOption] = useState(0);
     const { setPaused } = useContext(PauseContext);
 
@@ -67,7 +69,7 @@ export const IngameMenu = () => {
     }, [selectedOption, textTexture]);
 
     return (
-        <plane name="IngameMenuPlane" position={new Vector3(0, 4, -1.0)} width={8} height={8} renderingGroupId={1}>
+        <UIPlane name="IngameMenuPlane" position={new Vector3(0, 4, -1.0)} width={8} height={8} renderingGroupId={1}>
             <standardMaterial
                 disableLighting={true}
                 useAlphaFromDiffuseTexture
@@ -75,6 +77,6 @@ export const IngameMenu = () => {
                 diffuseTexture={textTexture}
                 emissiveTexture={textTexture}
             />
-        </plane>
+        </UIPlane>
     );
 };

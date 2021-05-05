@@ -65,6 +65,8 @@ export const MainMenu = ({ menuOpenInit = false }) => {
         () => ({
             Play: () => history.push('/menu/game/difficultySelect'),
             Option: () => history.push('/menu/options'),
+            Score: () => history.push('/menu/game/score'),
+            Controls: () => history.push('/menu/controls'),
             Quit: quit,
         }),
         [history]

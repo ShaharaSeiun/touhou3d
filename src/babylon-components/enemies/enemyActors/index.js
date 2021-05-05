@@ -1,35 +1,21 @@
 import { FairyBase } from './FairyBase';
-import { TempActor } from './TempActor';
 import { FairyBaseWithMagicCircle } from './FairyBaseWithMagicCircle';
 import { MinionBase } from './MinionBase';
-import { Wriggle } from './Wriggle';
+import { TempActor } from './TempActor';
 import { Tumbleweed } from './Tumbleweed';
+import { Wriggle } from './Wriggle';
+
+const meshMap = {
+    'fairy': FairyBase,
+    'fairyWithMagicCircle': FairyBaseWithMagicCircle,
+    'minion': MinionBase,
+    'tempActor': TempActor,
+    'tumbleweed': Tumbleweed,
+    'wriggle': Wriggle
+}
 
 export const makeEnemyMesh = (type) => {
-    let EnemyMeshClass;
-
-    switch (type) {
-        case 'fairy':
-            EnemyMeshClass = FairyBase;
-            break;
-        case 'fairyWithMagicCircle':
-            EnemyMeshClass = FairyBaseWithMagicCircle;
-            break;
-        case 'minion':
-            EnemyMeshClass = MinionBase;
-            break;
-        case 'tempActor':
-            EnemyMeshClass = TempActor;
-            break;
-        case 'tumbleweed':
-            EnemyMeshClass = Tumbleweed;
-            break;
-        case 'wriggle':
-            EnemyMeshClass = Wriggle;
-            break;
-        default:
-            throw new Error('Unknown Enemy type: ' + type);
-    }
-
+    let EnemyMeshClass = meshMap[type];
+    if (!EnemyMeshClass) throw new Error('Unknown Enemy type: ' + type);
     return EnemyMeshClass;
 }
