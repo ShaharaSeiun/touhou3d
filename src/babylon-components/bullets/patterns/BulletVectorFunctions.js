@@ -1,12 +1,12 @@
 import { Vector3 } from '@babylonjs/core';
 import seedRandom from 'seedrandom';
 
-export function burst(samples, totalRadius, startTheta = 0, thetaLength = 2 * Math.PI) {
+export function burst(samples, totalRadius, startTheta = 0, thetaLength = 2 * Math.PI, startY = 1, yLength = 2) {
     const points = [];
     const phi = Math.PI * (3 - Math.sqrt(5)); //golden angle in radians
 
     for (let i = 0; i < samples; i++) {
-        const y = 1 - (i / (samples - 1)) * 2; //y goes from 1 to -1
+        const y = startY - (i / (samples - 1)) * yLength; //y goes from 1 to -1
         const radius = Math.sqrt(1 - y * y); //radius at y
 
         const theta = (phi * i % thetaLength) + startTheta; //golden angle increment

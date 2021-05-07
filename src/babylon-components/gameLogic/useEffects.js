@@ -5,8 +5,8 @@ import { AssetsContext } from './GeneralContainer';
 
 const effectSoundMap = {
     death: enemyDeath,
-    bombChargeReimu: playerBombCharge,
-    bombChargeMarisa: playerBombCharge,
+    chargeBombReimu: playerBombCharge,
+    chargeBombMarisa: playerBombCharge,
     chargeWriggle: playerBombCharge,
     newPhaseWriggle: bossDeathQuiet
 }
@@ -20,6 +20,8 @@ export const useEffects = (assets) => {
             case 'particles':
                 const particleSystem = makeParticleSystem(assets, effectOptions.name + "Particles", emitter);
                 particleSystem.start();
+
+                console.log(effectOptions.name)
 
                 const sound = effectSoundMap[effectOptions.name];
                 if (sound) sound.play();

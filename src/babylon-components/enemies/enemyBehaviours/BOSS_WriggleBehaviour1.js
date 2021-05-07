@@ -9,7 +9,7 @@ import { useAddEffect } from '../../hooks/useAddEffect';
 import { Enemies } from '../Enemies';
 import { moveTo } from "./BehaviourCommon";
 import { useWriggleMidPhase1Normal } from './BOSS_WriggleBehaviourTrunk/wriggleMidPhase1Normal';
-import { useWrigglePhase1SpellCard } from './BOSS_WriggleBehaviourTrunk/wrigglePhase1SpellCard';
+import { useWriggleMidPhase1SpellCard } from './BOSS_WriggleBehaviourTrunk/wriggleMidPhase1SpellCard';
 
 
 const wriggle1StartPosition = randVectorToPosition([9, 1, 3])
@@ -101,8 +101,8 @@ export const BOSS_WriggleBehaviour1 = ({ children, leaveScene, spawn }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [epoch])
 
-    useWriggleMidPhase1Normal(epoch === 0, transformNodeRef, setMinionInstructions)
-    useWrigglePhase1SpellCard(epoch === 1, transformNodeRef)
+    useWriggleMidPhase1Normal(epoch === 1, transformNodeRef)
+    useWriggleMidPhase1SpellCard(epoch === 0, transformNodeRef, setMinionInstructions)
 
     useBeforeRender(() => {
         if (epoch === -1) return;

@@ -30,8 +30,7 @@ export const ReimuBombObject = ({ id, color, delay, ...props }) => {
 
     const actionsTimings = useMemo(
         () => [0, delay],
-        //eslint-disable-next-line react-hooks/exhaustive-deps
-        []
+        [delay]
     );
 
     const actions = useMemo(
@@ -82,8 +81,7 @@ export const ReimuBombObject = ({ id, color, delay, ...props }) => {
                 );
             },
         ],
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        []
+        [color, glowLayer, props.position, registerAnimation, scene]
     );
 
     useDoSequence(true, sphereRef, actionsTimings, actions);

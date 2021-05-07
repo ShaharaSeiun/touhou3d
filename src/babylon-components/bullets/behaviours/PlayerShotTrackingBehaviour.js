@@ -141,6 +141,6 @@ class PlayerShotTrackingBehaviour extends PlayerBulletBehaviour {
     }
 }
 
-export const makePlayerShotTrackingBehaviour = (behaviourOptions, environmentCollision, parent) => {
+export const makePlayerShotTrackingBehaviour = (behaviourOptions, environmentCollision, radius, parent) => {
     return new PlayerShotTrackingBehaviour(behaviourOptions, environmentCollision, parent);
 };

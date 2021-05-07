@@ -1,4 +1,5 @@
 import { fulfilRotateVelocityReplacement, makeRotateVelocityReplacement } from "./RotateVelocity";
+import { fulfilRotateSineVelocityReplacement, makeRotateSineVelocityReplacement } from "./RotateVelocitySine";
 
 export const makeReplacePattern = (patternOptions, parent) => {
     let _pattern;
@@ -9,6 +10,9 @@ export const makeReplacePattern = (patternOptions, parent) => {
         switch (patternOptions.type) {
             case 'rotateVelocity':
                 _pattern = makeRotateVelocityReplacement(patternOptions, parent);
+                break;
+            case 'rotateVelocitySine':
+                _pattern = makeRotateSineVelocityReplacement(patternOptions, parent);
                 break;
             default:
                 throw new Error('unknown replacement type ' + patternOptions.type);
@@ -24,6 +28,9 @@ export const fulfilReplacePattern = (patternOptions, parent) => {
     switch (patternOptions.type) {
         case 'rotateVelocity':
             _pattern = fulfilRotateVelocityReplacement(patternOptions, parent);
+            break;
+        case 'rotateVelocitySine':
+            _pattern = fulfilRotateSineVelocityReplacement(patternOptions, parent);
             break;
         default:
             throw new Error('unknown replacement type ' + patternOptions.type);

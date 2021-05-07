@@ -39,6 +39,6 @@ class SlowToStopBehaviour extends EnemyBulletBehaviour {
     }
 }
 
-export const makeSlowToStopBehaviour = (environmentCollision, radius, parent) => {
+export const makeSlowToStopBehaviour = (behaviourOptions, environmentCollision, radius, parent) => {
     return new SlowToStopBehaviour(environmentCollision, radius, parent);
 };

@@ -117,6 +117,6 @@ class PlayerShotAccelerationBehaviour extends PlayerBulletBehaviour {
     }
 }
 
-export const makePlayerShotAccelerationBehaviour = (behaviourOptions, environmentCollision, parent) => {
+export const makePlayerShotAccelerationBehaviour = (behaviourOptions, environmentCollision, radius, parent) => {
     return new PlayerShotAccelerationBehaviour(behaviourOptions, environmentCollision, parent);
 };

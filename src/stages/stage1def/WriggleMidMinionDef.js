@@ -19,7 +19,7 @@ export const WriggleMidMinionDef = ({ spawn, targetDist = 10, reverse = false, a
             type: 'wriggleMidMinion',
             forward: spawn
         },
-        radius: 0.5,
+        radius: 0.6,
         health: 10,
     };
 

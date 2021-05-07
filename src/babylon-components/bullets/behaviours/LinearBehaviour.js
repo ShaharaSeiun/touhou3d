@@ -36,6 +36,6 @@ class LinearBehaviour extends EnemyBulletBehaviour {
     }
 }
 
-export const makeLinearBehaviour = (environmentCollision, radius, parent) => {
+export const makeLinearBehaviour = (behaviourOptions, environmentCollision, radius, parent) => {
     return new LinearBehaviour(environmentCollision, radius, parent);
 };

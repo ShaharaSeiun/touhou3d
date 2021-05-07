@@ -81,7 +81,6 @@ export const ReimuOrb = ({ isBombing, powerClass, side, isInvulnerable }) => {
     const bombingActions = useMemo(
         () => [
             () => {
-
                 trailRef.current = new TrailMesh('sphere1Trail', sphereTransformRef.current, scene, 0.25, 30, true);
                 const sourceMat = new StandardMaterial('sourceMat1', scene);
                 const color = new Color3.Red();
@@ -95,8 +94,7 @@ export const ReimuOrb = ({ isBombing, powerClass, side, isInvulnerable }) => {
                 trailRef.current.dispose();
             },
         ],
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        []
+        [glowLayer, scene]
     );
 
     useDoSequence(isBombing, sphereRef, bombingTimings, bombingActions);

@@ -13,6 +13,7 @@ import { makeBulletPattern } from '../bullets/patterns';
 import { makeBulletSound } from '../bullets/sounds';
 import { makeName } from '../hooks/useName';
 import { allBullets, globalActorRefs, killEnemy } from './StaticRefs';
+import { useMeshPool } from './useMeshPool';
 
 let playHitSound = false;
 let framesSincePlayHit = 0;
@@ -22,6 +23,7 @@ export const playerInvulnerable = {
 
 export const useBullets = (assets, environmentCollision, addEffect, isDead, setIsDead) => {
     const scene = useScene();
+    const { getMesh, releaseMesh } = useMeshPool()
     const { setGlobal } = useContext(GlobalsContext);
 
     const disposeSingle = useCallback((id) => {
@@ -61,7 +63,7 @@ export const useBullets = (assets, environmentCollision, addEffect, isDead, setI
 
             const { positions, velocities, timings, uid } = makeBulletPattern(preparedInstruction.patternOptions, parent, scene, supressNotPrecomputedWarning);
             const material = makeBulletMaterial(preparedInstruction.materialOptions, parent, assets, scene);
-            const { mesh, radius } = makeBulletMesh(preparedInstruction.meshOptions, assets, scene);
+            const { mesh, radius } = makeBulletMesh(preparedInstruction.meshOptions, assets, getMesh);
             const behaviour = makeBulletBehaviour(preparedInstruction.behaviourOptions, environmentCollision, radius, parent);
             const endTimings = makeEndTimings(preparedInstruction.endTimings, preparedInstruction.lifespan, timings.length, scene)
             const sounds = preparedInstruction.soundOptions && !preparedInstruction.soundOptions.mute && makeBulletSound(preparedInstruction.soundOptions, timings);
@@ -77,13 +79,13 @@ export const useBullets = (assets, environmentCollision, addEffect, isDead, setI
             const { lifespan } = preparedInstruction;
             const timeSinceStart = 0;
 
-            const bulletGroup = new BulletGroup({ material, mesh, behaviour, sounds, positions, velocities, timings, endTimings, lifespan, timeSinceStart, uid, instruciton: preparedInstruction });
+            const bulletGroup = new BulletGroup({ material, mesh, behaviour, sounds, positions, velocities, timings, endTimings, lifespan, timeSinceStart, uid, instruciton: preparedInstruction, releaseMesh });
 
             const newID = makeName('bulletGroup');
             allBullets[newID] = bulletGroup;
             return newID;
         },
-        [assets, environmentCollision, scene]
+        [getMesh, assets, environmentCollision, scene]
     );
 
     useBeforeRender(() => {

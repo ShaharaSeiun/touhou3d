@@ -1,13 +1,10 @@
 import { useContext, useMemo } from "react";
-import { WriggleMidMinionDef } from "../../../../stages/stage1def/WriggleMidMinionDef";
 import { rotateVector } from "../../../BabylonUtils";
-import { burst } from "../../../bullets/patterns/BulletVectorFunctions";
 import { AnimationContext } from "../../../gameLogic/GeneralContainer";
 import { globalActorRefs } from "../../../gameLogic/StaticRefs";
 import { useAddBulletGroup } from "../../../hooks/useAddBulletGroup";
 import { useAddEffect } from "../../../hooks/useAddEffect";
 import { useDoSequence } from "../../../hooks/useDoSequence";
-import { makeActionListTimeline } from "../../EnemyUtils";
 
 const makePincer = (transformNodeRef, roll) => {
     const parent = transformNodeRef.current;
@@ -108,20 +105,6 @@ const makePincer2 = (transformNodeRef, roll) => {
     }
 }
 
-const enemiesInstructions = []
-
-const enemyVectors = burst(40, 0.1);
-
-enemyVectors.forEach(vector => enemiesInstructions.push({
-    type: "enemies",
-    action: 'spawn',
-    enemy: WriggleMidMinionDef({ color: [1, 1, 0], targetDist: 30, armTime: 8, spawn: vector, rotationSpeed: 0.1 }),
-    wait: 0
-}))
-
-const enemiesActionList = makeActionListTimeline(enemiesInstructions);
-
-
 export const useWriggleMidPhase1Normal = (active, transformNodeRef, setMinionInstructions) => {
     const addBulletGroup = useAddBulletGroup();
     const { registerAnimation } = useContext(AnimationContext);
@@ -137,9 +120,6 @@ export const useWriggleMidPhase1Normal = (active, transformNodeRef, setMinionIns
                     duration: 1000
                 })
             },
-            () => {
-                setMinionInstructions(enemiesActionList);
-            }
             // () => {
             //     addBulletGroup(
             //         transformNodeRef.current,

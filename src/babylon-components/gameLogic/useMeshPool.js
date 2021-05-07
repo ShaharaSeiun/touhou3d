@@ -69,6 +69,7 @@ const fillMeshPool = (scene, assets) => {
             glowLayerRef.current.removeIncludedOnlyMesh(trail)
         };
 
+        sphereMesh.isPooled = true;
         meshPool.minion.meshes.push(sphereMesh);
     }
 
@@ -117,7 +118,21 @@ const fillMeshPool = (scene, assets) => {
             glowLayerRef.current.removeIncludedOnlyMesh(targetMesh)
         };
 
+        targetMesh.isPooled = true;
         meshPool.target.meshes.push(targetMesh);
+    }
+
+    meshPool.sphere = {
+        index: 0,
+        meshes: [],
+    };
+
+
+    for (let i = 0; i < 100; i++) {
+        const sphere = assets.sphere.clone(i + "sphere");
+        sphere.makeGeometryUnique();
+        sphere.isPooled = true;
+        meshPool.sphere.meshes.push(sphere);
     }
 
     return meshPool
@@ -132,7 +147,6 @@ export const useMeshPool = (assets) => {
         if (!meshPoolRef.current) throw new Error("mesh pool isn't ready")
         const pool = meshPoolRef.current[type]
         const newMesh = pool.meshes[pool.index];
-
         if (newMesh.onBegin) newMesh.onBegin(args)
 
         pool.index = (pool.index + 1) % pool.meshes.length;

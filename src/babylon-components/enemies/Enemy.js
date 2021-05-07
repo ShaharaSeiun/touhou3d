@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
-import { v4 } from 'uuid';
 import { addEnemy, globalActorRefs, removeEnemy } from '../gameLogic/StaticRefs';
 import { useAddBulletGroup } from '../hooks/useAddBulletGroup';
 import { makeEnemyMesh } from './enemyActors';
@@ -12,7 +11,6 @@ import { makeEnemyMovement } from './enemyMovements';
 export const Enemy = ({ name, radius, health, deathInstruction, removeEnemyFromScene, meshProps, behaviourProps, movementProps }) => {
     const enemyRef = useRef();
     const [enemy, setEnemy] = useState();
-    const [enemyRender, setEnemyRender] = useState(false)
     const [positionID, setPositionID] = useState();
     const addBulletGroup = useAddBulletGroup();
 
@@ -48,6 +46,7 @@ export const Enemy = ({ name, radius, health, deathInstruction, removeEnemyFromS
     }, [leaveScene])
 
     useBeforeRender(() => {
+
         if (enemyRef.current && !enemy) {
             setEnemy(enemyRef.current);
         }
@@ -58,20 +57,14 @@ export const Enemy = ({ name, radius, health, deathInstruction, removeEnemyFromS
         globalActorRefs.enemies[positionID].position = enemyWorldPosition;
     });
 
-    useEffect(() => {
+    const BehaviourClass = useMemo(() => makeEnemyBehaviour(behaviourProps.type), [behaviourProps.type]);
+    const EnemyMeshClass = useMemo(() => makeEnemyMesh(meshProps.type), [meshProps.type]);
+    const MovementClass = useMemo(() => makeEnemyMovement(movementProps.type), [movementProps.type])
 
-
-        const BehaviourClass = makeEnemyBehaviour(behaviourProps.type);
-        const EnemyMeshClass = makeEnemyMesh(meshProps.type);
-        const MovementClass = makeEnemyMovement(movementProps.type)
-
-        setEnemyRender(<MovementClass name={v4()} {...movementProps}>
-            <BehaviourClass leaveScene={leaveScene} {...behaviourProps}>
-                <Targeting radius={radius} />
-                <EnemyMeshClass radius={radius} {...meshProps} ref={enemyRef} />
-            </BehaviourClass>
-        </MovementClass>)
-    }, [meshProps, behaviourProps, movementProps, leaveScene, radius])
-
-    return enemyRender;
+    return <MovementClass name={name} {...movementProps}>
+        <BehaviourClass leaveScene={leaveScene} {...behaviourProps}>
+            <Targeting radius={radius} />
+            <EnemyMeshClass radius={radius} {...meshProps} ref={enemyRef} />
+        </BehaviourClass>
+    </MovementClass>;
 };

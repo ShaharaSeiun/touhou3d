@@ -149,3 +149,10 @@ export const rotateVector = (vec, yaw = 0, pitch = 0, roll = 0) => {
     rotationQuaternion.toRotationMatrix(rotationMatrix);
     return Vector3.TransformCoordinates(vec, rotationMatrix);
 }
+
+export const getRotationMatrix = (transformNode) => {
+    const quaternion = transformNode.rotationQuaternion;
+    const result = new Matrix();
+    quaternion.toRotationMatrix(result);
+    return result;
+}

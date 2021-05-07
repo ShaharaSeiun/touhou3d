@@ -22,6 +22,19 @@ import { FantasySeal } from './reimu/FantasySeal';
 import { Reimu } from './reimu/Reimu';
 import { ReimuOrb } from './reimu/ReimuOrb';
 
+const CharacterClassesMap = {
+    reimu: {
+        EmitterClass: ReimuOrb,
+        BombClass: FantasySeal,
+        MeshClass: Reimu
+    },
+    marisa: {
+        EmitterClass: MarisaMagicCircle,
+        BombClass: MasterSpark,
+        MeshClass: Marisa
+    }
+}
+
 export const Player = ({ character }) => {
     const transformNodeRef = useRef();
     const sphereTransformNodeRef = useRef();
@@ -37,38 +50,9 @@ export const Player = ({ character }) => {
     const addEffect = useEffects();
     const addBulletGroup = useAddBulletGroup();
 
-    const EmitterClass = useMemo(() => {
-        switch (character) {
-            case 'reimu':
-                return ReimuOrb;
-            case 'marisa':
-                return MarisaMagicCircle
-            default:
-                throw new Error('unknown character: ' + character);
-        }
-    }, [character])
-
-    const BombClass = useMemo(() => {
-        switch (character) {
-            case 'reimu':
-                return FantasySeal;
-            case 'marisa':
-                return MasterSpark;
-            default:
-                throw new Error('unknown character: ' + character);
-        }
-    }, [character])
-
-    const MeshClass = useMemo(() => {
-        switch (character) {
-            case 'reimu':
-                return Reimu;
-            case 'marisa':
-                return Marisa;
-            default:
-                throw new Error('unknown character: ' + character);
-        }
-    }, [character])
+    const EmitterClass = useMemo(() => CharacterClassesMap[character].EmitterClass, [character])
+    const BombClass = useMemo(() => CharacterClassesMap[character].BombClass, [character])
+    const MeshClass = useMemo(() => CharacterClassesMap[character].MeshClass, [character])
 
     useKeydown('BOMB', () => {
         if (!globals.BOMB || isBombing) return;
@@ -108,8 +92,7 @@ export const Player = ({ character }) => {
                 playerInvulnerable.current = false;
             },
         ],
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        []
+        [addEffect, character, registerAnimation]
     );
 
     useDoSequence(isBombing, transformNodeRef, bombingTimings, bombingActions);
