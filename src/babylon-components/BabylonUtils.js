@@ -1,4 +1,4 @@
-import { CustomProceduralTexture, Scalar, Vector3 } from '@babylonjs/core';
+import { CustomProceduralTexture, Matrix, Quaternion, Scalar, Vector3 } from '@babylonjs/core';
 import { ARENA_HEIGHT, ARENA_LENGTH, ARENA_WIDTH } from '../utils/Constants';
 
 export const makeSpriteSheetAnimation = ({
@@ -59,7 +59,7 @@ export class RandVector3 extends Vector3 {
 
         super(x, y, z);
 
-        if(normalizeToLength) {
+        if (normalizeToLength) {
             this.normalize().scaleInPlace(normalizeToLength);
         }
     }
@@ -85,7 +85,7 @@ export const unnormalizePosition = (position) => {
 };
 
 export const randVectorToPosition = (arrayVector) => {
-    if(arrayVector instanceof Vector3){
+    if (arrayVector instanceof Vector3) {
         return arrayVector;
     }
 
@@ -138,7 +138,14 @@ export const textOnCtx = (ctx, text, size, x, y, fill, stroke = 'black', strokeW
 
 export const arcOnCtx = (ctx, from, to, color = '#FF0000') => {
     ctx.beginPath();
-    ctx.arc(ctx.canvas.width/2, ctx.canvas.height/2, ctx.canvas.width/4, Math.PI * 3/2 + Math.PI * 2 * from, Math.PI * 3/2 + Math.PI * 2 * to);
+    ctx.arc(ctx.canvas.width / 2, ctx.canvas.height / 2, ctx.canvas.width / 4, Math.PI * 3 / 2 + Math.PI * 2 * from, Math.PI * 3 / 2 + Math.PI * 2 * to);
     ctx.strokeStyle = color;
     ctx.stroke();
 };
+
+export const rotateVector = (vec, yaw = 0, pitch = 0, roll = 0) => {
+    const rotationQuaternion = Quaternion.RotationYawPitchRoll(yaw, pitch, roll);
+    const rotationMatrix = new Matrix();
+    rotationQuaternion.toRotationMatrix(rotationMatrix);
+    return Vector3.TransformCoordinates(vec, rotationMatrix);
+}

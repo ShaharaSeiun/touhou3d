@@ -120,8 +120,8 @@ class PlayerShotBehaviour extends PlayerBulletBehaviour {
             newVelocities.setFloat('frame', this.bulletFrame);
             newPositions.setFloat('firing', +(this.firing && !this.disabled));
             newVelocities.setFloat('firing', +(this.firing && !this.disabled));
-            newPositions.setFloat('focused', +this.focused);
-            newVelocities.setFloat('focused', +this.focused);
+            newPositions.setFloat('focused', +(!!this.focused));
+            newVelocities.setFloat('focused', +(!!this.focused));
             newPositions.setVector3('shotVector', shotVector);
             newVelocities.setVector3('shotVector', shotVector);
             newPositions.setVector3('sourceOffset', sourceOffset);

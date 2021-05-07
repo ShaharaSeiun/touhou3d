@@ -5,15 +5,15 @@ export const Wriggle1 = () => {
         movementProps: {
             type: 'empty',
         },
-        meshProps:{
+        meshProps: {
             type: 'wriggle',
         },
         behaviourProps: {
             type: 'wriggle1',
         },
-        
+
         radius: 1,
-        health: 1000,
+        health: 6000,
         deathInstruction: {
             type: 'shoot',
             materialOptions: {

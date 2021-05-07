@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { useScene } from 'react-babylonjs';
 import { GlowLayer } from '../GlowLayer';
 
-const glowLayerRef = {
+export const glowLayerRef = {
     current: false
 }
 

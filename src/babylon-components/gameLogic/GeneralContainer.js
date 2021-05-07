@@ -6,6 +6,7 @@ import { useBullets } from './useBullets';
 import { useEffects } from './useEffects';
 import { useGlowLayer } from './useGlowLayer';
 import { useLoadAssets } from './useLoadAssets';
+import { useMeshPool } from './useMeshPool';
 import { usePause } from './usePause';
 import { useUI } from './useUI';
 
@@ -26,6 +27,7 @@ export const GeneralContainer = ({ children }) => {
     const bulletsObject = useBullets(assets, environmentCollision, addEffect, isDead, setIsDead);
     const UIProps = useUI();
     useGlowLayer();
+    useMeshPool(assets);
     const { registerAnimation, unregisterAnimation, ...pauseProps } = usePause();
 
     //Supports readpixels

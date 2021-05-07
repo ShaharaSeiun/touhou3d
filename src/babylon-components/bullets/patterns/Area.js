@@ -1,4 +1,4 @@
-import { Matrix, Quaternion, Vector3 } from '@babylonjs/core';
+import { rotateVector } from '../../BabylonUtils';
 import { globalActorRefs } from '../../gameLogic/StaticRefs';
 
 export const makeAreaPattern = (patternOptions, parent) => {
@@ -6,8 +6,8 @@ export const makeAreaPattern = (patternOptions, parent) => {
 
     if (patternOptions.towardsPlayer) {
         forwardVector = globalActorRefs.player.position.subtract(parent.getAbsolutePosition()).normalize()
-    } 
-    else{
+    }
+    else {
         throw new Error("Area pattern not towards player not implemented yet")
     }
 
@@ -16,16 +16,12 @@ export const makeAreaPattern = (patternOptions, parent) => {
     const velocities = [];
     const positions = [];
 
-    for(let i = 0; i < patternOptions.num; i++) {
-        for(let j = 0; j < patternOptions.num; j++) {
-            const xAngle = ((i/(patternOptions.num - 1)) - 0.5) * angle;
-            const yAngle = ((j/(patternOptions.num - 1)) - 0.5) * angle;
+    for (let i = 0; i < patternOptions.num; i++) {
+        for (let j = 0; j < patternOptions.num; j++) {
+            const xAngle = ((i / (patternOptions.num - 1)) - 0.5) * angle;
+            const yAngle = ((j / (patternOptions.num - 1)) - 0.5) * angle;
 
-            const rotationQuaternion = Quaternion.RotationYawPitchRoll(xAngle, yAngle, 0)
-            const rotationMatrix = new Matrix();
-            rotationQuaternion.toRotationMatrix(rotationMatrix);
-
-            const newForward = Vector3.TransformCoordinates(forwardVector, rotationMatrix);
+            const newForward = rotateVector(forwardVector, xAngle, yAngle)
             velocities.push(newForward.scale(patternOptions.speed || 1))
             positions.push(newForward.scale(patternOptions.radius || 1))
         }

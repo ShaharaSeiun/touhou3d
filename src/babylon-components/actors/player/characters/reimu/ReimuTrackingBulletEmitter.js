@@ -73,7 +73,7 @@ export const ReimuTrackingBulletEmitter = ({ powerClass, initialVelocity, ...pro
     useEffect(() => {
         if (!transformNodeRef.current) return;
 
-        const id = addBulletGroup(transformNodeRef.current, makeShotInstruction(powerClass, initialVelocity));
+        const id = addBulletGroup(transformNodeRef.current, makeShotInstruction(powerClass, initialVelocity), false, true);
         setShotId(id);
 
         return () => {

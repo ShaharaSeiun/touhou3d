@@ -1,5 +1,5 @@
-import { Matrix, Quaternion, Vector3 } from "@babylonjs/core";
 import { sum } from "../../../../utils/Utils";
+import { rotateVector } from "../../../BabylonUtils";
 import { allBullets, preComputedBulletPatterns, preComputedEndTimings } from "../../../gameLogic/StaticRefs";
 
 export const makeRotateVelocityReplacement = (patternOptions, parent) => {
@@ -9,10 +9,7 @@ export const makeRotateVelocityReplacement = (patternOptions, parent) => {
     if (!sourceEndTimings) throw new Error("source endTimings not found " + patternOptions.sourceUid);
 
     const velocities = sourcePattern.velocities.map(velocity => {
-        const rotationQuaternion = Quaternion.RotationYawPitchRoll(patternOptions.rotation || 0, 0, 0)
-        const rotationMatrix = new Matrix();
-        rotationQuaternion.toRotationMatrix(rotationMatrix);
-        return Vector3.TransformCoordinates(velocity, rotationMatrix).scale(patternOptions.velocityMultiplier || 1);
+        return rotateVector(velocity, patternOptions.rotation || 0, 0, 0).scale(patternOptions.velocityMultiplier || 1);
     });
     const timings = sum(sourceEndTimings, sourcePattern.timings);
 

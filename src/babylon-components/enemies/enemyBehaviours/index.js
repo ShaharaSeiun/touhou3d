@@ -1,42 +1,30 @@
-import { RandomEnemyBehaviour } from './RandomEnemyBehaviour';
-import { DefaultFairyBehaviour } from './DefaultFairyBehaviour';
-import { StrongStage1FairyBehaviour } from './StrongStage1FairyBehaviour';
-import { InertMinionBehaviour } from './InertMinionBehaviour';
-import { StrongerStage1FairyBehaviour } from './StrongerStage1FairyBehaviour';
-import { Stage1MinionBehaviour } from './Stage1MinionBehaviour';
-import { TumbleweedBehaviour } from './TumbleweedBehaviour';
+import { BOSS_WriggleBehaviour1 } from './BOSS_WriggleBehaviour1';
 import { BOSS_WriggleBehaviour2 } from './BOSS_WriggleBehaviour2';
+import { DefaultFairyBehaviour } from './DefaultFairyBehaviour';
+import { InertMinionBehaviour } from './InertMinionBehaviour';
+import { RandomEnemyBehaviour } from './RandomEnemyBehaviour';
+import { Stage1MinionBehaviour } from './Stage1MinionBehaviour';
+import { StrongerStage1FairyBehaviour } from './StrongerStage1FairyBehaviour';
+import { StrongStage1FairyBehaviour } from './StrongStage1FairyBehaviour';
+import { TumbleweedBehaviour } from './TumbleweedBehaviour';
+import { WriggleMidMinionBehaviour } from './WriggleMidMinionBehaviour';
+
+const behaviourMap = {
+    'random': RandomEnemyBehaviour,
+    'inertMinion': InertMinionBehaviour,
+    'tumbleweed': TumbleweedBehaviour,
+    'stage1Minion': Stage1MinionBehaviour,
+    'defaultFairy': DefaultFairyBehaviour,
+    'strongStage1Fairy': StrongStage1FairyBehaviour,
+    'strongerStage1Fairy': StrongerStage1FairyBehaviour,
+    'wriggle1': BOSS_WriggleBehaviour1,
+    'wriggle2': BOSS_WriggleBehaviour2,
+    'wriggleMidMinion': WriggleMidMinionBehaviour,
+}
 
 export const makeEnemyBehaviour = (type) => {
-    let BehaviourClass;
-    switch (type) {
-        case 'random':
-            BehaviourClass = RandomEnemyBehaviour;
-            break;
-        case 'inertMinion':
-            BehaviourClass = InertMinionBehaviour;
-            break;
-        case 'tumbleweed':
-            BehaviourClass = TumbleweedBehaviour;
-            break;
-        case 'stage1Minion':
-            BehaviourClass = Stage1MinionBehaviour;
-            break;
-        case 'defaultFairy':
-            BehaviourClass = DefaultFairyBehaviour;
-            break;
-        case 'strongStage1Fairy':
-            BehaviourClass = StrongStage1FairyBehaviour;
-            break;
-        case 'strongerStage1Fairy':
-            BehaviourClass = StrongerStage1FairyBehaviour;
-            break;  
-        case 'wriggle2':
-            BehaviourClass =  BOSS_WriggleBehaviour2;
-            break;  
-        default:
-            throw new Error('Unknown Enemy Behaviour type: ' + type);
-    }
+    const BehaviourClass = behaviourMap[type];
+    if (!BehaviourClass) throw new Error('Unknown Enemy Behaviour type: ' + type);
 
     return BehaviourClass;
 }

@@ -73,7 +73,7 @@ export const ReimuLinearBulletEmitter = ({ powerClass, ...props }) => {
     useEffect(() => {
         if (!transformNodeRef.current) return;
 
-        const id = addBulletGroup(transformNodeRef.current, makeShotInstruction(powerClass));
+        const id = addBulletGroup(transformNodeRef.current, makeShotInstruction(powerClass), false, true);
         setShotId(id);
 
         return () => {

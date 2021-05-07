@@ -64,6 +64,6 @@ export const Boundaries = () => {
     }, [scene]);
 
     return (
-        <box width={ARENA_WIDTH + 1} height={ARENA_HEIGHT} depth={ARENA_LENGTH * 2} position={position} ref={boundaryRef} />
+        <box name="boundaries" width={ARENA_WIDTH + 1} height={ARENA_HEIGHT} depth={ARENA_LENGTH * 2} position={position} ref={boundaryRef} />
     )
 }

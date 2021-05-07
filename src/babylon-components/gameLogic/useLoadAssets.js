@@ -273,34 +273,10 @@ export const useLoadAssets = () => {
                 type: 'model',
             },
             {
-                type: 'function',
+                rootUrl: '/assets/bullets/egg/',
+                sceneFilename: 'egg.glb',
                 name: 'egg',
-                generator: () => {
-                    const segments = 10
-                    const length = 4
-                    const width = 2
-
-                    const y = (x) => width * (x) * (x - length) / ((length * length) / 2)
-
-                    const myShape = [];
-
-                    for (let i = 0; i <= segments; i++) {
-                        myShape.push(new Vector3(y(i * length / segments), i * length / segments, 0))
-                    }
-
-                    const mesh = MeshBuilder.CreateLathe(
-                        "egg",
-                        {
-                            shape: myShape,
-                            tessellation: segments * 2
-                        }
-                    );
-
-                    const rotationMatrix = Matrix.RotationX(Math.PI / 2);
-                    mesh.bakeTransformIntoVertices(rotationMatrix);
-                    mesh.isVisible = false;
-                    return mesh;
-                },
+                type: 'model',
             },
             {
                 type: 'function',
@@ -317,6 +293,23 @@ export const useLoadAssets = () => {
                     );
                     mesh.isVisible = false;
                     return mesh;
+                },
+            },
+            {
+                type: 'function',
+                name: 'plane',
+                generator: () => {
+                    const plane = MeshBuilder.CreatePlane(
+                        'plane',
+                        {
+                            width: 3,
+                            height: 3,
+                            updatable: false,
+                        },
+                        scene
+                    );
+                    plane.isVisible = false;
+                    return plane;
                 },
             },
             {

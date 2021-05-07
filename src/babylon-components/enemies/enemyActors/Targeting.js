@@ -1,49 +1,23 @@
-import { Animation, Color3, EasingFunction, SineEase, Vector3 } from '@babylonjs/core'
-import React, { useEffect, useRef } from 'react'
-import { useScene } from 'react-babylonjs'
-import { useGlowLayer } from '../../gameLogic/useGlowLayer'
-import { useName } from '../../hooks/useName'
-import { useTexture } from '../../hooks/useTexture'
+import { Vector3 } from '@babylonjs/core';
+import { useEffect, useMemo, useRef } from 'react';
+import { useMeshPool } from '../../gameLogic/useMeshPool';
+import { useName } from '../../hooks/useName';
 
 export const Targeting = ({ radius }) => {
-    const planeRef = useRef()
-    const texture = useTexture("targeting")
-    const name = useName("targeting")
-    const scene = useScene()
-    const glowLayer = useGlowLayer();
+    const { getMesh, releaseMesh } = useMeshPool();
+    const transformNodeRef = useRef();
+    const scaling = useMemo(() => new Vector3(radius, radius, radius), [radius]);
+    const name = useName('Targeting')
 
     useEffect(() => {
-        const sineAnimation = new Animation(name + "sineAnimation", "scaling", 30, Animation.ANIMATIONTYPE_VECTOR3, Animation.ANIMATIONLOOPMODE_CYCLE);
-        const keysSineAnimation = [];
-        keysSineAnimation.push({ frame: 0, value: new Vector3(1, 1, 1) });
-        keysSineAnimation.push({ frame: 30, value: new Vector3(1.1, 1.1, 1.1) });
-        keysSineAnimation.push({ frame: 60, value: new Vector3(1, 1, 1) });
-        sineAnimation.setKeys(keysSineAnimation);
-
-        const cubicEasing = new SineEase();
-        cubicEasing.setEasingMode(EasingFunction.EASINGMODE_EASEINOUT)
-        sineAnimation.setEasingFunction(cubicEasing);
-
-        const plane = planeRef.current;
-
-        plane.animations.push(sineAnimation);
-        scene.beginAnimation(plane, 0, 60, true);
-        glowLayer.addIncludedOnlyMesh(plane);
+        const target = getMesh("target")
+        target.parent = transformNodeRef.current
 
         return () => {
-            glowLayer.removeIncludedOnlyMesh(plane)
+            releaseMesh(target)
         }
-    }, [glowLayer, name, scene])
+    }, [getMesh, radius, releaseMesh])
 
-    return (
-        <plane ref={planeRef} name={name} width={radius * 3} height={radius * 3} position={new Vector3(0, 0, 0)} renderingGroupId={1}>
-            <standardMaterial
-                disableLighting={true}
-                useAlphaFromDiffuseTexture
-                name={name + "mat"}
-                diffuseTexture={texture}
-                emissiveColor={new Color3(0.8, 0, 0)}
-            />
-        </plane>
-    )
+
+    return <transformNode name={name} scaling={scaling} ref={transformNodeRef} />
 }

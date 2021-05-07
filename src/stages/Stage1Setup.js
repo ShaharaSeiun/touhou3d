@@ -4,8 +4,11 @@ import { wrigglePhase1Spray, wrigglePhase1Spray2, wrigglePhase1Spray2Turn } from
 import { greenBurst1, greenBurst2, greenBurst3, greenBurst4 } from "../babylon-components/enemies/enemyBehaviours/BOSS_WriggleBehaviourTrunk/wrigglePhase2Normal"
 import { flower1, flower2, flower3, spray, sprayBigSphere, sprayFreezeAndTurnYellow } from "../babylon-components/enemies/enemyBehaviours/BOSS_WriggleBehaviourTrunk/wrigglePhase2SpellCard"
 import { whiteSmall, yellowSmall } from "../babylon-components/enemies/enemyBehaviours/Stage1MinionBehaviour"
+import { trace } from "../babylon-components/enemies/enemyBehaviours/WriggleMidMinionBehaviour"
 
 export const setupStage1 = (preComputeBulletGroup) => {
+
+    preComputeBulletGroup(trace)
 
     preComputeBulletGroup(slash1)
     preComputeBulletGroup(slash2)
