@@ -1,8 +1,9 @@
-import { __extends } from "tslib";
-import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { VertexBuffer } from "@babylonjs/core/Meshes/buffer";
+import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { VertexData } from "@babylonjs/core/Meshes/mesh.vertexData";
+import { __extends } from "tslib";
+import { nullVector } from "../utils/Constants";
 /**
  * Class used to create a trail following a mesh
  */
@@ -44,12 +45,14 @@ var TrailMesh = /** @class */ (function (_super) {
     TrailMesh.prototype.getClassName = function () {
         return "TrailMesh";
     };
-    TrailMesh.prototype._createMesh = function () {
+
+    TrailMesh.prototype._recomputeMesh = function (sourceOverride) {
         var data = new VertexData();
         var positions = [];
         var normals = [];
         let indices = [];
-        var meshCenter = this._generator.getAbsolutePosition();
+
+        var meshCenter = sourceOverride || this._generator.getAbsolutePosition();
         var alpha = 2 * Math.PI / this._sectionPolygonPointsCount;
         for (let i = 0; i < this._sectionPolygonPointsCount; i++) {
             positions.push(meshCenter.x + Math.cos(i * alpha) * this._diameter, meshCenter.y + Math.sin(i * alpha) * this._diameter, meshCenter.z);
@@ -71,6 +74,10 @@ var TrailMesh = /** @class */ (function (_super) {
         data.normals = normals;
         data.indices = indices;
         data.applyToMesh(this, true);
+    }
+
+    TrailMesh.prototype._createMesh = function () {
+        this._recomputeMesh();
         if (this._autoStart) {
             this.start();
         }
@@ -78,7 +85,8 @@ var TrailMesh = /** @class */ (function (_super) {
     /**
      * Start trailing mesh.
      */
-    TrailMesh.prototype.start = function () {
+    TrailMesh.prototype.start = function (recomputeMesh) {
+        if (recomputeMesh) this._recomputeMesh();
         var _this = this;
         if (!this._running) {
             this._running = true;
@@ -90,7 +98,8 @@ var TrailMesh = /** @class */ (function (_super) {
     /**
      * Stop trailing mesh.
      */
-    TrailMesh.prototype.stop = function () {
+    TrailMesh.prototype.stop = function (recomputeMesh) {
+        if (recomputeMesh) this._recomputeMesh(nullVector);
         if (this._beforeRenderObserver && this._running) {
             this._running = false;
             this.getScene().onBeforeRenderObservable.remove(this._beforeRenderObserver);
@@ -103,7 +112,8 @@ var TrailMesh = /** @class */ (function (_super) {
         var positions = this.getVerticesData(VertexBuffer.PositionKind);
         var normals = this.getVerticesData(VertexBuffer.NormalKind);
         var wm = this._generator.getWorldMatrix();
-        if(wm.getTranslation().equals(Vector3.Zero())) return;
+        if (wm.getTranslation().equals(Vector3.Zero())) return;
+        if (wm.getTranslation().equals(nullVector)) return;
         if (positions && normals) {
             for (let i = 3 * this._sectionPolygonPointsCount; i < positions.length; i++) {
                 positions[i - 3 * this._sectionPolygonPointsCount] = positions[i] - normals[i] / this._length * this._diameter;

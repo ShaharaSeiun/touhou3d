@@ -1,11 +1,13 @@
 import { extraFlower1, extraFlower2, extraFlower3, extraSpray, extraSprayBigSphere, extraSprayFreezeAndTurnYellow } from "../babylon-components/enemies/enemyBehaviours/BOSS_WriggleBehaviourTrunk/wriggleExtraPhase1SpellCard"
+import { traceArray, traceReplaceArray } from "../babylon-components/enemies/enemyBehaviours/BOSS_WriggleBehaviourTrunk/WriggleMidMinionBehaviour"
 import { wriggleMidBurst } from "../babylon-components/enemies/enemyBehaviours/BOSS_WriggleBehaviourTrunk/wriggleMidPhase1SpellCard"
 import { burst1, burst1Turn, burst2, burst2Turn, slash1, slash2, slash3, slash4, slash5, slash6, slash7, slash8 } from "../babylon-components/enemies/enemyBehaviours/BOSS_WriggleBehaviourTrunk/wrigglePhase1Normal"
 import { wrigglePhase1Spray, wrigglePhase1Spray2, wrigglePhase1Spray2Turn } from "../babylon-components/enemies/enemyBehaviours/BOSS_WriggleBehaviourTrunk/wrigglePhase1SpellCard"
 import { greenBurst1, greenBurst2, greenBurst3, greenBurst4 } from "../babylon-components/enemies/enemyBehaviours/BOSS_WriggleBehaviourTrunk/wrigglePhase2Normal"
 import { flower1, flower2, flower3, spray, sprayBigSphere, sprayFreezeAndTurnYellow } from "../babylon-components/enemies/enemyBehaviours/BOSS_WriggleBehaviourTrunk/wrigglePhase2SpellCard"
-import { whiteSmall, yellowSmall } from "../babylon-components/enemies/enemyBehaviours/Stage1MinionBehaviour"
-import { traceArray, traceReplaceArray } from "../babylon-components/enemies/enemyBehaviours/WriggleMidMinionBehaviour"
+import { blueSmall, whiteSmall, yellowSmall } from "../babylon-components/enemies/enemyBehaviours/Stage1MinionBehaviour"
+import { cone, strongerMultiBurst } from "../babylon-components/enemies/enemyBehaviours/StrongerStage1FairyBehaviour"
+import { area, multiBurst } from "../babylon-components/enemies/enemyBehaviours/StrongStage1FairyBehaviour"
 
 export const setupStage1 = (preComputeBulletGroup) => {
 
@@ -52,4 +54,11 @@ export const setupStage1 = (preComputeBulletGroup) => {
 
     preComputeBulletGroup(yellowSmall);
     preComputeBulletGroup(whiteSmall);
+    preComputeBulletGroup(blueSmall);
+
+    preComputeBulletGroup(multiBurst);
+    preComputeBulletGroup(area);
+
+    preComputeBulletGroup(strongerMultiBurst);
+    preComputeBulletGroup(cone);
 }

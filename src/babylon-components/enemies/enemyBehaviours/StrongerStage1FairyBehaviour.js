@@ -8,7 +8,7 @@ import { useName } from '../../hooks/useName';
 import { Enemies } from '../Enemies';
 import { makeActionListTimeline } from '../EnemyUtils';
 
-const multiBurst = {
+export const strongerMultiBurst = (difficulty) => ({
     type: 'shoot',
     materialOptions: {
         material: 'fresnel',
@@ -17,7 +17,7 @@ const multiBurst = {
     patternOptions: {
         pattern: 'multiBurst',
         speeds: [4, 8],
-        num: 1000
+        num: 300 * difficulty
     },
     meshOptions: {
         mesh: 'egg',
@@ -28,9 +28,9 @@ const multiBurst = {
     },
     lifespan: 10,
     wait: 0,
-}
+})
 
-const cone = {
+export const cone = {
     type: 'shoot',
     materialOptions: {
         material: 'fresnel',
@@ -74,25 +74,25 @@ enemiesInstructions.push({
 enemiesInstructions.push({
     type: "enemies",
     action: 'spawn',
-    enemy: RotateAndShootMinionDef({ spawn: new Vector3(0.1, 0, 0) }),
+    enemy: RotateAndShootMinionDef({ color: [0, 0, 1], spawn: new Vector3(0.1, 0, 0) }),
     wait: 0
 })
 enemiesInstructions.push({
     type: "enemies",
     action: 'spawn',
-    enemy: RotateAndShootMinionDef({ spawn: new Vector3(-0.1, 0, 0) }),
+    enemy: RotateAndShootMinionDef({ color: [0, 0, 1], spawn: new Vector3(-0.1, 0, 0) }),
     wait: 0
 })
 enemiesInstructions.push({
     type: "enemies",
     action: 'spawn',
-    enemy: RotateAndShootMinionDef({ spawn: new Vector3(0, 0.1, 0) }),
+    enemy: RotateAndShootMinionDef({ color: [0, 0, 1], spawn: new Vector3(0, 0.1, 0) }),
     wait: 0
 })
 enemiesInstructions.push({
     type: "enemies",
     action: 'spawn',
-    enemy: RotateAndShootMinionDef({ spawn: new Vector3(0, -0.1, 0) }),
+    enemy: RotateAndShootMinionDef({ color: [0, 0, 1], spawn: new Vector3(0, -0.1, 0) }),
     wait: 0
 })
 
@@ -110,7 +110,7 @@ export const StrongerStage1FairyBehaviour = ({ children, leaveScene, spawn, targ
             () => {
                 addBulletGroup(
                     transformNodeRef.current,
-                    multiBurst
+                    strongerMultiBurst
                 )
             },
             () => {

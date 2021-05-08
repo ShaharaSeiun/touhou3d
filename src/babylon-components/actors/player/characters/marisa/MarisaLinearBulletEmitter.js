@@ -24,16 +24,24 @@ const makeShotInstruction = (powerClass, side) => {
             initialVelocities = [new Vector3(0, 0, 0)]
             break;
         case 1:
-            shotSources = [new Vector3(0, 0, 0.15)];
-            initialVelocities = [new Vector3(0, 0, 0)]
+            shotSources = [
+                new Vector3(sideCoefficient * 0.15, 0.15, 0.15),
+                new Vector3(sideCoefficient * 0.15, -0.15, 0.15)
+            ];
+            initialVelocities = [
+                new Vector3(0, 0, 0),
+                new Vector3(0, 0, 0)
+            ]
             break;
         case 2:
             shotSources = [
+                new Vector3(0, 0, 0.15),
                 new Vector3(0, 0, 0.15),
                 new Vector3(sideCoefficient * 0.15, 0.15, 0.15),
                 new Vector3(sideCoefficient * 0.15, -0.15, 0.15)
             ];
             initialVelocities = [
+                new Vector3(0, 0, 0),
                 new Vector3(0, 0, 0),
                 new Vector3(sideCoefficient * 2, 0, 0),
                 new Vector3(sideCoefficient * 2, 0, 0)

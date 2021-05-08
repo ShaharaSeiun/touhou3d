@@ -49,6 +49,7 @@ export const useBullets = (assets, environmentCollision, addEffect, isDead, setI
 
     const preComputeBulletGroup = useCallback((instruction) => {
         const preparedInstruction = prepareBulletInstruction(instruction);
+        if (!preparedInstruction || preparedInstruction.patternOptions.towardsPlayer || preparedInstruction.patternOptions.disablePrecomputation) return;
         const { positions, velocities, timings } = makeBulletPattern(preparedInstruction.patternOptions, false, scene);
         const endTimings = makeEndTimings(preparedInstruction.endTimings, preparedInstruction.lifespan, timings.length, scene);
         return { positions, velocities, timings, endTimings, instruciton: preparedInstruction }
@@ -59,6 +60,7 @@ export const useBullets = (assets, environmentCollision, addEffect, isDead, setI
             if (!parent) throw new Error('parent not ready!');
 
             const preparedInstruction = prepareBulletInstruction(instruction);
+            if (!preparedInstruction) return;
             if (sourceBulletId) preparedInstruction.patternOptions.sourceBulletId = sourceBulletId;
 
             const { positions, velocities, timings, uid } = makeBulletPattern(preparedInstruction.patternOptions, parent, scene, supressNotPrecomputedWarning);
@@ -89,7 +91,7 @@ export const useBullets = (assets, environmentCollision, addEffect, isDead, setI
     );
 
     useBeforeRender(() => {
-        if (isDead) return;
+        if (isDead || scene.paused) return;
 
         //Collisions
         if (playHitSound && framesSincePlayHit % 6 === 0) {
@@ -109,6 +111,7 @@ export const useBullets = (assets, environmentCollision, addEffect, isDead, setI
                             globalActorRefs.enemies[enemyID].health -= bulletGroup.behaviour.bulletValue;
                             playHitSound = true;
                             if (globalActorRefs.enemies[enemyID]) {
+                                setGlobal('SCORE', globals.SCORE + 10);
                                 addEffect(collision.hit, {
                                     type: 'particles',
                                     name: 'hit'
@@ -124,10 +127,16 @@ export const useBullets = (assets, environmentCollision, addEffect, isDead, setI
                         const collision = collisions[0];
                         if (collision.point) {
                             setGlobal('POINT', globals.POINT + collision.point / 2);
+                            setGlobal('SCORE', globals.SCORE + 50000 * (collision.point / 2));
                             itemGet.play();
                         }
                         if (collision.power) {
-                            setGlobal('POWER', Math.min(globals.POWER + collision.power / 2, 120));
+                            if (globals.POWER === 120) {
+                                setGlobal('SCORE', globals.SCORE + 50000 * (collision.point / 2));
+                            }
+                            else {
+                                setGlobal('POWER', Math.min(globals.POWER + collision.power / 2, 120));
+                            }
                             itemGet.play();
                         }
                         if (collision.player) {
@@ -146,6 +155,7 @@ export const useBullets = (assets, environmentCollision, addEffect, isDead, setI
                         }
                         if (collision.graze) {
                             setGlobal('GRAZE', globals.GRAZE + collision.graze / 2);
+                            setGlobal('SCORE', globals.SCORE + 2000 * (collision.graze / 2));
                             playerGraze.play()
                         }
                     }

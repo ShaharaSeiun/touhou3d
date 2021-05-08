@@ -1,7 +1,7 @@
+import { Vector3 } from '@babylonjs/core';
 import { flattenDeep } from 'lodash';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
-import Music from '../../../sounds/Music';
 import { randVectorToPosition } from '../../BabylonUtils';
 import { AnimationContext, BulletsContext, UIContext } from '../../gameLogic/GeneralContainer';
 import { globalActorRefs, globalCallbacks } from '../../gameLogic/StaticRefs';
@@ -11,52 +11,13 @@ import { moveTo } from "./BehaviourCommon";
 import { useWriggleMidPhase1Normal } from './BOSS_WriggleBehaviourTrunk/wriggleMidPhase1Normal';
 import { useWriggleMidPhase1SpellCard } from './BOSS_WriggleBehaviourTrunk/wriggleMidPhase1SpellCard';
 
-
 const wriggle1StartPosition = randVectorToPosition([9, 1, 3])
-
-
-
-// const enemiesInstructions = []
-
-// enemiesInstructions.push({
-//     type: "enemies",
-//     action: 'empty',
-//     wait: 1
-// })
-
-
-// enemiesInstructions.push({
-//     type: "enemies",
-//     action: 'spawn',
-//     enemy: RotateAndShootMinionDef({ color: [1, 1, 0], targetDist: 3, armTime: 1, spawn: new Vector3(0.1, 0, 0) }),
-//     wait: 0
-// })
-// enemiesInstructions.push({
-//     type: "enemies",
-//     action: 'spawn',
-//     enemy: RotateAndShootMinionDef({ color: [1, 1, 0], targetDist: 3, armTime: 1, spawn: new Vector3(-0.1, 0, 0), reverse: true }),
-//     wait: 0
-// })
-// enemiesInstructions.push({
-//     type: "enemies",
-//     action: 'spawn',
-//     enemy: RotateAndShootMinionDef({ color: [1, 1, 0], targetDist: 3, armTime: 1, spawn: new Vector3(0.1, 0.1, 0) }),
-//     wait: 0
-// })
-// enemiesInstructions.push({
-//     type: "enemies",
-//     action: 'spawn',
-//     enemy: RotateAndShootMinionDef({ color: [1, 1, 0], targetDist: 3, armTime: 1, spawn: new Vector3(-0.1, 0.1, 0), reverse: true }),
-//     wait: 0
-// })
-
-// const enemiesActionList = makeActionListTimeline(enemiesInstructions);
 
 const lives = [
     {
-        healthStart: 6000,
-        healthEnd: 0,
-        spellCards: [3000]
+        healthStart: 4000,
+        healthEnd: 1000,
+        spellCards: [2500]
     },
 ]
 
@@ -67,7 +28,7 @@ const phases = flattenDeep(lives.map(life => (
 export const BOSS_WriggleBehaviour1 = ({ children, leaveScene, spawn }) => {
     const transformNodeRef = useRef();
 
-    const { setBossUI } = useContext(UIContext)
+    const { setBossUI, setSpellCardUI } = useContext(UIContext)
     const { registerAnimation } = useContext(AnimationContext);
     const { clearAllBullets } = useContext(BulletsContext);
     const addEffect = useAddEffect()
@@ -86,27 +47,33 @@ export const BOSS_WriggleBehaviour1 = ({ children, leaveScene, spawn }) => {
             duration: 200
         })
         if (epoch === 0) {
-            Music.play("wriggleTheme")
             setBossUI({
                 bossName: "wriggle",
                 lives
             })
         }
-        if (epoch > 0) {
+        if (epoch === 2) {
+            console.log("two for some reason")
+            setBossUI()
+            setSpellCardUI()
+            moveTo(registerAnimation, transformNodeRef.current, new Vector3(10, 1, 10))
+            window.setTimeout(() => {
+                leaveScene()
+            }, 1000);
         }
-    }, [registerAnimation, setBossUI, epoch, addEffect])
+    }, [registerAnimation, setBossUI, epoch, addEffect, setSpellCardUI, leaveScene])
 
     useEffect(() => {
         clearAllBullets();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [epoch])
 
-    useWriggleMidPhase1Normal(epoch === 1, transformNodeRef)
-    useWriggleMidPhase1SpellCard(epoch === 0, transformNodeRef, setMinionInstructions)
+    useWriggleMidPhase1Normal(epoch === 0, transformNodeRef)
+    useWriggleMidPhase1SpellCard(epoch === 1, transformNodeRef, setMinionInstructions)
 
     useBeforeRender(() => {
-        if (epoch === -1) return;
         const bossHealth = globalActorRefs.enemies[0].health;
+        if (epoch === -1 || bossHealth === -510) return;
 
         let curPhase = 0;
         for (let i = 0; i < phases.length; i++) {
@@ -114,6 +81,10 @@ export const BOSS_WriggleBehaviour1 = ({ children, leaveScene, spawn }) => {
                 curPhase = i;
                 break;
             }
+        }
+
+        if (bossHealth < phases[phases.length - 1]) {
+            curPhase = phases.length;
         }
 
         if (curPhase !== epoch) {

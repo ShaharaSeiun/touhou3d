@@ -1,19 +1,22 @@
 import { Animation, Vector3 } from '@babylonjs/core';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import { minionSpawn } from '../../../sounds/SFX';
+import { zVector } from '../../../utils/Constants';
 import { randVectorToPosition } from '../../BabylonUtils';
+import { AnimationContext } from '../../gameLogic/GeneralContainer';
 import { useName } from '../../hooks/useName';
 
-export const RotateMovement = ({ children, spawn, targetDist, reverse, armTime, rotationAxis = new Vector3(0, 0, 1), rotationSpeed = 1 }) => {
+export const RotateMovement = ({ children, spawn, targetDist, reverse, armTime, rotationAxis = zVector, rotationSpeed = 1 }) => {
     const rotateAroundRef = useRef()
     const armRef = useRef();
     const name = useName('RotateMovement')
     const armStartPosition = useMemo(() => randVectorToPosition(spawn), [spawn])
     const startPosition = useMemo(() => new Vector3(0, 0, 0), [])
+    const { registerAnimation } = useContext(AnimationContext);
 
     useEffect(() => {
         minionSpawn.play()
-        Animation.CreateAndStartAnimation(
+        registerAnimation(Animation.CreateAndStartAnimation(
             'anim',
             armRef.current,
             'position',
@@ -22,9 +25,9 @@ export const RotateMovement = ({ children, spawn, targetDist, reverse, armTime, 
             armStartPosition,
             armRef.current.position.normalize().scale(targetDist),
             0,
-        )
+        ))
 
-        Animation.CreateAndStartAnimation(
+        registerAnimation(Animation.CreateAndStartAnimation(
             name + "anim",
             rotateAroundRef.current,
             'rotation',
@@ -33,8 +36,8 @@ export const RotateMovement = ({ children, spawn, targetDist, reverse, armTime, 
             new Vector3(0, 0, 0),
             rotationAxis.scale(reverse ? Math.PI * 2 : -Math.PI * 2),
             Animation.ANIMATIONLOOPMODE_CYCLE,
-        )
-    }, [name, targetDist, armStartPosition, reverse, armTime, rotationAxis, rotationSpeed])
+        ))
+    }, [name, targetDist, armStartPosition, reverse, armTime, rotationAxis, rotationSpeed, registerAnimation])
 
     return (
         <transformNode name={name + "rotateAround"} position={startPosition} ref={rotateAroundRef}>

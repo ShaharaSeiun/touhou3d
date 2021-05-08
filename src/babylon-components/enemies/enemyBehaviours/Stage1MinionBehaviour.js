@@ -36,6 +36,7 @@ const smallInstruction = (color) => ({
 
 export const yellowSmall = smallInstruction([1, 1, 0]);
 export const whiteSmall = smallInstruction([1, 1, 1]);
+export const blueSmall = smallInstruction([0, 0, 1]);
 
 const small = (color) => {
     switch (JSON.stringify(color)) {
@@ -43,6 +44,8 @@ const small = (color) => {
             return yellowSmall;
         case JSON.stringify([1, 1, 1]):
             return whiteSmall;
+        case JSON.stringify([0, 0, 1]):
+            return blueSmall;
         default:
             throw new Error('no precomputed pattern for color ' + JSON.stringify(color));
     }

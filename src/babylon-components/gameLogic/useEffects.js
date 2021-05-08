@@ -11,6 +11,8 @@ const effectSoundMap = {
     newPhaseWriggle: bossDeathQuiet
 }
 
+const effectPlayingMap = {}
+
 export const useEffects = (assets) => {
     const backupAssets = useContext(AssetsContext);
     if (!assets) assets = backupAssets;
@@ -19,16 +21,17 @@ export const useEffects = (assets) => {
         switch (effectOptions.type) {
             case 'particles':
                 const particleSystem = makeParticleSystem(assets, effectOptions.name + "Particles", emitter);
-                particleSystem.start();
 
-                console.log(effectOptions.name)
+                if (!effectPlayingMap[effectOptions.name]) effectPlayingMap[effectOptions.name] = 0
+                effectPlayingMap[effectOptions.name]++;
 
                 const sound = effectSoundMap[effectOptions.name];
                 if (sound) sound.play();
 
-                window.setTimeout(() => {
-                    particleSystem.stop();
-                }, effectOptions.duration || 20);
+                // window.setTimeout(() => {
+                //     effectPlayingMap[effectOptions.name]--
+                //     if (effectPlayingMap[effectOptions.name] === 0) particleSystem.emitter = nullVector;
+                // }, effectOptions.duration || 100);
                 break;
             default:
                 throw new Error('Unknown effect type' + effectOptions.type);

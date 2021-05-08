@@ -1,6 +1,7 @@
 import { Animation, Color3, EasingFunction, SineEase, StandardMaterial, Vector3 } from '@babylonjs/core';
 import { useCallback } from 'react';
 import { useScene } from 'react-babylonjs';
+import { nullVector } from '../../utils/Constants';
 import { TrailMesh } from '../TrailMesh';
 import { glowLayerRef } from "./useGlowLayer";
 
@@ -56,18 +57,23 @@ const fillMeshPool = (scene, assets) => {
 
         planeMesh.parent = sphereMesh;
 
-        sphereMesh.position = new Vector3(-510, -510, -510);
+        sphereMesh.position = nullVector;
         sphereMesh.onBegin = (args) => {
             if (args.disableTrail) return;
-            trail.start();
+            trail.position = new Vector3(0, 0, 0);
             glowLayerRef.current.addIncludedOnlyMesh(trail)
         };
 
         sphereMesh.onEnd = (args) => {
             if (args.disableTrail) return;
-            trail.stop();
+            trail.stop(true);
             glowLayerRef.current.removeIncludedOnlyMesh(trail)
         };
+
+        sphereMesh.trail = trail;
+        sphereMesh.poolDispose = sphereMesh.dispose;
+        sphereMesh.dispose = () => { };
+        sphereMesh.onDispose = console.warn;
 
         sphereMesh.isPooled = true;
         meshPool.minion.meshes.push(sphereMesh);

@@ -14,7 +14,7 @@ export const wrigglePhase1Spray = {
     },
     patternOptions: {
         pattern: 'sprayStableRandBurst',
-        num: 300,
+        num: difficulty => difficulty * 100,
         timeLength: 7,
         speed: 12
     },
@@ -37,7 +37,7 @@ export const wrigglePhase1Spray2 = {
     },
     patternOptions: {
         pattern: 'sprayStableRandBurst',
-        num: 300,
+        num: difficulty => difficulty * 100,
         timeLength: 7,
         speed: 15,
         uid: 'wrigglePhase1SprayInit',

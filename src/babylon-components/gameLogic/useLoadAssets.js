@@ -5,41 +5,16 @@ import {
     Mesh,
     MeshBuilder,
     ParticleHelper,
-    ParticleSystemSet,
-    Vector2,
-    Vector3
+    ParticleSystemSet
 } from '@babylonjs/core';
-import { useCallback, useEffect, useState } from 'react';
-import { useBeforeRender, useScene } from 'react-babylonjs';
+import { useEffect, useState } from 'react';
+import { useScene } from 'react-babylonjs';
+import { nullVector } from '../../utils/Constants';
 import { capFirst } from '../../utils/Utils';
-import { makeSpriteSheetAnimation } from '../BabylonUtils';
 
 export const useLoadAssets = () => {
     const scene = useScene();
-    const [animatedTextures, setAnimatedTextures] = useState();
     const [assets, setAssets] = useState();
-
-    const loadAnimatedTextures = useCallback(
-        (tempAssets) => {
-            const tempAnimatedTextures = [];
-            const spriteSheetTexture = tempAssets['fairySpriteSheet'];
-            const blueFairyTexture = makeSpriteSheetAnimation({
-                name: 'blueFairyTextureAnimation',
-                scene,
-                spriteSize: new Vector2(32, 32),
-                spriteSheetOffset: new Vector2(12, 40),
-                spriteSheetSize: new Vector2(1024, 1024),
-                totalFrames: 4,
-                frameRate: 10,
-                spriteSheetTexture: spriteSheetTexture,
-            });
-            tempAssets['blueFairyTexture'] = blueFairyTexture;
-            tempAnimatedTextures.push(blueFairyTexture);
-
-            setAnimatedTextures(tempAnimatedTextures);
-        },
-        [scene]
-    );
 
     useEffect(() => {
         //Particles
@@ -180,11 +155,6 @@ export const useLoadAssets = () => {
             {
                 url: '/assets/enemies/textures/blueMagicCircle.png',
                 name: 'blueMagicCircle',
-                type: 'texture',
-            },
-            {
-                url: '/assets/spriteSheets/fairySpriteSheet.png',
-                name: 'fairySpriteSheet',
                 type: 'texture',
             },
             {
@@ -384,13 +354,16 @@ export const useLoadAssets = () => {
             },
         ];
 
-        ['reimu', 'wriggle'].forEach((name) =>
+        ['reimu', 'marisa', 'wriggle'].forEach((name) =>
             ['angry', 'dissapoint', 'excited', 'neutral', 'shocked', 'special', 'tired'].forEach((emotion) =>
                 assetList.push({
                     url: `/assets/characterPortraits/${name}/${emotion}.png`,
                     name: `${name}Character${capFirst(emotion)}`,
                     type: 'texture',
                     postProcess: (texture) => {
+                        if (name === 'marisa') {
+                            texture.uScale = -1;
+                        }
                         texture.vScale = 0.99;
                     },
                 })
@@ -405,7 +378,8 @@ export const useLoadAssets = () => {
             switch (asset.type) {
                 case 'particles':
                     new ParticleHelper.CreateAsync(asset.json, scene, true).then(function (set) {
-                        set.systems[0].emitter = new Vector3(0, 0, 0);
+                        set.systems[0].emitter = nullVector;
+                        set.systems[0].start();
                         tempAssets[asset.name] = set.systems[0];
                     });
                     break;
@@ -440,23 +414,11 @@ export const useLoadAssets = () => {
         });
 
         assetsManager.onFinish = async () => {
-            loadAnimatedTextures(tempAssets);
             setAssets(tempAssets);
         };
 
         assetsManager.load();
-    }, [scene, loadAnimatedTextures]);
-
-    useBeforeRender(() => {
-        if (!animatedTextures) return;
-        let now = new Date();
-
-        animatedTextures.forEach((texture) => {
-            const timeAlive = now - texture.startTime;
-            const frame = Math.floor(timeAlive / texture.frameTime) % texture.totalFrames;
-            texture.setFloat('frame', frame);
-        });
-    });
+    }, [scene]);
 
     return assets;
 };

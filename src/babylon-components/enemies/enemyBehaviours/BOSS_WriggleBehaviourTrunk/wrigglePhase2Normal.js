@@ -13,7 +13,7 @@ const greenBurst = () => ({
     patternOptions: {
         pattern: 'multiBurst',
         speeds: [5, 10],
-        num: 2000,
+        num: difficulty => difficulty * 600,
         thetaStart: Math.random() * Math.PI * 2
     },
     meshOptions: {

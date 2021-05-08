@@ -35,7 +35,7 @@ export const UI = () => {
             addingCharacters.forEach((character) => {
                 newCharacters.push({
                     name: character,
-                    side: mainCharacters.includes(character) ? 'left' : 'right',
+                    side: character === 'player' ? 'left' : 'right',
                     emotion: character === activeCharacter ? activeCharacterEmotion : 'neutral',
                     active: character === activeCharacter,
                     index: 0,

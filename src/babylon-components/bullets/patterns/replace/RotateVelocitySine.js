@@ -16,7 +16,7 @@ export const makeRotateSineVelocityReplacement = (patternOptions, parent) => {
 
     const velocities = sourcePattern.velocities.map((velocity, i) => {
         const alter = right.scale(Math.sin(i * Math.PI / 8)).add(up.scale(Math.cos(i * Math.PI / 8)))
-        return alter.add(forward);
+        return alter.add(forward).scale(patternOptions.speed || 1);
     });
 
     const timings = sum(sourceEndTimings, sourcePattern.timings);

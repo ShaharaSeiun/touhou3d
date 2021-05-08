@@ -1,15 +1,16 @@
 import { Animation, BezierCurveEase, Vector3 } from '@babylonjs/core';
 import React, { useContext, useMemo, useRef } from 'react';
+import { InertOrbitMinionDef } from '../../../stages/common/InertOrbitMinionDef';
+import { DIFFICULTY } from '../../../utils/Constants';
 import { randVectorToPosition } from '../../BabylonUtils';
 import { AnimationContext } from '../../gameLogic/GeneralContainer';
-import { useDoSequence } from '../../hooks/useDoSequence';
 import { useAddBulletGroup } from '../../hooks/useAddBulletGroup';
+import { useDoSequence } from '../../hooks/useDoSequence';
 import { useName } from '../../hooks/useName';
-import { InertOrbitMinionDef } from '../../../stages/common/InertOrbitMinionDef'
 import { Enemies } from '../Enemies';
 import { makeActionListTimeline } from '../EnemyUtils';
 
-const multiBurst = {
+export const multiBurst = (difficulty) => ({
     type: 'shoot',
     materialOptions: {
         material: 'fresnel',
@@ -18,7 +19,7 @@ const multiBurst = {
     patternOptions: {
         pattern: 'multiBurst',
         speeds: [4, 8],
-        num: 1000
+        num: 300 * difficulty
     },
     meshOptions: {
         mesh: 'egg',
@@ -29,9 +30,9 @@ const multiBurst = {
     },
     lifespan: 10,
     wait: 0,
-}
+})
 
-const area = {
+export const area = (difficulty) => difficulty >= DIFFICULTY.Hard && {
     type: 'shoot',
     materialOptions: {
         material: 'fresnel',
@@ -41,7 +42,7 @@ const area = {
         pattern: 'area',
         speed: 4,
         num: 5,
-        radialAngle: Math.PI/4,
+        radialAngle: Math.PI / 4,
         towardsPlayer: true
     },
     meshOptions: {

@@ -1,5 +1,6 @@
 import { DynamicTexture, Vector3 } from '@babylonjs/core';
 import React, { useEffect, useMemo } from 'react';
+import { globals } from '../../components/GlobalsContainer';
 import { CHARACTER_CONSTS } from '../../utils/Constants';
 import { capFirst } from '../../utils/Utils';
 import { textOnCtx } from '../BabylonUtils';
@@ -12,8 +13,8 @@ export const CharacterDialogueText = ({ character, text }) => {
         const ctx = textTexture.getContext();
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-        const textColor = CHARACTER_CONSTS[character].color;
-        textOnCtx(ctx, `${capFirst(character)}: `, 0.1, 0.2, 0.6, textColor);
+        const textColor = CHARACTER_CONSTS[(character === 'player' ? globals.character : character)].color;
+        textOnCtx(ctx, `${capFirst((character === 'player' ? globals.character : character))}: `, 0.1, 0.2, 0.6, textColor);
         textOnCtx(ctx, text, 0.06, 0.2, 0.7, textColor);
 
         textTexture.update();

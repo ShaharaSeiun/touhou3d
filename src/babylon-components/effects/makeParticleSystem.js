@@ -318,14 +318,11 @@ export const makeParticleSystem = (assets, particleSystemName, emitter) => {
     return particleSystem;
 };
 
-export const makeParticleSystemFromSingle = (particleSystem, particleSystemName) => {
+export const makeParticleSystemFromSingle = (assets, particleSystemName, emitter) => {
     const name = makeName(particleSystemName);
+    const particleSystem = assets[particleSystemName];
     const clonedSystem = safeClone(particleSystem, name);
-    clonedSystem.start();
-
-    window.setTimeout(() => {
-        clonedSystem.stop();
-    }, 100);
+    particleSystem.emitter = emitter;
 
     return clonedSystem;
 };

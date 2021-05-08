@@ -8,14 +8,14 @@ export const DefaultFairy = (spawn, target) => {
             type: 'agroThenAfraid',
             spawn: spawn,
         },
-        behaviourProps:{
+        behaviourProps: {
             type: 'defaultFairy',
         },
-        meshProps:{
+        meshProps: {
             type: 'fairy',
             asset: 'blueFairy',
         },
-        
+
         deathInstruction: {
             type: 'shoot',
             materialOptions: {
@@ -39,6 +39,9 @@ export const DefaultFairy = (spawn, target) => {
             behaviourOptions: {
                 behaviour: 'item',
                 bulletType: BULLET_TYPE.POWER,
+            },
+            soundOptions: {
+                mute: true
             },
             lifespan: 10,
             wait: 0,

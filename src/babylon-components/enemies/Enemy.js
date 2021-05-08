@@ -8,7 +8,7 @@ import { makeEnemyBehaviour } from './enemyBehaviours';
 import { makeEnemyMovement } from './enemyMovements';
 
 
-export const Enemy = ({ name, radius, health, deathInstruction, removeEnemyFromScene, meshProps, behaviourProps, movementProps }) => {
+export const Enemy = ({ name, radius, health, deathInstruction, removeEnemyFromScene, meshProps, behaviourProps, movementProps, isBoss }) => {
     const enemyRef = useRef();
     const [enemy, setEnemy] = useState();
     const [positionID, setPositionID] = useState();
@@ -34,10 +34,11 @@ export const Enemy = ({ name, radius, health, deathInstruction, removeEnemyFromS
                 }, deathInstruction);
                 removeEnemyFromScene(name, deathPosition);
             },
-            health
+            health,
+            isBoss
         );
         setPositionID(id);
-    }, [enemy, radius, name, removeEnemyFromScene, health, deathInstruction, addBulletGroup]);
+    }, [enemy, radius, name, removeEnemyFromScene, health, deathInstruction, addBulletGroup, isBoss]);
 
     useEffect(() => {
         return () => {

@@ -11,6 +11,11 @@ export const useUI = (isDead) => {
     const [spellCardUI, setSpellCardUI] = useState();
 
     const setBossUI = useCallback((bossUIProps) => {
+        if (!bossUIProps) {
+            _setBossUI();
+            return;
+        }
+
         bossUIProps.lives.forEach(life => {
             if (life.spellCards.length !== 1 && determineOrder(life.spellCards) !== 'descending') {
                 throw new Error('spell cards health for boss UI must be in descending order');

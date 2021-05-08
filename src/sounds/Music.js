@@ -4,9 +4,9 @@ import BGM from './BGM';
 class MusicClass {
     constructor() {
         this.BGMs = {};
-        this.BGMs.menuTheme = new BGM('/music/Eternal Night Vignette ~ Eastern Night.mp3', 0.3);
-        this.BGMs.stage1Theme = new BGM('/music/Illusionary Night ~ Ghostly Eyes.mp3', 0.3);
-        this.BGMs.wriggleTheme = new BGM('/music/Stirring an Autumn Moon ~ Mooned Insect.mp3', 0.3);
+        this.BGMs.menuTheme = new BGM('/music/titleTheme.mp3', 0.3);
+        this.BGMs.stage1Theme = new BGM('/music/stage1.mp3', 0.3);
+        this.BGMs.wriggleTheme = new BGM('/music/wriggleTheme.mp3', 0.3);
         this.isPlaying = false;
 
         this.initFunc = () => this.init();
@@ -33,7 +33,7 @@ class MusicClass {
     }
 
     play(activeSound) {
-        if(this.activeSound) this.stop();
+        if (this.activeSound) this.stop();
         if (activeSound) this.activeSound = activeSound;
         if (SETTINGS.MUSIC === 'OFF' || !this.activeSound) return;
         if (this.pausedAt) {

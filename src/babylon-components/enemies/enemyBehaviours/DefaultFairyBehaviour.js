@@ -1,10 +1,11 @@
 import { Vector3 } from '@babylonjs/core';
 import React, { useMemo, useRef } from 'react';
+import { DIFFICULTY } from '../../../utils/Constants';
 import { useAddBulletGroup } from '../../hooks/useAddBulletGroup';
 import { useDoSequence } from '../../hooks/useDoSequence';
 import { useName } from '../../hooks/useName';
 
-export const smallTowardsPlayer = {
+export const smallTowardsPlayer = (difficulty) => difficulty >= DIFFICULTY.Medium && {
     type: 'shoot',
     materialOptions: {
         material: 'fresnel',
@@ -27,7 +28,7 @@ export const smallTowardsPlayer = {
     wait: 0,
 }
 
-export const mediumTowardsPlayer = {
+export const mediumTowardsPlayer = (difficulty) => difficulty >= DIFFICULTY.Hard && {
     type: 'shoot',
     materialOptions: {
         material: 'fresnel',

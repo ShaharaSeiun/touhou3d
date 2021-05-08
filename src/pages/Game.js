@@ -16,6 +16,7 @@ import '../babylon-components/Shaders';
 import { UI } from '../babylon-components/ui/UI';
 import { ControlsContainer } from '../components/ControlsContainer';
 import { globals, GlobalsContainer, loadGlobals, resetGlobals } from '../components/GlobalsContainer';
+import { LSContainer } from '../components/LSContainer';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { Stage1 } from '../stages/Stage1';
 import { NeedsToClick } from '../utils/NeedsToClick';
@@ -43,7 +44,7 @@ DefaultLoadingScreen.prototype.displayLoadingUI = function () {
     var imgBack = new Image();
     imgBack.src = "/images/loading.png";
     imgBack.style.position = "absolute";
-    imgBack.style.width = "20vw";
+    imgBack.style.height = "80vh";
     imgBack.style.top = "20px";
     imgBack.style.left = "40vw";
     this._loadingDiv.appendChild(imgBack);
@@ -63,34 +64,36 @@ export const Game = () => {
         <Engine width={windowSize.width} height={windowSize.height} antialias canvasId="babylonJS">
             <Scene clearColor={new Color3(0.1, 0.1, 0.2)} render>
                 <GlobalsContainer>
-                    <ControlsContainer>
-                        <GeneralContainer>
-                            <Suspense fallback={false}>
-                                <NeedsToClick />
-                                <BindControls />
-                                <FightRoot>
-                                    <UI
-                                        charactersInDialogue={['reimu', 'wriggle']}
-                                        activeCharacter={'reimu'}
-                                        activeCharacterEmotion="neutral"
-                                    />
-                                    <Playground />
-                                    <PlayerMovement>
-                                        <Player character={globals.character} />
-                                        <PlayerCamera />
-                                    </PlayerMovement>
-                                    <Boundaries />
-                                </FightRoot>
-                                <Router>
-                                    <Switch>
-                                        <Route path="/game/stage1">
-                                            <Stage1 />
-                                        </Route>
-                                    </Switch>
-                                </Router>
-                            </Suspense>
-                        </GeneralContainer>
-                    </ControlsContainer>
+                    <LSContainer>
+                        <ControlsContainer>
+                            <GeneralContainer>
+                                <Suspense fallback={false}>
+                                    <NeedsToClick />
+                                    <BindControls />
+                                    <FightRoot>
+                                        <UI
+                                            charactersInDialogue={['reimu', 'wriggle']}
+                                            activeCharacter={'reimu'}
+                                            activeCharacterEmotion="neutral"
+                                        />
+                                        <Playground />
+                                        <PlayerMovement>
+                                            <Player character={globals.character} />
+                                            <PlayerCamera />
+                                        </PlayerMovement>
+                                        <Boundaries />
+                                    </FightRoot>
+                                    <Router>
+                                        <Switch>
+                                            <Route path="/game/stage1">
+                                                <Stage1 />
+                                            </Route>
+                                        </Switch>
+                                    </Router>
+                                </Suspense>
+                            </GeneralContainer>
+                        </ControlsContainer>
+                    </LSContainer>
                 </GlobalsContainer>
             </Scene>
         </Engine>

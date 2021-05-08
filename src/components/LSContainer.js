@@ -6,7 +6,7 @@ export const LSContext = React.createContext();
 
 export const LS = {
     ///STATS
-    HIGHEST_SCORE: 0,
+    HIGHEST_SCORE: 10000,
     DIFFICULTY_LEVEL: "Lunatic",
     CONTINUES_USED: 0,
     DEATHS: 0,

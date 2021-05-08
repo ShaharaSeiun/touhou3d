@@ -1,9 +1,8 @@
 import { useContext, useEffect, useMemo } from "react";
 import { WriggleMidMinionDef } from "../../../../stages/stage1def/WriggleMidMinionDef";
 import { burst } from "../../../bullets/patterns/BulletVectorFunctions";
-import { AnimationContext, UIContext } from "../../../gameLogic/GeneralContainer";
+import { UIContext } from "../../../gameLogic/GeneralContainer";
 import { useAddBulletGroup } from "../../../hooks/useAddBulletGroup";
-import { useAddEffect } from "../../../hooks/useAddEffect";
 import { useDoSequence } from "../../../hooks/useDoSequence";
 import { makeActionListTimeline } from "../../EnemyUtils";
 
@@ -28,7 +27,7 @@ export const wriggleMidBurst = {
     },
     patternOptions: {
         pattern: 'spray',
-        num: 300,
+        num: difficulty => difficulty * 100,
         timeLength: 0.4,
         speed: 8,
         thetaSpeed: 4,
@@ -50,8 +49,6 @@ export const wriggleMidBurst = {
 
 export const useWriggleMidPhase1SpellCard = (active, transformNodeRef, setMinionInstructions) => {
     const { setSpellCardUI } = useContext(UIContext)
-    const { registerAnimation } = useContext(AnimationContext);
-    const addEffect = useAddEffect()
 
     useEffect(() => {
         if (active) {

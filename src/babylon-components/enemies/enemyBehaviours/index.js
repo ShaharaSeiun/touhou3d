@@ -1,16 +1,14 @@
 import { BOSS_WriggleBehaviour1 } from './BOSS_WriggleBehaviour1';
 import { BOSS_WriggleBehaviour2 } from './BOSS_WriggleBehaviour2';
+import { WriggleMidMinionBehaviour } from './BOSS_WriggleBehaviourTrunk/WriggleMidMinionBehaviour';
 import { DefaultFairyBehaviour } from './DefaultFairyBehaviour';
 import { InertMinionBehaviour } from './InertMinionBehaviour';
-import { RandomEnemyBehaviour } from './RandomEnemyBehaviour';
 import { Stage1MinionBehaviour } from './Stage1MinionBehaviour';
 import { StrongerStage1FairyBehaviour } from './StrongerStage1FairyBehaviour';
 import { StrongStage1FairyBehaviour } from './StrongStage1FairyBehaviour';
 import { TumbleweedBehaviour } from './TumbleweedBehaviour';
-import { WriggleMidMinionBehaviour } from './WriggleMidMinionBehaviour';
 
 const behaviourMap = {
-    'random': RandomEnemyBehaviour,
     'inertMinion': InertMinionBehaviour,
     'tumbleweed': TumbleweedBehaviour,
     'stage1Minion': Stage1MinionBehaviour,

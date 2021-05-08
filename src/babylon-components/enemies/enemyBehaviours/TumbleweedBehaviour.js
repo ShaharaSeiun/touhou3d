@@ -1,7 +1,7 @@
 import { Vector3 } from '@babylonjs/core';
 import React, { useMemo, useRef } from 'react';
-import { useDoSequence } from '../../hooks/useDoSequence';
 import { useAddBulletGroup } from '../../hooks/useAddBulletGroup';
+import { useDoSequence } from '../../hooks/useDoSequence';
 
 const mediumRandomPlayer = {
     type: 'shoot',
@@ -12,7 +12,8 @@ const mediumRandomPlayer = {
     patternOptions: {
         pattern: 'single',
         position: [0, 0, 0],
-        velocity: [[-1, 1], [-1, 1], -2, 8]
+        velocity: [[-1, 1], [-1, 1], -2, 8],
+        disablePrecomputation: true,
     },
     meshOptions: {
         mesh: 'sphere',

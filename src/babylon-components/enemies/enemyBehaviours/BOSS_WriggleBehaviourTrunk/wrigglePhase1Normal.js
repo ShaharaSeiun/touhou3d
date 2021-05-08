@@ -14,7 +14,7 @@ export const burst1 = {
     },
     patternOptions: {
         pattern: 'multiBurst',
-        num: 4000,
+        num: difficulty => difficulty * 1500,
         speeds: [4, 5, 6, 7],
         thetaLength: Math.PI * 1.1,
         thetaStart: -Math.PI / 2.5,
@@ -44,7 +44,7 @@ export const burst2 = {
     },
     patternOptions: {
         pattern: 'multiBurst',
-        num: 4000,
+        num: difficulty => difficulty * 1500,
         speeds: [4, 5, 6, 7],
         thetaLength: Math.PI * 1.1,
         thetaStart: Math.PI - 0.5,

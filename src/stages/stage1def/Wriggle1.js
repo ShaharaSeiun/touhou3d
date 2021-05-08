@@ -2,6 +2,7 @@ import { BULLET_TYPE } from "../../babylon-components/bullets/behaviours/EnemyBu
 
 export const Wriggle1 = () => {
     const map = {
+        isBoss: true,
         movementProps: {
             type: 'empty',
         },
@@ -11,9 +12,8 @@ export const Wriggle1 = () => {
         behaviourProps: {
             type: 'wriggle1',
         },
-
         radius: 1,
-        health: 6000,
+        health: 4000,
         deathInstruction: {
             type: 'shoot',
             materialOptions: {
@@ -23,13 +23,8 @@ export const Wriggle1 = () => {
                 hasAlpha: true,
             },
             patternOptions: {
-                pattern: 'single',
-                position: [0, 0, 0],
-                velocity: [
-                    [-1, 1],
-                    [-1, 1],
-                    [-1, 1],
-                ],
+                pattern: 'burst',
+                num: 40
             },
             meshOptions: {
                 mesh: 'item',
@@ -37,6 +32,9 @@ export const Wriggle1 = () => {
             behaviourOptions: {
                 behaviour: 'item',
                 bulletType: BULLET_TYPE.POWER,
+            },
+            soundOptions: {
+                mute: true
             },
             lifespan: 10,
             wait: 0,

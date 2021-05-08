@@ -45,7 +45,7 @@ export const makeBulletPattern = (patternOptions, parent, scene, supressNotPreco
         return precomputedBulletPattern;
     }
 
-    if (parent && !patternOptions.sourceBulletId && !supressNotPrecomputedWarning && !patternOptions.towardsPlayer) {
+    if (parent && !patternOptions.sourceBulletId && !supressNotPrecomputedWarning && !patternOptions.towardsPlayer && !patternOptions.disablePrecomputation) {
         console.warn("Bullet pattern wasn't precomputed, this is gonna take a while", patternOptions.pattern);
     }
 
@@ -88,7 +88,7 @@ export const makeBulletPattern = (patternOptions, parent, scene, supressNotPreco
         _pattern.timings = newTimings;
     }
 
-    if (!precomputedBulletPattern && !patternOptions.towardsPlayer) {
+    if (!precomputedBulletPattern && !patternOptions.towardsPlayer && !patternOptions.disablePrecomputation) {
         preComputedBulletPatterns[uid] = _pattern;
         preComputedBulletTextures[uid] = computeSourceTextures(_pattern, scene)
     }

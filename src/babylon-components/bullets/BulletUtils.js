@@ -1,7 +1,9 @@
 import { Constants, RawTexture, Vector2, Vector3 } from '@babylonjs/core';
+import { isFunction } from 'lodash';
 import nextPowerOfTwo from 'next-power-of-two';
 import { v4 } from 'uuid';
-import { MAX_BULLETS_PER_GROUP } from '../../utils/Constants';
+import { globals } from '../../components/GlobalsContainer';
+import { DIFFICULTY, MAX_BULLETS_PER_GROUP } from '../../utils/Constants';
 import { glsl } from '../BabylonUtils';
 import { CustomCustomProceduralTexture } from '../CustomCustomProceduralTexture';
 import { allBullets, preComputedBulletPatterns } from '../gameLogic/StaticRefs';
@@ -127,6 +129,7 @@ export const doubleClone = (object) => {
 }
 
 export const prepareBulletInstruction = (instruction) => {
+
     const defaultInstruction = {
         materialOptions: {
             material: 'fresnel',
@@ -155,7 +158,17 @@ export const prepareBulletInstruction = (instruction) => {
         lifespan: 10,
     };
 
-    doubleAssign(defaultInstruction, instruction);
+    const newInstruction = isFunction(instruction) ? instruction(DIFFICULTY[globals.difficulty]) : instruction;
+
+    if (!newInstruction) return false;
+    doubleAssign(defaultInstruction, newInstruction);
+
+    for (let key in defaultInstruction.patternOptions) {
+        if (isFunction(defaultInstruction.patternOptions[key])) {
+            defaultInstruction.patternOptions[key] = defaultInstruction.patternOptions[key](DIFFICULTY[globals.difficulty])
+        }
+    }
+
     return defaultInstruction;
 };
 

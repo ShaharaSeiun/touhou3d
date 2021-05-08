@@ -11,6 +11,7 @@ export const MinionBase = React.forwardRef(({ radius = 0.5, ...props }, ref) => 
     useEffect(() => {
         const minionMesh = getMesh("minion", { disableTrail: props.disableTrail })
         minionMesh.parent = ref.current;
+        if (!props.disableTrail) minionMesh.trail.start(true);
         minionMesh.scaling = scaling;
 
         Animation.CreateAndStartAnimation(

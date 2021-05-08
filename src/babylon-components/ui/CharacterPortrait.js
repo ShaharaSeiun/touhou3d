@@ -1,11 +1,12 @@
 import { Animation, Vector3 } from '@babylonjs/core';
 import React, { useEffect, useMemo, useRef } from 'react';
+import { globals } from '../../components/GlobalsContainer';
 import { capFirst } from '../../utils/Utils';
 import { useTexture } from '../hooks/useTexture';
 
 export const CharacterPortrait = ({ name, side, active, emotion, index }) => {
     const camelEmotion = capFirst(emotion);
-    const characterTexture = useTexture(name + 'Character' + camelEmotion);
+    const characterTexture = useTexture((name === 'player' ? globals.character : name) + 'Character' + camelEmotion);
     const position = useMemo(
         () => new Vector3(side === 'left' ? -5 : 4, 5, active ? 0 : index + 1),
         //eslint-disable-next-line react-hooks/exhaustive-deps

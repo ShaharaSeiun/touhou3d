@@ -12,10 +12,9 @@ const defaults = {
     POWER: 0,
     GRAZE: 0,
     POINT: 0,
-    TIME: 0,
     CONTINUE: 0,
     character: "marisa",
-    difficulty: "Lunatic"
+    difficulty: "Easy"
 };
 
 export const loadGlobals = () => {
@@ -32,7 +31,6 @@ export const resetGlobals = (forceSave = false) => {
             POWER: 0,
             GRAZE: 0,
             POINT: 0,
-            TIME: 0,
             CONTINUE: 0
         })
     if (forceSave) ls('globals', JSON.stringify(globals));

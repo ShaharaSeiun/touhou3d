@@ -17,12 +17,10 @@ export const PlayerUILeft = ({ ...props }) => {
         textOnCtx(ctx, `Power: `, 0.12, 0.05, 0.2, textColor);
         textOnCtx(ctx, `Graze: `, 0.12, 0.05, 0.35, textColor);
         textOnCtx(ctx, `Point: `, 0.12, 0.05, 0.5, textColor);
-        textOnCtx(ctx, `Time: `, 0.12, 0.05, 0.65, textColor);
 
         textOnCtx(ctx, `${Math.round(globals.POWER)}`, 0.12, 0.4, 0.2, textColor);
         textOnCtx(ctx, `${Math.round(globals.GRAZE)}`, 0.12, 0.4, 0.35, textColor);
         textOnCtx(ctx, `${Math.round(globals.POINT)}`, 0.12, 0.4, 0.5, textColor);
-        textOnCtx(ctx, `${Math.round(globals.TIME)}`, 0.12, 0.4, 0.65, textColor);
 
         textTexture.update();
     });

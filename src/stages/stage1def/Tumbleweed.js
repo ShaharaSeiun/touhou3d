@@ -7,20 +7,20 @@ export const Tumbleweed = (spawn, target) => {
             spawn,
             target
         },
-        meshProps:{
+        meshProps: {
             type: 'tumbleweed',
         },
         behaviourProps: {
             type: 'tumbleweed',
         },
-        
-        radius: 0.5,
-        health: 10,
+
+        radius: 0.8,
+        health: 2,
         deathInstruction: {
             type: 'shoot',
             materialOptions: {
                 material: 'item',
-                texture: 'power',
+                texture: 'point',
                 doubleSided: true,
                 hasAlpha: true,
             },
@@ -32,13 +32,17 @@ export const Tumbleweed = (spawn, target) => {
                     [-1, 1],
                     [-1, 1],
                 ],
+                disablePrecomputation: true,
             },
             meshOptions: {
                 mesh: 'item',
             },
             behaviourOptions: {
                 behaviour: 'item',
-                bulletType: BULLET_TYPE.POWER,
+                bulletType: BULLET_TYPE.POINT,
+            },
+            soundOptions: {
+                mute: true
             },
             lifespan: 10,
             wait: 0,

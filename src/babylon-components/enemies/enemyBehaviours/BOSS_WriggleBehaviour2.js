@@ -7,7 +7,6 @@ import { AnimationContext, BulletsContext, UIContext } from '../../gameLogic/Gen
 import { globalActorRefs, globalCallbacks } from '../../gameLogic/StaticRefs';
 import { useAddEffect } from '../../hooks/useAddEffect';
 import { moveTo } from "./BehaviourCommon";
-import { useWriggleExtraPhase1SpellCard } from './BOSS_WriggleBehaviourTrunk/wriggleExtraPhase1SpellCard';
 import { useWrigglePhase1Normal } from './BOSS_WriggleBehaviourTrunk/wrigglePhase1Normal';
 import { useWrigglePhase1SpellCard } from './BOSS_WriggleBehaviourTrunk/wrigglePhase1SpellCard';
 import { useWrigglePhase2Normal } from './BOSS_WriggleBehaviourTrunk/wrigglePhase2Normal';
@@ -111,7 +110,6 @@ export const BOSS_WriggleBehaviour2 = ({ children, leaveScene, spawn }) => {
     useWrigglePhase1SpellCard(epoch === 1, transformNodeRef)
     useWrigglePhase2Normal(epoch === 2, transformNodeRef)
     useWrigglePhase2SpellCard(epoch === 3, transformNodeRef)
-    useWriggleExtraPhase1SpellCard(epoch === -1, transformNodeRef)
 
     useBeforeRender(() => {
         if (epoch === -1) return;

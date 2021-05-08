@@ -5,6 +5,8 @@ import { globalActorRefs } from "../../../gameLogic/StaticRefs";
 import { useAddBulletGroup } from "../../../hooks/useAddBulletGroup";
 import { useAddEffect } from "../../../hooks/useAddEffect";
 import { useDoSequence } from "../../../hooks/useDoSequence";
+import { moveTo } from "../BehaviourCommon";
+import { burst1, burst1Turn, burst2, burst2Turn } from "./wrigglePhase1Normal";
 
 const makePincer = (transformNodeRef, roll) => {
     const parent = transformNodeRef.current;
@@ -21,7 +23,7 @@ const makePincer = (transformNodeRef, roll) => {
         },
         patternOptions: {
             pattern: 'multiArc',
-            num: 20,
+            num: difficulty => difficulty * 7,
             speeds: [4, 5, 6, 7],
             from: [from.x, from.y, from.z],
             to: [to.x, to.y, to.z],
@@ -54,7 +56,7 @@ const makePincer1 = (transformNodeRef, roll) => {
         },
         patternOptions: {
             pattern: 'multiArc',
-            num: 20,
+            num: difficulty => difficulty * 7,
             speeds: [4, 5, 6, 7],
             from: [from.x, from.y, from.z],
             to: [to.x, to.y, to.z],
@@ -87,7 +89,7 @@ const makePincer2 = (transformNodeRef, roll) => {
         },
         patternOptions: {
             pattern: 'multiArc',
-            num: 20,
+            num: difficulty => difficulty * 7,
             speeds: [4, 5, 6, 7],
             from: [from.x, from.y, from.z],
             to: [to.x, to.y, to.z],
@@ -109,8 +111,7 @@ export const useWriggleMidPhase1Normal = (active, transformNodeRef, setMinionIns
     const addBulletGroup = useAddBulletGroup();
     const { registerAnimation } = useContext(AnimationContext);
     const addEffect = useAddEffect()
-    //1, 3, 4, 5, 6
-    const actionsTimings = useMemo(() => [1, 3], []);
+    const actionsTimings = useMemo(() => [1, 3, 4, 5, 6, 10, 11, 12, 13, 15], []);
     const actions = useMemo(() =>
         [
             () => {
@@ -120,75 +121,108 @@ export const useWriggleMidPhase1Normal = (active, transformNodeRef, setMinionIns
                     duration: 1000
                 })
             },
-            // () => {
-            //     addBulletGroup(
-            //         transformNodeRef.current,
-            //         makePincer(transformNodeRef, 0)
-            //     )
-            //     addBulletGroup(
-            //         transformNodeRef.current,
-            //         makePincer1(transformNodeRef, 0)
-            //     )
-            //     addBulletGroup(
-            //         transformNodeRef.current,
-            //         makePincer2(transformNodeRef, 0)
-            //     )
-            //     addBulletGroup(
-            //         transformNodeRef.current,
-            //         makePincer(transformNodeRef, -Math.PI / 2)
-            //     )
-            //     addBulletGroup(
-            //         transformNodeRef.current,
-            //         makePincer1(transformNodeRef, -Math.PI / 2)
-            //     )
-            //     addBulletGroup(
-            //         transformNodeRef.current,
-            //         makePincer2(transformNodeRef, -Math.PI / 2)
-            //     )
-            // }
-            // () => {
-            //     const id = addBulletGroup(
-            //         transformNodeRef.current,
-            //         burst1
-            //     )
 
-            //     addBulletGroup(
-            //         transformNodeRef.current,
-            //         burst1Turn,
-            //         id
-            //     )
-            // },
-            // () => {
-            //     const id = addBulletGroup(
-            //         transformNodeRef.current,
-            //         burst2
-            //     )
-            //     addBulletGroup(
-            //         transformNodeRef.current,
-            //         burst2Turn,
-            //         id
-            //     )
-            // },
-            // () => {
-            //     const id = addBulletGroup(
-            //         transformNodeRef.current,
-            //         burst1
-            //     )
+            () => {
+                const id = addBulletGroup(
+                    transformNodeRef.current,
+                    burst1
+                )
 
-            //     addBulletGroup(
-            //         transformNodeRef.current,
-            //         burst1Turn,
-            //         id
-            //     )
-            // },
-            // () => {
-            //     moveTo(registerAnimation, transformNodeRef.current, [[-0.8, 0.8], [-0.8, 0.8], [0.8, 1.0]])
-            // },
+                addBulletGroup(
+                    transformNodeRef.current,
+                    burst1Turn,
+                    id
+                )
+            },
+            () => {
+                const id = addBulletGroup(
+                    transformNodeRef.current,
+                    burst2
+                )
+                addBulletGroup(
+                    transformNodeRef.current,
+                    burst2Turn,
+                    id
+                )
+            },
+            () => {
+                const id = addBulletGroup(
+                    transformNodeRef.current,
+                    burst1
+                )
+
+                addBulletGroup(
+                    transformNodeRef.current,
+                    burst1Turn,
+                    id
+                )
+            },
+            () => {
+                moveTo(registerAnimation, transformNodeRef.current, [[-0.8, 0.8], [-0.8, 0.8], [0.8, 1.0]])
+            },
+            () => {
+                addBulletGroup(
+                    transformNodeRef.current,
+                    makePincer(transformNodeRef, 0)
+                )
+                addBulletGroup(
+                    transformNodeRef.current,
+                    makePincer1(transformNodeRef, 0)
+                )
+                addBulletGroup(
+                    transformNodeRef.current,
+                    makePincer2(transformNodeRef, 0)
+                )
+                addBulletGroup(
+                    transformNodeRef.current,
+                    makePincer(transformNodeRef, -Math.PI / 2)
+                )
+                addBulletGroup(
+                    transformNodeRef.current,
+                    makePincer1(transformNodeRef, -Math.PI / 2)
+                )
+                addBulletGroup(
+                    transformNodeRef.current,
+                    makePincer2(transformNodeRef, -Math.PI / 2)
+                )
+            },
+            () => {
+                moveTo(registerAnimation, transformNodeRef.current, [[-0.8, 0.8], [-0.8, 0.8], [0.8, 1.0]])
+            },
+            () => {
+                addBulletGroup(
+                    transformNodeRef.current,
+                    makePincer(transformNodeRef, 0)
+                )
+                addBulletGroup(
+                    transformNodeRef.current,
+                    makePincer1(transformNodeRef, 0)
+                )
+                addBulletGroup(
+                    transformNodeRef.current,
+                    makePincer2(transformNodeRef, 0)
+                )
+                addBulletGroup(
+                    transformNodeRef.current,
+                    makePincer(transformNodeRef, -Math.PI / 2)
+                )
+                addBulletGroup(
+                    transformNodeRef.current,
+                    makePincer1(transformNodeRef, -Math.PI / 2)
+                )
+                addBulletGroup(
+                    transformNodeRef.current,
+                    makePincer2(transformNodeRef, -Math.PI / 2)
+                )
+            },
+            () => {
+                moveTo(registerAnimation, transformNodeRef.current, [[-0.8, 0.8], [-0.8, 0.8], [0.8, 1.0]])
+            },
 
         ],
         //eslint-disable-next-line react-hooks/exhaustive-deps
         []
     );
 
-    useDoSequence(active, transformNodeRef, actionsTimings, actions, false);
+    useDoSequence(active, transformNodeRef, actionsTimings, actions, true);
 }

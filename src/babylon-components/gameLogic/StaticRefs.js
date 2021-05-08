@@ -54,8 +54,8 @@ export const setBombRadius = (id, radius) => {
     globalActorRefs.bombs[id].radius = radius;
 }
 
-export const addEnemy = (position, radius, onDeath, health) => {
-    const indexToAdd = globalActorRefs.enemyIndex;
+export const addEnemy = (position, radius, onDeath, health, isBoss) => {
+    const indexToAdd = isBoss ? 0 : globalActorRefs.enemyIndex;
     if (!globalActorRefs.enemies[indexToAdd].dead) throw new Error(">" + MAX_ENEMIES + "In scene")
     globalActorRefs.enemies[indexToAdd] = {
         position,

@@ -1,7 +1,7 @@
 import { Animation, Color3, Vector3 } from '@babylonjs/core'
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useBeforeRender, useScene } from 'react-babylonjs'
-import { playerBombCharge2, playerMasterSpark } from '../../../../../sounds/SFX'
+import { playerBombCharge, playerMasterSpark } from '../../../../../sounds/SFX'
 import { AnimationContext } from '../../../../gameLogic/GeneralContainer'
 import { addBomb, globalActorRefs, removeBomb, setBombPosition, setBombRadius } from '../../../../gameLogic/StaticRefs'
 import { useGlowLayer } from '../../../../gameLogic/useGlowLayer'
@@ -62,7 +62,7 @@ export const MasterSpark = (props) => {
     const masterSparkTimings = useMemo(() => [0, 0.5, 1.2, 2.1, 3.6], []);
     const masterSparkActions = useMemo(() => [
         () => {
-            window.setTimeout(() => playerBombCharge2.play(), 500);
+            playerBombCharge.play();
             registerAnimation(
                 Animation.CreateAndStartAnimation(
                     name + "anim",
@@ -87,7 +87,6 @@ export const MasterSpark = (props) => {
             )
         },
         () => {
-            window.setTimeout(() => playerBombCharge2.play(), 500);
             registerAnimation(
                 Animation.CreateAndStartAnimation(
                     name + "anim",
@@ -112,7 +111,6 @@ export const MasterSpark = (props) => {
             )
         },
         () => {
-            window.setTimeout(() => playerBombCharge2.play(), 500);
             registerAnimation(
                 Animation.CreateAndStartAnimation(
                     name + "anim",
@@ -137,7 +135,6 @@ export const MasterSpark = (props) => {
             )
         },
         () => {
-            window.setTimeout(() => playerBombCharge2.play(), 500);
             registerAnimation(
                 Animation.CreateAndStartAnimation(
                     name + "anim",

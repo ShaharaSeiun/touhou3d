@@ -1,7 +1,7 @@
 
 /* eslint no-unused-vars: 0 */
 
-import { Wriggle2 } from "../stage1def/Wriggle2";
+import { DefaultFairy } from "../stage1def/DefaultFairy";
 
 const stage1def = () => {
     const map = {
@@ -9,12 +9,14 @@ const stage1def = () => {
     };
 
 
-    map.epochs[0].push({
-        type: "enemies",
-        action: 'spawn',
-        enemy: Wriggle2(),
-        wait: .800
-    })
+    for (let i = 0; i < 30; i++) {
+        map.epochs[0].push({
+            type: "enemies",
+            action: 'spawn',
+            enemy: DefaultFairy([[-1, 1], [-1, 1], [1, 0.9]], [0, 0, 0]),
+            wait: .5
+        })
+    }
 
 
     return map;

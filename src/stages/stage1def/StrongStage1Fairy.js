@@ -5,7 +5,7 @@ export const StrongStage1Fairy = (spawn, target) => {
         movementProps: {
             type: 'empty',
         },
-        meshProps:{
+        meshProps: {
             type: 'fairyWithMagicCircle',
             asset: 'greenHatFairy',
         },
@@ -15,7 +15,7 @@ export const StrongStage1Fairy = (spawn, target) => {
             target: target,
         },
         radius: 0.5,
-        health: 200,
+        health: 150,
         deathInstruction: {
             type: 'shoot',
             materialOptions: {
@@ -39,6 +39,9 @@ export const StrongStage1Fairy = (spawn, target) => {
             behaviourOptions: {
                 behaviour: 'item',
                 bulletType: BULLET_TYPE.POWER,
+            },
+            soundOptions: {
+                mute: true
             },
             lifespan: 10,
             wait: 0,
