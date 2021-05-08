@@ -64,7 +64,7 @@ export const addEnemy = (position, radius, onDeath, health) => {
         onDeath,
         id: indexToAdd
     };
-    globalActorRefs.enemyIndex = (globalActorRefs.enemyIndex + 1) % MAX_ENEMIES;
+    globalActorRefs.enemyIndex = Math.max((globalActorRefs.enemyIndex + 1) % MAX_ENEMIES, 1);
     return indexToAdd;
 };
 

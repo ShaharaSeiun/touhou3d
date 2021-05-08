@@ -111,7 +111,7 @@ export const BOSS_WriggleBehaviour2 = ({ children, leaveScene, spawn }) => {
     useWrigglePhase1SpellCard(epoch === 1, transformNodeRef)
     useWrigglePhase2Normal(epoch === 2, transformNodeRef)
     useWrigglePhase2SpellCard(epoch === 3, transformNodeRef)
-    useWriggleExtraPhase1SpellCard(epoch === 4, transformNodeRef)
+    useWriggleExtraPhase1SpellCard(epoch === -1, transformNodeRef)
 
     useBeforeRender(() => {
         if (epoch === -1) return;

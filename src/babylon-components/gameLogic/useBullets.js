@@ -85,7 +85,7 @@ export const useBullets = (assets, environmentCollision, addEffect, isDead, setI
             allBullets[newID] = bulletGroup;
             return newID;
         },
-        [getMesh, assets, environmentCollision, scene]
+        [scene, assets, getMesh, environmentCollision, releaseMesh]
     );
 
     useBeforeRender(() => {

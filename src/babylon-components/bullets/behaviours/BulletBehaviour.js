@@ -72,6 +72,7 @@ export class BulletBehaviour {
         bulletMaterial.setTexture('timingsSampler', timingsTexture);
         bulletMaterial.setTexture('endTimingsSampler', endTimingsTexture);
         bulletMaterial.setFloat('timeSinceStart', 0.001);
+        bulletMaterial.setFloat('radius', this.radius);
         bulletMaterial.setFloat('disableWarning', disableWarning ? 1 : 0)
 
         this.justStarted = true;

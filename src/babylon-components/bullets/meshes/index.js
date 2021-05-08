@@ -8,7 +8,7 @@ import { makeMarisaBulletMesh } from './MarisaBullet';
 import { makeSphereMesh } from './Sphere';
 import { makeSphereWithHaloMesh } from './SphereWithHalo';
 
-const bufferMatricesPreCompute = new Float32Array(MAX_BULLETS_PER_GROUP * 16);
+export const bufferMatricesPreCompute = new Float32Array(MAX_BULLETS_PER_GROUP * 16);
 for (let i = 0; i < MAX_BULLETS_PER_GROUP; i++) {
     const matrix = Matrix.Identity();
     matrix.copyToArray(bufferMatricesPreCompute, i * 16);
@@ -44,9 +44,6 @@ export const makeBulletMesh = (meshOptions, assets, getMesh) => {
         default:
             throw new Error('Mesh type not supported: ' + meshOptions.mesh);
     }
-
-    const scaleMatrix = Matrix.Scaling(radius, radius, radius);
-    _mesh.bakeTransformIntoVertices(scaleMatrix);
 
     _mesh.alwaysSelectAsActiveMesh = true;
     _mesh.doNotSyncBoundingInfo = true;

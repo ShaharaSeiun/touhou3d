@@ -7,7 +7,6 @@ import { useDoSequence } from '../../hooks/useDoSequence';
 import { wriggleMidEnemyVectors } from './BOSS_WriggleBehaviourTrunk/wriggleMidPhase1SpellCard';
 
 
-
 export const traceArray = wriggleMidEnemyVectors.map(vector => {
     const velocity = vector.clone().normalize().scale(0.01);
     return {

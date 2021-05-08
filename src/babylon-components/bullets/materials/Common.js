@@ -1,7 +1,7 @@
+import "@babylonjs/core/Shaders/ShadersInclude/instancesDeclaration";
 import { BULLET_WARNING } from "../../../utils/Constants";
 import { glsl } from "../../BabylonUtils";
 
-import "@babylonjs/core/Shaders/ShadersInclude/instancesDeclaration";
 
 export const commonVertexShader = glsl`
     #include<instancesDeclaration>
@@ -73,6 +73,7 @@ export const commonVertexShaderWithWarning = glsl`
     uniform sampler2D endTimingsSampler;
     uniform float timeSinceStart;
     uniform float disableWarning;
+    uniform float radius;
 
     varying vec3 vPositionW;
     varying vec3 vNormalW;
@@ -117,6 +118,7 @@ export const commonVertexShaderWithWarning = glsl`
 
         rotatedVert *= size * 3. + 1.;
         rotatedVert *= (1. - hasEnded);
+        rotatedVert *= radius;
 
         vec4 totalPos = rotatedVert + instPos;
         totalPos.w = 1.;

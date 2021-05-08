@@ -1,7 +1,7 @@
 
 /* eslint no-unused-vars: 0 */
 
-import { Wriggle1 } from "../stage1def/Wriggle1";
+import { Wriggle2 } from "../stage1def/Wriggle2";
 
 const stage1def = () => {
     const map = {
@@ -12,7 +12,7 @@ const stage1def = () => {
     map.epochs[0].push({
         type: "enemies",
         action: 'spawn',
-        enemy: Wriggle1(),
+        enemy: Wriggle2(),
         wait: .800
     })
 

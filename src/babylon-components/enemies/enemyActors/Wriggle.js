@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react';
 import { AnimationPropertiesOverride, Vector3 } from '@babylonjs/core';
-import { useName } from '../../hooks/useName';
-import { useAssets } from '../../hooks/useAssets';
+import React, { useEffect, useRef } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
+import { useAssets } from '../../hooks/useAssets';
+import { useName } from '../../hooks/useName';
 
 export const Wriggle = React.forwardRef(({ assetName, radius, ...props }, ref) => {
     const transBaseName = useName('fairyTransformBase');
@@ -57,16 +57,16 @@ export const Wriggle = React.forwardRef(({ assetName, radius, ...props }, ref) =
         const dPosition = curPosition.subtract(ref.current.lastPosition).scale(0.15 / deltaS);
         ref.current.lastPosition = curPosition.clone();
 
-        if(dPosition.x > 0.3){
+        if (dPosition.x > 0.3) {
             mesh.animLeft.start(true);
             mesh.animRight.stop();
             mesh.animIdle.stop();
         }
-        else if(dPosition.x < -0.3){
+        else if (dPosition.x < -0.3) {
             mesh.animRight.start(true);
             mesh.animLeft.stop();
             mesh.animIdle.stop();
-        }else{
+        } else {
             mesh.animIdle.start(true);
             mesh.animRight.stop();
             mesh.animLeft.stop()

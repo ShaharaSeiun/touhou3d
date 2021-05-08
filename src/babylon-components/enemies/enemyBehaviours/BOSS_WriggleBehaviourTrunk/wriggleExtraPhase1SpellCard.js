@@ -115,7 +115,7 @@ export const extraFlower2 = makeReplaceInstruction(extraSprayFreezeAndTurnYellow
 
 export const extraFlower3 = makeReplaceInstruction(extraSprayFreezeAndTurnYellow, {
     materialOptions: {
-        color: [1, 1, 0]
+        color: [0, 1, 0]
     },
     patternOptions: {
         type: 'rotateVelocity',

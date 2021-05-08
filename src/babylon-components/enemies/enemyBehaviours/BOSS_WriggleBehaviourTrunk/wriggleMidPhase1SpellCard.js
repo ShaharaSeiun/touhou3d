@@ -57,7 +57,7 @@ export const useWriggleMidPhase1SpellCard = (active, transformNodeRef, setMinion
         if (active) {
             setSpellCardUI({
                 character: 'wriggle',
-                spellCard: `Lamp Sign   "Firefly Phenomenon"`
+                spellCard: `Firefly Sign   "Comet on Earth"`
             })
         }
     }, [active, setSpellCardUI])
