@@ -1,5 +1,6 @@
 import { useCallback, useContext } from 'react';
 import { bossDeathQuiet, enemyDeath, playerBombCharge } from '../../sounds/SFX';
+import { nullVector } from '../../utils/Constants';
 import { makeParticleSystem } from '../effects/makeParticleSystem';
 import { AssetsContext } from './GeneralContainer';
 
@@ -28,10 +29,10 @@ export const useEffects = (assets) => {
                 const sound = effectSoundMap[effectOptions.name];
                 if (sound) sound.play();
 
-                // window.setTimeout(() => {
-                //     effectPlayingMap[effectOptions.name]--
-                //     if (effectPlayingMap[effectOptions.name] === 0) particleSystem.emitter = nullVector;
-                // }, effectOptions.duration || 100);
+                window.setTimeout(() => {
+                    effectPlayingMap[effectOptions.name]--
+                    if (effectPlayingMap[effectOptions.name] === 0) particleSystem.emitter = nullVector;
+                }, effectOptions.duration || 100);
                 break;
             default:
                 throw new Error('Unknown effect type' + effectOptions.type);

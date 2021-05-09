@@ -1,16 +1,70 @@
 import {
     AssetsManager,
+    Color3,
     DracoCompression,
+    EngineStore,
     Matrix,
     Mesh,
     MeshBuilder,
     ParticleHelper,
-    ParticleSystemSet
+    ParticleSystem,
+    ParticleSystemSet,
+    Tools
 } from '@babylonjs/core';
 import { useEffect, useState } from 'react';
 import { useScene } from 'react-babylonjs';
 import { nullVector } from '../../utils/Constants';
 import { capFirst } from '../../utils/Utils';
+import { GPUParticleSystem } from "../GPUParticleSystem";
+
+const Parse = function (data, scene, gpu) {
+    if (gpu === void 0) { gpu = false; }
+    var result = new ParticleSystemSet();
+    var rootUrl = ParticleSystemSet.BaseAssetsUrl + "/textures/";
+    scene = scene || EngineStore.LastCreatedScene;
+    for (var _i = 0, _a = data.systems; _i < _a.length; _i++) {
+        var system = _a[_i];
+        result.systems.push(gpu ? GPUParticleSystem.Parse(system, scene, rootUrl, true) : ParticleSystem.Parse(system, scene, rootUrl, true));
+    }
+    if (data.emitter) {
+        var options = data.emitter.options;
+        switch (data.emitter.kind) {
+            case "Sphere":
+                result.setEmitterAsSphere({
+                    diameter: options.diameter,
+                    segments: options.segments,
+                    color: Color3.FromArray(options.color)
+                }, data.emitter.renderingGroupId, scene);
+                break;
+            default:
+                break;
+        }
+    }
+    return result;
+};
+
+const CreateAsync = function (type, scene, gpu) {
+    if (gpu === void 0) { gpu = false; }
+    if (!scene) {
+        scene = EngineStore.LastCreatedScene;
+    }
+    var token = {};
+    scene._addPendingData(token);
+    return new Promise(function (resolve, reject) {
+        if (gpu && !GPUParticleSystem.IsSupported) {
+            scene._removePendingData(token);
+            return reject("Particle system with GPU is not supported.");
+        }
+        Tools.LoadFile(ParticleHelper.BaseAssetsUrl + "/systems/" + type + ".json", function (data) {
+            scene._removePendingData(token);
+            var newData = JSON.parse(data.toString());
+            return resolve(Parse(newData, scene, gpu));
+        }, undefined, undefined, undefined, function () {
+            scene._removePendingData(token);
+            return reject("An error occured while the creation of your particle system. Check if your type '" + type + "' exists.");
+        });
+    });
+};
 
 export const useLoadAssets = () => {
     const scene = useScene();
@@ -377,7 +431,7 @@ export const useLoadAssets = () => {
 
             switch (asset.type) {
                 case 'particles':
-                    new ParticleHelper.CreateAsync(asset.json, scene, true).then(function (set) {
+                    new CreateAsync(asset.json, scene, false).then(function (set) {
                         set.systems[0].emitter = nullVector;
                         set.systems[0].start();
                         tempAssets[asset.name] = set.systems[0];
