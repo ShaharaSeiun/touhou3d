@@ -14,10 +14,12 @@ export const burst1 = {
     },
     patternOptions: {
         pattern: 'multiBurst',
-        num: difficulty => difficulty * 1500,
+        num: difficulty => difficulty * 700,
         speeds: [4, 5, 6, 7],
         thetaLength: Math.PI * 1.1,
         thetaStart: -Math.PI / 2.5,
+        startY: 0.6,
+        yLength: 1.2,
         uid: 'wriggleBurstInit1',
     },
     endTimings: {
@@ -44,10 +46,12 @@ export const burst2 = {
     },
     patternOptions: {
         pattern: 'multiBurst',
-        num: difficulty => difficulty * 1500,
+        num: difficulty => difficulty * 700,
         speeds: [4, 5, 6, 7],
         thetaLength: Math.PI * 1.1,
         thetaStart: Math.PI - 0.5,
+        startY: 0.6,
+        yLength: 1.2,
         uid: 'wriggleBurstInit2',
     },
     endTimings: {

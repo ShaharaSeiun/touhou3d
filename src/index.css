@@ -6,7 +6,6 @@
 body {
     margin: 0;
     overflow: hidden;
-    cursor: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -14,7 +13,7 @@ body {
 * {
     font-family: tuhu !important;
     font-size: 3vw;
-    -webkit-text-stroke-width: 0.5px;
+    -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: white;
 }
 
@@ -25,4 +24,8 @@ div {
 
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+.game-canvas {
+    cursor: none;
 }

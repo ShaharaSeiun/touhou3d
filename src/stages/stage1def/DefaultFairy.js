@@ -3,7 +3,7 @@ import { BULLET_TYPE } from "../../babylon-components/bullets/behaviours/EnemyBu
 export const DefaultFairy = (spawn, target) => {
     const map = {
         radius: 0.5,
-        health: 10,
+        health: 2,
         movementProps: {
             type: 'agroThenAfraid',
             spawn: spawn,

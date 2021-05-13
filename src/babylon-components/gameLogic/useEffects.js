@@ -1,5 +1,5 @@
 import { useCallback, useContext } from 'react';
-import { bossDeathQuiet, enemyDeath, playerBombCharge } from '../../sounds/SFX';
+import { bossDeathLoud, bossDeathQuiet, enemyDeath, playerBombCharge } from '../../sounds/SFX';
 import { nullVector } from '../../utils/Constants';
 import { makeParticleSystem } from '../effects/makeParticleSystem';
 import { AssetsContext } from './GeneralContainer';
@@ -9,7 +9,8 @@ const effectSoundMap = {
     chargeBombReimu: playerBombCharge,
     chargeBombMarisa: playerBombCharge,
     chargeWriggle: playerBombCharge,
-    newPhaseWriggle: bossDeathQuiet
+    newPhaseWriggle: bossDeathQuiet,
+    wriggleDeath: bossDeathLoud
 }
 
 const effectPlayingMap = {}

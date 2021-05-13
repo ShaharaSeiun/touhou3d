@@ -1,9 +1,7 @@
-import { Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useHistory } from 'react-router';
 import { VerticleMenu } from '../components/VerticleMenu';
-import { useKeydownMenu } from '../hooks/useKeydown';
 
 
 const useStyles = makeStyles({
@@ -46,16 +44,9 @@ const useStyles = makeStyles({
     },
 });
 
-export const MainMenu = ({ menuOpenInit = false }) => {
+export const MainMenu = ({ active }) => {
     const classes = useStyles();
-    const [menuOpen, setMenuOpen] = useState(menuOpenInit);
     const history = useHistory();
-
-    const openMenu = () => {
-        if (menuOpen) return;
-
-        setMenuOpen(true);
-    };
 
     const quit = () => {
         window.location.href = 'https://www.reddit.com/r/touhou';
@@ -72,20 +63,6 @@ export const MainMenu = ({ menuOpenInit = false }) => {
         [history]
     );
 
-    useKeydownMenu('ENTER', openMenu);
 
-    const titlePos = menuOpen ? classes.titlePos2 : classes.titlePos1;
-    const optionsPos = menuOpen ? classes.optionsPos2 : classes.optionsPos1;
-
-    return (
-        <>
-            <Box className={classes.title + ' ' + titlePos}>
-                弾幕
-                <Box className={classes.title2}>3D</Box>
-            </Box>
-            <Box className={classes.options + ' ' + optionsPos}>
-                <VerticleMenu menuMap={titleOptions} slanted={menuOpen} active={menuOpen} />
-            </Box>
-        </>
-    );
+    return <VerticleMenu menuMap={titleOptions} slanted={active} active={active} />
 };

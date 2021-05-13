@@ -2,6 +2,7 @@ import { DynamicTexture, Vector3 } from '@babylonjs/core';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useScene } from 'react-babylonjs';
 import { globals, resetValue, setGlobal } from '../../components/GlobalsContainer';
+import { LSContext } from '../../components/LSContainer';
 import { useKeydown } from '../../hooks/useKeydown';
 import { choiceSound, selectSound } from '../../sounds/SFX';
 import { mod } from '../../utils/Utils';
@@ -20,6 +21,7 @@ export const DeadUI = ({ setIsDead }) => {
     );
     const [selectedOption, setSelectedOption] = useState(0);
     const { setPaused } = useContext(PauseContext);
+    const { ls } = useContext(LSContext);
     const scene = useScene()
 
     useKeydown('DOWN', () => {
@@ -42,7 +44,8 @@ export const DeadUI = ({ setIsDead }) => {
                 setIsDead(false);
                 break;
             case 1:
-                window.location.href = '/';
+                ls("NEW_SCORE", globals.SCORE)
+                window.location.href = '/menu/game/score';
                 break;
             default:
                 throw new Error('No handler for option in ingame menu: ' + selectedOption);

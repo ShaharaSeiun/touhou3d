@@ -27,7 +27,7 @@ const stage1def = () => {
         map.epochs[0].push({
             type: "enemies",
             action: 'spawn',
-            enemy: DefaultFairy([[-1, -0.9], [1, 0.9], [1, 0.9]], [0, 0, 0]),
+            enemy: DefaultFairy([[-1, -0.9], [-0.1, 0.1], [1, 0.9]], [0, 0, 0]),
             wait: .50
         })
     }
@@ -41,7 +41,7 @@ const stage1def = () => {
         map.epochs[0].push({
             type: "enemies",
             action: 'spawn',
-            enemy: DefaultFairy([[1, 0.9], [1, 0.9], [1, 0.9]], [0, 0, 0]),
+            enemy: DefaultFairy([[-0.1, 0.1], [1, 0.9], [1, 0.9]], [0, 0, 0]),
             wait: .50
         })
     }

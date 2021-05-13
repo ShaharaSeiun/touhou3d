@@ -19,7 +19,6 @@ import { globals, GlobalsContainer, loadGlobals, resetGlobals } from '../compone
 import { LSContainer } from '../components/LSContainer';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { Stage1 } from '../stages/Stage1';
-import { NeedsToClick } from '../utils/NeedsToClick';
 
 DefaultLoadingScreen.prototype.displayLoadingUI = function () {
     if (this._loadingDiv) {
@@ -68,7 +67,6 @@ export const Game = () => {
                         <ControlsContainer>
                             <GeneralContainer>
                                 <Suspense fallback={false}>
-                                    <NeedsToClick />
                                     <BindControls />
                                     <FightRoot>
                                         <UI

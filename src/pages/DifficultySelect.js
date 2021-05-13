@@ -4,7 +4,7 @@ import { GlobalsContext } from '../components/GlobalsContainer';
 import { VerticleMenu } from '../components/VerticleMenu';
 import { useBack } from '../hooks/useBack';
 
-export const DifficultySelect = ({ next }) => {
+export const DifficultySelect = ({ next, active }) => {
     const history = useHistory();
     const { setGlobal } = useContext(GlobalsContext);
     useBack('/menu');
@@ -27,5 +27,5 @@ export const DifficultySelect = ({ next }) => {
         [choose]
     );
 
-    return <VerticleMenu menuMap={difficultyOptions}></VerticleMenu>;
+    return <VerticleMenu active={active} slanted={active} menuMap={difficultyOptions} back="/menu"></VerticleMenu>;
 };

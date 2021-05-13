@@ -5,7 +5,7 @@ import { useKeydownMenu } from './useKeydown';
 export const useBack = (path, onBeforeBack) => {
     const history = useHistory();
 
-    useKeydownMenu('ESCAPE', () => {
+    useKeydownMenu('MENU', () => {
         if (onBeforeBack) onBeforeBack();
         history.push(path);
         backSound.play();

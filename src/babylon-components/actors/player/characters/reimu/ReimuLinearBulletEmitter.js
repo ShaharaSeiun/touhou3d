@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
 import { keyObject } from '../../../../../components/ControlsContainer';
 import { playerShoot } from '../../../../../sounds/SFX';
-import { PLAYER_BULLETS_WHEEL_LENGTH } from '../../../../../utils/Constants';
+import { DEV_OVERPOWERED, PLAYER_BULLETS_WHEEL_LENGTH } from '../../../../../utils/Constants';
 import { BulletsContext } from '../../../../gameLogic/GeneralContainer';
 import { allBullets } from '../../../../gameLogic/StaticRefs';
 import { useName } from '../../../../hooks/useName';
@@ -50,6 +50,7 @@ const makeShotInstruction = (powerClass) => {
         },
         behaviourOptions: {
             behaviour: 'playerShot',
+            bulletValue: DEV_OVERPOWERED ? 50 : 1,
             shotSources: shotSources,
             shotSpeed: 20,
         },

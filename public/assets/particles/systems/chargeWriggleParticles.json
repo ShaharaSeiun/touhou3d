@@ -16,7 +16,7 @@
                 "directionRandomizer": 0
             },
             "textureName": "leaves.png",
-            "invertY": true,
+            "invertY": false,
             "animations": [],
             "beginAnimationOnStart": false,
             "beginAnimationFrom": 0,

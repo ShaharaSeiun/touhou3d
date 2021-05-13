@@ -5,6 +5,7 @@ import { useBeforeRender } from 'react-babylonjs';
 import { randVectorToPosition } from '../../BabylonUtils';
 import { AnimationContext, BulletsContext, UIContext } from '../../gameLogic/GeneralContainer';
 import { globalActorRefs, globalCallbacks } from '../../gameLogic/StaticRefs';
+import { useAddBulletGroup } from '../../hooks/useAddBulletGroup';
 import { useAddEffect } from '../../hooks/useAddEffect';
 import { Enemies } from '../Enemies';
 import { moveTo } from "./BehaviourCommon";
@@ -21,6 +22,7 @@ const lives = [
     },
 ]
 
+
 const phases = flattenDeep(lives.map(life => (
     [life.spellCards, life.healthEnd]
 )))
@@ -34,6 +36,7 @@ export const BOSS_WriggleBehaviour1 = ({ children, leaveScene, spawn }) => {
     const addEffect = useAddEffect()
     const [epoch, setEpoch] = useState(0);
     const [minionInstructions, setMinionInstructions] = useState([]);
+    const addBulletGroup = useAddBulletGroup();
 
     useEffect(() => {
         moveTo(registerAnimation, transformNodeRef.current, [0, 0, 1])
@@ -41,27 +44,29 @@ export const BOSS_WriggleBehaviour1 = ({ children, leaveScene, spawn }) => {
     }, [registerAnimation])
 
     useEffect(() => {
-        addEffect(transformNodeRef.current, {
-            type: 'particles',
-            name: "newPhaseWriggle",
-            duration: 200
-        })
         if (epoch === 0) {
             setBossUI({
                 bossName: "wriggle",
                 lives
             })
         }
+        if (epoch > 0) {
+            addEffect(transformNodeRef.current, {
+                type: 'particles',
+                name: "newPhaseWriggle",
+                duration: 200
+            })
+        }
         if (epoch === 2) {
-            console.log("two for some reason")
             setBossUI()
             setSpellCardUI()
-            moveTo(registerAnimation, transformNodeRef.current, new Vector3(10, 1, 10))
+
+            moveTo(registerAnimation, transformNodeRef.current, new Vector3(100, 1, 10))
             window.setTimeout(() => {
                 leaveScene()
             }, 1000);
         }
-    }, [registerAnimation, setBossUI, epoch, addEffect, setSpellCardUI, leaveScene])
+    }, [registerAnimation, setBossUI, epoch, addEffect, setSpellCardUI, leaveScene, addBulletGroup])
 
     useEffect(() => {
         clearAllBullets();

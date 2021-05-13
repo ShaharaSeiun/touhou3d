@@ -105,7 +105,7 @@ class ReactBabylonjsEngine extends React.Component {
 
         // TODO: this.props.portalCanvas does not need to render a canvas.
         return <EngineCanvasContext.Provider value={{ engine: this.engine, canvas: this.canvas }}>
-            <canvas {...opts} ref={this.onCanvasRef}>
+            <canvas className="game-canvas" {...opts} ref={this.onCanvasRef}>
                 {this.engine !== null &&
                     this.props.children
                 }

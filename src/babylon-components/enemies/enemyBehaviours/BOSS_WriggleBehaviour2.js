@@ -1,68 +1,32 @@
 import { flattenDeep } from 'lodash';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useBeforeRender } from 'react-babylonjs';
+import { globals } from '../../../components/GlobalsContainer';
+import { LSContext } from '../../../components/LSContainer';
 import Music from '../../../sounds/Music';
 import { randVectorToPosition } from '../../BabylonUtils';
 import { AnimationContext, BulletsContext, UIContext } from '../../gameLogic/GeneralContainer';
 import { globalActorRefs, globalCallbacks } from '../../gameLogic/StaticRefs';
 import { useAddEffect } from '../../hooks/useAddEffect';
 import { moveTo } from "./BehaviourCommon";
+import { useWriggleExtraPhase1SpellCard } from './BOSS_WriggleBehaviourTrunk/wriggleExtraPhase1SpellCard';
 import { useWrigglePhase1Normal } from './BOSS_WriggleBehaviourTrunk/wrigglePhase1Normal';
 import { useWrigglePhase1SpellCard } from './BOSS_WriggleBehaviourTrunk/wrigglePhase1SpellCard';
 import { useWrigglePhase2Normal } from './BOSS_WriggleBehaviourTrunk/wrigglePhase2Normal';
-import { useWrigglePhase2SpellCard } from './BOSS_WriggleBehaviourTrunk/wrigglePhase2SpellCard';
 
 
-const wriggle1StartPosition = randVectorToPosition([9, 1, 3])
-
-
-
-// const enemiesInstructions = []
-
-// enemiesInstructions.push({
-//     type: "enemies",
-//     action: 'empty',
-//     wait: 1
-// })
-
-
-// enemiesInstructions.push({
-//     type: "enemies",
-//     action: 'spawn',
-//     enemy: RotateAndShootMinionDef({ color: [1, 1, 0], targetDist: 3, armTime: 1, spawn: new Vector3(0.1, 0, 0) }),
-//     wait: 0
-// })
-// enemiesInstructions.push({
-//     type: "enemies",
-//     action: 'spawn',
-//     enemy: RotateAndShootMinionDef({ color: [1, 1, 0], targetDist: 3, armTime: 1, spawn: new Vector3(-0.1, 0, 0), reverse: true }),
-//     wait: 0
-// })
-// enemiesInstructions.push({
-//     type: "enemies",
-//     action: 'spawn',
-//     enemy: RotateAndShootMinionDef({ color: [1, 1, 0], targetDist: 3, armTime: 1, spawn: new Vector3(0.1, 0.1, 0) }),
-//     wait: 0
-// })
-// enemiesInstructions.push({
-//     type: "enemies",
-//     action: 'spawn',
-//     enemy: RotateAndShootMinionDef({ color: [1, 1, 0], targetDist: 3, armTime: 1, spawn: new Vector3(-0.1, 0.1, 0), reverse: true }),
-//     wait: 0
-// })
-
-// const enemiesActionList = makeActionListTimeline(enemiesInstructions);
+const wriggle2StartPosition = randVectorToPosition([9, 1, 3])
 
 const lives = [
     {
-        healthStart: 12000,
-        healthEnd: 6000,
-        spellCards: [9000]
+        healthStart: 15000,
+        healthEnd: 9000,
+        spellCards: [12000]
     },
     {
-        healthStart: 6000,
-        healthEnd: 0,
-        spellCards: [3000]
+        healthStart: 9000,
+        healthEnd: 3000,
+        spellCards: [6000]
     },
 ]
 
@@ -73,11 +37,12 @@ const phases = flattenDeep(lives.map(life => (
 export const BOSS_WriggleBehaviour2 = ({ children, leaveScene, spawn }) => {
     const transformNodeRef = useRef();
 
-    const { setBossUI } = useContext(UIContext)
+    const { setBossUI, setSpellCardUI } = useContext(UIContext)
     const { registerAnimation } = useContext(AnimationContext);
     const { clearAllBullets } = useContext(BulletsContext);
     const addEffect = useAddEffect()
     const [epoch, setEpoch] = useState(-1);
+    const { ls } = useContext(LSContext)
 
     useEffect(() => {
         moveTo(registerAnimation, transformNodeRef.current, [0, 0, 1])
@@ -85,11 +50,6 @@ export const BOSS_WriggleBehaviour2 = ({ children, leaveScene, spawn }) => {
     }, [registerAnimation])
 
     useEffect(() => {
-        addEffect(transformNodeRef.current, {
-            type: 'particles',
-            name: "newPhaseWriggle",
-            duration: 200
-        })
         if (epoch === 0) {
             Music.play("wriggleTheme")
             setBossUI({
@@ -98,8 +58,30 @@ export const BOSS_WriggleBehaviour2 = ({ children, leaveScene, spawn }) => {
             })
         }
         if (epoch > 0) {
+            addEffect(transformNodeRef.current, {
+                type: 'particles',
+                name: "newPhaseWriggle",
+                duration: 200
+            })
         }
-    }, [registerAnimation, setBossUI, epoch, addEffect])
+        if (epoch === 4) {
+            setBossUI()
+            setSpellCardUI()
+            const deathLocation = transformNodeRef.current.getAbsolutePosition()
+            window.setTimeout(() => {
+                leaveScene()
+                addEffect(deathLocation, {
+                    type: 'particles',
+                    name: "wriggleDeath",
+                    duration: 200
+                })
+            }, 1000);
+            window.setTimeout(() => {
+                ls("NEW_SCORE", globals.SCORE)
+                window.location.href = '/menu/game/score';
+            }, 2000);
+        }
+    }, [registerAnimation, setBossUI, epoch, addEffect, setSpellCardUI, leaveScene, ls])
 
     useEffect(() => {
         clearAllBullets();
@@ -109,11 +91,11 @@ export const BOSS_WriggleBehaviour2 = ({ children, leaveScene, spawn }) => {
     useWrigglePhase1Normal(epoch === 0, transformNodeRef)
     useWrigglePhase1SpellCard(epoch === 1, transformNodeRef)
     useWrigglePhase2Normal(epoch === 2, transformNodeRef)
-    useWrigglePhase2SpellCard(epoch === 3, transformNodeRef)
+    useWriggleExtraPhase1SpellCard(epoch === 3, transformNodeRef)
 
     useBeforeRender(() => {
-        if (epoch === -1) return;
         const bossHealth = globalActorRefs.enemies[0].health;
+        if (epoch === -1 || bossHealth === -510) return;
 
         let curPhase = 0;
         for (let i = 0; i < phases.length; i++) {
@@ -123,13 +105,17 @@ export const BOSS_WriggleBehaviour2 = ({ children, leaveScene, spawn }) => {
             }
         }
 
+        if (bossHealth < phases[phases.length - 1]) {
+            curPhase = phases.length;
+        }
+
         if (curPhase !== epoch) {
             setEpoch(curPhase);
         }
     })
 
     return (
-        <transformNode name position={wriggle1StartPosition} ref={transformNodeRef}>
+        <transformNode name position={wriggle2StartPosition} ref={transformNodeRef}>
             {children}
 
         </transformNode>

@@ -14,7 +14,7 @@ export const extraSpray = {
     },
     patternOptions: {
         pattern: 'sprayStableRandBurst',
-        num: difficulty => difficulty * 30,
+        num: difficulty => difficulty * 100,
         timeLength: 7,
         speed: 8,
         thetaSpeed: 0.3,

@@ -1,8 +1,10 @@
-import { Box, Table, TableBody, TableHead, TableRow, withStyles } from '@material-ui/core';
+import { Table, TableBody, TableHead, TableRow, withStyles } from '@material-ui/core';
 import MuiTableCell from "@material-ui/core/TableCell";
 import { invertBy } from 'lodash';
 import React, { useContext } from 'react';
+import { BackArrow } from "../components/BackArrow";
 import { ControlsContext } from '../components/ControlsContainer';
+import { SlideBox } from "../components/SlideBox";
 import { useBack } from '../hooks/useBack';
 
 const keyCodes = {
@@ -191,8 +193,7 @@ const keyCodes = {
 };
 
 const discriptions = {
-    'ESCAPE': 'ESCAPE (Get out of menus)',
-    'ENTER': 'ENTER (Select Option/Continue Dialogue)',
+    'MENU': 'MENU',
     'UP': 'UP',
     'DOWN': 'DOWN',
     'LEFT': 'LEFT',
@@ -207,38 +208,37 @@ const TableCell = withStyles({
         borderBottom: "none",
         fontSize: "2vw",
         padding: 0,
-        margin: 0
+        margin: 0,
+        color: "#000000FF"
     }
 })(MuiTableCell);
 
-export const Controls = () => {
+export const Controls = ({ active }) => {
     useBack("/menu")
     const { keyMap } = useContext(ControlsContext)
     const inverted = invertBy(keyMap)
 
-    return <Box>
-        <span style={{ fontSize: "8vh" }}>
-            Controls
-        </span>
-        <Table style={{ width: "90vw" }}>
+    return <SlideBox wide active={active}>
+        <Table style={{ width: "40vw" }}>
             <TableHead>
                 <TableRow>
-                    <TableCell style={{ fontSize: "3vw" }}>Control</TableCell>
+                    <TableCell align="right" style={{ fontSize: "3vw" }}>Control</TableCell>
                     <TableCell align="right" style={{ fontSize: "3vw" }}>Keys</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
                 {Object.keys(discriptions).map((key, i) => {
                     return <TableRow key={key}>
-                        <TableCell component="th" scope="row">
+                        <TableCell align="right" component="th" scope="row">
                             {discriptions[key]}
                         </TableCell>
-                        <TableCell align="right">
+                        <TableCell align="right" >
                             {inverted[key].map(value => keyCodes[value]).join(" or ")}
                         </TableCell>
                     </TableRow>
                 })}
             </TableBody>
         </Table>
-    </Box>
+        <BackArrow back="/menu" />
+    </SlideBox >
 }

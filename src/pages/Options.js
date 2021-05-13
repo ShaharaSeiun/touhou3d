@@ -1,12 +1,9 @@
 import React, { useMemo } from 'react';
-import { useHistory } from 'react-router';
 import { VerticleMenu } from '../components/VerticleMenu';
 import { useBack } from '../hooks/useBack';
 
-export const Options = () => {
+export const Options = ({ active }) => {
     useBack('/menu');
-
-    const history = useHistory();
 
     const optionsList = useMemo(
         () => ({
@@ -14,10 +11,9 @@ export const Options = () => {
             Bomb: [1, 2, 3],
             MUSIC: ['ON', 'OFF'],
             SFX: ['ON', 'OFF'],
-            Back: () => history.push('/menu'),
         }),
-        [history]
+        []
     );
 
-    return <VerticleMenu menuMap={optionsList}></VerticleMenu>;
+    return <VerticleMenu active={active} slanted={active} menuMap={optionsList} back="/menu"></VerticleMenu>;
 };

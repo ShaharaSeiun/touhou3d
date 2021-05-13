@@ -1,10 +1,11 @@
 import { Animation, Color3, StandardMaterial, Vector3 } from '@babylonjs/core';
-import { useContext, useEffect, useMemo, useRef } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { playerBombShoot } from '../../../../../sounds/SFX';
 import { AnimationContext } from '../../../../gameLogic/GeneralContainer';
-import { addBomb, globalActorRefs, killEnemy, removeBomb, setBombPosition, setBombRadius } from '../../../../gameLogic/StaticRefs';
+import { addBomb, globalActorRefs, removeBomb, setBombPosition, setBombRadius } from '../../../../gameLogic/StaticRefs';
 import { useGlowLayer } from '../../../../gameLogic/useGlowLayer';
+import { useAddEffect } from '../../../../hooks/useAddEffect';
 import { useDoSequence } from '../../../../hooks/useDoSequence';
 import { useName } from '../../../../hooks/useName';
 import { TrailMesh } from '../../../../TrailMesh';
@@ -12,21 +13,38 @@ import { TrailMesh } from '../../../../TrailMesh';
 const initialVelocity = 4;
 
 export const ReimuBombObject = ({ id, color, delay, ...props }) => {
-    const sphereRef = useRef();
+    const transformNodeRef = useRef();
     const timeDelta = useRef(0);
     const scene = useScene();
     const trail = useRef();
+    const thisHealthRef = useRef(200);
     const name = useName('bombObject');
     const { registerAnimation } = useContext(AnimationContext);
     const glowLayer = useGlowLayer();
+    const addEffect = useAddEffect()
+
+    const [active, setActive] = useState(true);
 
     useEffect(() => {
-        addBomb(id, sphereRef.current.getAbsolutePosition(), sphereRef.current.scaling.x / 2)
+        addBomb(id, transformNodeRef.current.getAbsolutePosition(), transformNodeRef.current.scaling.x / 2)
 
         return () => {
             removeBomb(id)
         }
     }, [id])
+
+    useEffect(() => {
+        if (!active) {
+            removeBomb(id)
+            addEffect(transformNodeRef.current, {
+                type: 'particles',
+                name: 'death'
+            });
+            if (trail.current) {
+                trail.current.dispose();
+            }
+        }
+    }, [active, addEffect, id])
 
     const actionsTimings = useMemo(
         () => [0, delay],
@@ -39,7 +57,7 @@ export const ReimuBombObject = ({ id, color, delay, ...props }) => {
                 registerAnimation(
                     Animation.CreateAndStartAnimation(
                         'anim',
-                        sphereRef.current,
+                        transformNodeRef.current,
                         'scaling',
                         60,
                         120,
@@ -51,14 +69,14 @@ export const ReimuBombObject = ({ id, color, delay, ...props }) => {
             },
             () => {
                 playerBombShoot.play();
-                sphereRef.current.velocity = props.position.add(new Vector3(0, 0, 1)).normalize();
-                sphereRef.current.firing = true;
+                transformNodeRef.current.velocity = props.position.add(new Vector3(0, 0, 1)).normalize();
+                transformNodeRef.current.firing = true;
 
-                const position = sphereRef.current.getAbsolutePosition();
-                sphereRef.current.parent = false;
-                sphereRef.current.position = position;
+                const position = transformNodeRef.current.getAbsolutePosition();
+                transformNodeRef.current.parent = false;
+                transformNodeRef.current.position = position;
 
-                trail.current = new TrailMesh('sphereTrail', sphereRef.current, scene, 0.2, 100, true);
+                trail.current = new TrailMesh('sphereTrail', transformNodeRef.current, scene, 0.2, 100, true);
                 const sourceMat = new StandardMaterial('sourceMat', scene);
                 sourceMat.emissiveColor = sourceMat.diffuseColor = color;
                 sourceMat.specularColor = new Color3.Black();
@@ -70,7 +88,7 @@ export const ReimuBombObject = ({ id, color, delay, ...props }) => {
                 registerAnimation(
                     Animation.CreateAndStartAnimation(
                         'anim',
-                        sphereRef.current,
+                        transformNodeRef.current,
                         'scaling',
                         60,
                         60,
@@ -84,11 +102,11 @@ export const ReimuBombObject = ({ id, color, delay, ...props }) => {
         [color, glowLayer, props.position, registerAnimation, scene]
     );
 
-    useDoSequence(true, sphereRef, actionsTimings, actions);
+    useDoSequence(true, transformNodeRef, actionsTimings, actions);
 
     useEffect(() => {
         const camera = scene.activeCamera;
-        const sphereMesh = sphereRef.current;
+        const sphereMesh = transformNodeRef.current;
         glowLayer.addIncludedOnlyMesh(sphereMesh)
 
         return () => {
@@ -98,17 +116,27 @@ export const ReimuBombObject = ({ id, color, delay, ...props }) => {
             camera.position.x = 0;
             camera.position.y = 0;
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [glowLayer, scene.activeCamera]);
 
     useBeforeRender((scene) => {
-        if (!sphereRef.current) return;
-        if (!sphereRef.current.firing) return;
+        if (!transformNodeRef.current) return;
+        if (!transformNodeRef.current.firing) return;
+
         const camera = scene.activeCamera;
         const deltaS = scene.paused ? 0 : scene.getEngine().getDeltaTime() / 1000;
         timeDelta.current += deltaS;
 
-        const thisPosition = sphereRef.current.getAbsolutePosition();
+        if (timeDelta.current < 2) {
+            camera.position.x = (Math.random() - 0.5) * 0.03;
+            camera.position.y = (Math.random() - 0.5) * 0.03;
+        } else {
+            camera.position.x = 0;
+            camera.position.y = 0;
+        }
+
+        if (!active) return;
+
+        const thisPosition = transformNodeRef.current.getAbsolutePosition();
         let closestEnemyPosition;
         let closestEnemyDistance = Number.MAX_SAFE_INTEGER;
         let closestEnemyID;
@@ -125,38 +153,47 @@ export const ReimuBombObject = ({ id, color, delay, ...props }) => {
 
         if (closestEnemyDistance < 100) {
             const newVelocity = closestEnemyPosition.subtract(thisPosition);
-            sphereRef.current.velocity = Vector3.Lerp(sphereRef.current.velocity, newVelocity, deltaS).normalize();
-            if (closestEnemyDistance < 5 && closestEnemyID !== undefined) killEnemy(closestEnemyID);
+            transformNodeRef.current.velocity = Vector3.Lerp(transformNodeRef.current.velocity, newVelocity, deltaS).normalize();
+            if (closestEnemyDistance < 5 && closestEnemyID !== undefined) {
+                if (thisHealthRef.current < globalActorRefs.enemies[closestEnemyID].health) {
+                    globalActorRefs.enemies[closestEnemyID].health -= thisHealthRef.current;
+                    thisHealthRef.current = 0;
+                    setActive(false);
+                }
+                if (thisHealthRef.current === globalActorRefs.enemies[closestEnemyID].health) {
+                    thisHealthRef.current = 0;
+                    globalActorRefs.enemies[closestEnemyID].health = 0;
+                    setActive(false);
+                }
+                if (thisHealthRef.current > globalActorRefs.enemies[closestEnemyID].health) {
+                    thisHealthRef.current -= globalActorRefs.enemies[closestEnemyID].health
+                    globalActorRefs.enemies[closestEnemyID].health = 0;
+                }
+            }
         }
 
-        sphereRef.current.position.addInPlace(
-            sphereRef.current.velocity.scale(deltaS * (initialVelocity + timeDelta.current * 16))
+        transformNodeRef.current.position.addInPlace(
+            transformNodeRef.current.velocity.scale(deltaS * (initialVelocity + timeDelta.current * 16))
         );
 
-        if (timeDelta.current < 2) {
-            camera.position.x = (Math.random() - 0.5) * 0.03;
-            camera.position.y = (Math.random() - 0.5) * 0.03;
-        } else {
-            camera.position.x = 0;
-            camera.position.y = 0;
-        }
 
-        setBombPosition(id, sphereRef.current.getAbsolutePosition())
-        setBombRadius(id, sphereRef.current.scaling.x / 2);
+
+        setBombPosition(id, transformNodeRef.current.getAbsolutePosition())
+        setBombRadius(id, transformNodeRef.current.scaling.x / 2);
     });
 
     return (
-        <transformNode name={name + 'transformNode'} {...props}>
-            <sphere name={name + 'sphere'} ref={sphereRef} scaling={new Vector3(0, 0, 0)}>
-                <standardMaterial
-                    name={name + 'material'}
-                    alpha={0.3}
-                    diffuseColor={color}
-                    emissiveColor={color}
-                    specularColor={new Color3(0, 0, 0)}
-                />
-            </sphere>
-            <pointLight name={name + 'pointLight'} position={new Vector3(0, 0, 0)} />
+        <transformNode name={name + 'transformNode'} scaling={new Vector3(0, 0, 0)} ref={transformNodeRef} {...props}>
+            {active &&
+                <sphere name={name + 'sphere'} >
+                    <standardMaterial
+                        name={name + 'material'}
+                        alpha={0.3}
+                        diffuseColor={color}
+                        emissiveColor={color}
+                        specularColor={new Color3(0, 0, 0)}
+                    />
+                </sphere>}
         </transformNode>
     );
 };

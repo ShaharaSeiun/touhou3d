@@ -4,7 +4,7 @@ import { useBeforeRender } from 'react-babylonjs';
 export const ControlsContext = React.createContext();
 
 const defaultKeyMap = {
-    27: 'ESCAPE',
+    27: 'MENU',
     13: 'ENTER',
     40: 'DOWN', //Down arrow
     83: 'DOWN', //s
@@ -36,9 +36,11 @@ export const keyObject = {
 
 export const ControlsContainer = ({ children, outsideOfRenderer }) => {
     const [downKeys, setDownKeys] = useState([]);
+    const [typing, setTyping] = useState(false);
+    const [disabled, setDisabled] = useState(false);
 
     const [keyMap, setKeyMap] = useState({
-        27: 'ESCAPE',
+        27: 'MENU',
         13: 'ENTER',
         40: 'DOWN', //Down arrow
         83: 'DOWN', //s
@@ -55,10 +57,13 @@ export const ControlsContainer = ({ children, outsideOfRenderer }) => {
 
     const keyDownHandler = useCallback(
         (event) => {
+            if (disabled) return;
             if (!(event.which in keyMap)) {
                 return;
             }
             const key = keyMap[event.which];
+
+            if (typing && !['ENTER', 'MENU'].includes(key)) return;
 
             if (keyObject.metaDownKeys[key]) return;
             if (keyObject.disabledMap[key]) return;
@@ -67,23 +72,27 @@ export const ControlsContainer = ({ children, outsideOfRenderer }) => {
             newMetaDownKeys[key] = true;
             keyObject.metaDownKeys = newMetaDownKeys;
         },
-        [keyMap]
+        [disabled, keyMap, typing]
     );
 
     const keyUpHandler = useCallback(
         (event) => {
+            if (disabled) return;
             if (!(event.which in keyMap)) {
                 return;
             }
 
             const key = keyMap[event.which];
+
+            if (typing && !['ENTER', 'MENU'].includes(key)) return;
+
             if (!keyObject.metaDownKeys[key]) return;
 
             const newMetaDownKeys = { ...keyObject.metaDownKeys };
             newMetaDownKeys[key] = false;
             keyObject.metaDownKeys = newMetaDownKeys;
         },
-        [keyMap]
+        [disabled, keyMap, typing]
     );
 
     const keySync = useCallback(() => {
@@ -121,7 +130,9 @@ export const ControlsContainer = ({ children, outsideOfRenderer }) => {
                 keyDownHandler,
                 keyUpHandler,
                 disableControl,
-                enableControl
+                enableControl,
+                setTyping,
+                setDisabled
             }}
         >
             {children}

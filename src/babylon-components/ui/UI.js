@@ -20,7 +20,7 @@ export const UI = () => {
 
     const [characters, setCharacters] = useState([]);
 
-    useKeydown('ESCAPE', () => {
+    useKeydown('MENU', () => {
         if (isDead) return;
         selectSound.play();
         setPaused((paused) => !paused);

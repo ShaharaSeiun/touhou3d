@@ -1,15 +1,37 @@
-import { Box, List, ListItem } from '@material-ui/core';
+import { Box, List, ListItem, makeStyles } from '@material-ui/core';
 import { isFunction } from 'lodash';
-import React, { useEffect, useState } from 'react';
-import { useKeydownMenu } from '../hooks/useKeydown';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useHistory } from 'react-router';
 import { choiceSound, selectSound } from '../sounds/SFX';
 import { SETTINGS, SET_SETTINGS } from '../utils/Settings';
+import { SlideBox } from "./SlideBox";
 
-const mod = function (num, n) {
-    return ((num % n) + n) % n;
-};
+const useStyles = makeStyles({
+    options: {
+        position: 'absolute',
+        height: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        transition: 'left 2s',
+        whiteSpace: 'nowrap',
+    },
+    optionsPos1: {
+        left: '115vw',
+    },
+    optionsPos2: {
+        left: '70vw',
+    },
+    arrayChoice: {
+        padding: '10px',
+        cursor: 'pointer',
+        '&:hover': {
+            color: "#333333"
+        }
+    },
+});
 
-export const VerticleMenuSingle = ({ selected, menuKey, slanted, index }) => {
+export const VerticleMenuSingle = ({ active, selected, menuKey, menuValue, slanted, index, setSelectedItem }) => {
     const styleAddin = selected
         ? {
             color: 'white',
@@ -17,21 +39,66 @@ export const VerticleMenuSingle = ({ selected, menuKey, slanted, index }) => {
         }
         : {};
 
+    const handleClick = useCallback(() => {
+        if (!active) return;
+        if (!isFunction(menuValue)) return;
+        menuValue();
+        selectSound.play();
+    }, [active, menuValue]);
+
+    const handleMouseOver = useCallback(() => {
+        setSelectedItem(index)
+        choiceSound.play();
+    }, [index, setSelectedItem]);
+
     return (
         <ListItem
             style={{
                 left: slanted ? -index * 3 + 'vh' : 0,
                 transition: 'left 2s',
+                cursor: 'pointer',
+
                 ...styleAddin,
             }}
             key={menuKey}
+            onPointerOver={handleMouseOver}
+            onClick={handleClick}
         >
             {menuKey}
         </ListItem>
     );
 };
 
-export const VerticleMenuArray = ({ selected, menuKey, menuValue, slanted, index }) => {
+export const MenuArrayItem = ({ selected, setSelectedItem, setChoice, index, value }) => {
+
+    const styleAddin = selected
+        ? {
+            color: 'white',
+            WebkitTextStrokeColor: 'black',
+        }
+        : {};
+
+    const classes = useStyles();
+
+    const handleClick = useCallback(() => {
+        setChoice(value)
+        selectSound.play();
+    }, [setChoice, value]);
+
+    const handleMouseOver = useCallback(() => {
+        setSelectedItem(index)
+        choiceSound.play();
+    }, [index, setSelectedItem]);
+
+
+    return (
+        <span onClick={handleClick} onPointerOver={handleMouseOver} className={classes.arrayChoice} style={{ ...styleAddin }}>
+            {value}
+        </span>
+    );
+}
+
+export const VerticleMenuArray = ({ selected, menuKey, menuValue, slanted, index, setSelectedItem }) => {
     const styleAddin = selected
         ? {
             color: 'white',
@@ -48,20 +115,6 @@ export const VerticleMenuArray = ({ selected, menuKey, menuValue, slanted, index
 
     const arrayIndex = menuValue.indexOf(choice);
 
-    useKeydownMenu('LEFT', () => {
-        if (!selected) return;
-        choiceSound.play();
-        const newArrayIndex = mod(arrayIndex - 1, menuValue.length);
-        setChoice(menuValue[newArrayIndex]);
-    });
-
-    useKeydownMenu('RIGHT', () => {
-        if (!selected) return;
-        choiceSound.play();
-        const newArrayIndex = mod(arrayIndex + 1, menuValue.length);
-        setChoice(menuValue[newArrayIndex]);
-    });
-
     return (
         <ListItem
             style={{
@@ -73,69 +126,55 @@ export const VerticleMenuArray = ({ selected, menuKey, menuValue, slanted, index
             <Box display="flex" position="relative" left="-250px">
                 <span style={{ ...styleAddin }}>{menuKey}</span>
                 <Box position="absolute" left="300px">
-                    {menuValue.map((val) => {
-                        const selected = val === choice;
-
-                        const styleAddin = selected
-                            ? {
-                                color: 'white',
-                                WebkitTextStrokeColor: 'black',
-                            }
-                            : {};
-
-                        return (
-                            <span key={val} style={{ padding: '10px', ...styleAddin }}>
-                                {val}
-                            </span>
-                        );
-                    })}
+                    {menuValue.map((val, i) =>
+                        <MenuArrayItem
+                            key={val}
+                            selected={arrayIndex === i}
+                            index={index}
+                            setSelectedItem={setSelectedItem}
+                            setChoice={setChoice}
+                            value={val}
+                            styleAddin={styleAddin}
+                        />)}
                 </Box>
             </Box>
         </ListItem>
     );
 };
 
-export const VerticleMenu = ({ menuMap, active = true, slanted = false }) => {
-    const menuKeys = Object.keys(menuMap);
-    const numChildren = menuKeys.length;
+export const VerticleMenu = ({ menuMap, active = true, slanted = false, back = false }) => {
+
+    const history = useHistory();
+    const menuMapProc = back ? {
+        ...menuMap,
+
+        "←": () => history.push(back)
+    } : menuMap;
+
+    const menuKeys = Object.keys(menuMapProc);
     const [selectedItem, setSelectedItem] = useState(0);
 
-    useKeydownMenu('UP', () => {
-        if (!active) return;
-        setSelectedItem(mod(selectedItem - 1, numChildren));
-        choiceSound.play();
-    });
-    useKeydownMenu('DOWN', () => {
-        if (!active) return;
-        setSelectedItem(mod(selectedItem + 1, numChildren));
-        choiceSound.play();
-    });
-    useKeydownMenu('ENTER', () => {
-        if (!active) return;
-
-        const menuValue = menuMap[menuKeys[selectedItem]];
-        if (!isFunction(menuValue)) return;
-
-        menuMap[menuKeys[selectedItem]]();
-        selectSound.play();
-    });
 
     return (
-        <List style={{ visibility: active ? 'visible' : 'hidden' }}>
-            {menuKeys.map((menuKey, i) => {
-                const menuValue = menuMap[menuKey];
-                const menuItemProps = {
-                    selected: i === selectedItem,
-                    menuKey: menuKey,
-                    slanted: slanted,
-                    index: i,
-                    menuValue: menuValue,
-                };
+        <SlideBox active={active}>
+            <List>
+                {menuKeys.map((menuKey, i) => {
+                    const menuValue = menuMapProc[menuKey];
+                    const menuItemProps = {
+                        setSelectedItem,
+                        selected: i === selectedItem,
+                        menuKey: menuKey,
+                        slanted: slanted,
+                        index: i,
+                        menuValue: menuValue,
+                        active
+                    };
 
-                if (isFunction(menuValue)) return <VerticleMenuSingle key={i} {...menuItemProps} />;
-                if (Array.isArray(menuValue)) return <VerticleMenuArray key={i} {...menuItemProps} />;
-                return false;
-            })}
-        </List>
+                    if (isFunction(menuValue)) return <VerticleMenuSingle key={i} {...menuItemProps} />;
+                    if (Array.isArray(menuValue)) return <VerticleMenuArray key={i} {...menuItemProps} />;
+                    return false;
+                })}
+            </List>
+        </SlideBox>
     );
 };

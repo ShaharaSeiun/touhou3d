@@ -1,6 +1,7 @@
 import localstorage from 'local-storage';
-import React, { useCallback, useEffect, useState } from 'react';
-import { DEV_REHYDRATE_LS } from '../utils/Constants';
+import { max } from 'lodash';
+import React, { useCallback } from 'react';
+import { DEV_RESET_LS } from '../utils/Constants';
 
 export const LSContext = React.createContext();
 
@@ -46,23 +47,20 @@ export const LS = {
     ],
 }
 
+const calculateLS = (inLS) => {
+    inLS.HIGHEST_SCORE = max(inLS.HIGH_SCORES.map(score => score.score));
+    console.log(inLS.HIGHEST_SCORE)
+    return inLS
+}
+
+if (DEV_RESET_LS) {
+    localstorage("LS", JSON.stringify(LS))
+}
+
 export const LSContainer = ({ children }) => {
-    const [loadedLS, setLoadedLS] = useState((() => {
-        if (DEV_REHYDRATE_LS) {
-            if (localstorage("LS")) {
-                Object.assign(LS, JSON.parse(localstorage("LS")))
-            }
-        }
-        return LS;
-    })());
-
-    useEffect(() => {
-        if (!loadedLS) return;
-        localstorage("LS", JSON.stringify(loadedLS))
-    }, [loadedLS])
-
     const ls = useCallback((key, value) => {
-        let outLS = loadedLS;
+        let outLS = Object.assign(LS, JSON.parse(localstorage("LS")));
+        outLS = calculateLS(outLS);
 
         if (value === undefined) {
             return outLS[key];
@@ -70,8 +68,8 @@ export const LSContainer = ({ children }) => {
 
         outLS = { ...outLS };
         outLS[key] = value;
-        setLoadedLS(outLS);
-    }, [loadedLS]);
+        localstorage("LS", JSON.stringify(outLS))
+    }, []);
 
     return <LSContext.Provider value={{ ls }}>{children}</LSContext.Provider>
 }

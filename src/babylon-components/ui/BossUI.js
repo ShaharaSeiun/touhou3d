@@ -105,6 +105,7 @@ export const BossUI = ({ bossUIProps, spellCardUIProps }) => {
         );
 
         window.setTimeout(() => {
+            if (!spellCardRef.current) return;
             const relPosition = spellCardRef.current.getAbsolutePosition().subtract(bossUIRef.current.getAbsolutePosition());
             spellCardRef.current.parent = bossUIRef.current;
             Animation.CreateAndStartAnimation(

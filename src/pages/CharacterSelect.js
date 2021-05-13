@@ -4,7 +4,7 @@ import { GlobalsContext } from '../components/GlobalsContainer';
 import { VerticleMenu } from '../components/VerticleMenu';
 import { useBack } from '../hooks/useBack';
 
-export const CharacterSelect = ({ back, next }) => {
+export const CharacterSelect = ({ back, next, active }) => {
     const { setGlobal } = useContext(GlobalsContext);
     const history = useHistory();
     useBack(back);
@@ -25,5 +25,5 @@ export const CharacterSelect = ({ back, next }) => {
         [choose]
     );
 
-    return <VerticleMenu menuMap={characterOptions}></VerticleMenu>;
+    return <VerticleMenu active={active} slanted={active} menuMap={characterOptions}></VerticleMenu>;
 };
