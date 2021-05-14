@@ -73,7 +73,7 @@ export const UIExecutor = ({ currentActionList, setEpochIndex }) => {
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentActionList]);
 
-    useKeydown('ENTER', () => {
+    useKeydown('SHOOT', () => {
         nextUIAction();
     });
 

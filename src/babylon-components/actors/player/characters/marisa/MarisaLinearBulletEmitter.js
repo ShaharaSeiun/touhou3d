@@ -1,17 +1,10 @@
 import { Vector3 } from '@babylonjs/core';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { useBeforeRender } from 'react-babylonjs';
-import { keyObject } from '../../../../../components/ControlsContainer';
-import { playerShoot } from '../../../../../sounds/SFX';
 import { DEV_OVERPOWERED, PLAYER_BULLETS_WHEEL_LENGTH } from '../../../../../utils/Constants';
 import { BulletsContext } from '../../../../gameLogic/GeneralContainer';
 import { allBullets } from '../../../../gameLogic/StaticRefs';
 import { useName } from '../../../../hooks/useName';
-import { useNormalizedFrameSkip } from '../../../../hooks/useNormalizedFrameSkip';
-import { useTarget } from '../../../../hooks/useTarget';
-
-//15 bullets per second
-let bulletFrameSkip = 5;
+import { useShoot } from '../../useShoot';
 
 const makeShotInstruction = (powerClass, side) => {
     let shotSources;
@@ -103,10 +96,7 @@ const makeShotInstruction = (powerClass, side) => {
 export const MarisaLinearBulletEmitter = ({ powerClass, side, focused, ...props }) => {
     const transformNodeRef = useRef();
     const { addBulletGroup, disposeSingle } = useContext(BulletsContext);
-    const shotFrame = useRef(0);
     const [shotId, setShotId] = useState();
-    const target = useTarget();
-    const frameSkip = useNormalizedFrameSkip(bulletFrameSkip);
     const name = useName('LinearBulletEmitter');
 
     useEffect(() => {
@@ -123,29 +113,7 @@ export const MarisaLinearBulletEmitter = ({ powerClass, side, focused, ...props 
         };
     }, [addBulletGroup, disposeSingle, powerClass, side]);
 
-    useBeforeRender((scene) => {
-        if (!transformNodeRef.current) return;
-
-        shotFrame.current += 1;
-
-        allBullets[shotId].behaviour.focused = focused;
-        allBullets[shotId].behaviour.firing = false;
-        allBullets[shotId].behaviour.target = target;
-        const SHOOT = keyObject.metaDownKeys['SHOOT'];
-
-        if (SHOOT && !scene.paused) {
-            playerShoot.play();
-        } else {
-            playerShoot.stop();
-        }
-
-        if (shotFrame.current > frameSkip) {
-            if (SHOOT && !scene.paused) {
-                allBullets[shotId].behaviour.firing = true;
-            }
-            shotFrame.current = 0;
-        }
-    });
+    useShoot(transformNodeRef, shotId, focused, 15)
 
     return <transformNode name={name} ref={transformNodeRef} {...props} />;
 };

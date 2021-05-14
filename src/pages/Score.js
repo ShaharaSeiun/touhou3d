@@ -58,7 +58,7 @@ export const Score = ({ active }) => {
         console.log(scoresToSave);
         ls("HIGH_SCORES", scoresToSave);
         ls("NEW_SCORE", 0);
-        history.push("/")
+        history.push("/menu")
     })
 
     return <SlideBox wide active={active}>

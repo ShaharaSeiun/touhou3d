@@ -1,26 +1,9 @@
 import { InputBase } from "@material-ui/core";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useHistory } from "react-router";
 import { useLS } from "./useLS";
 
 export const useNewScores = (newName, setNewName) => {
-    const [textField, setTextField] = useState();
-
-    useEffect(() => {
-        if (textField) {
-            const interval = window.setInterval(
-                () => {
-                    if (textField !== document.activeElement) {
-                        textField.focus()
-                    }
-                }
-                , 100);
-            return () => {
-                window.clearInterval(interval);
-            }
-        }
-    }, [textField])
-
     const ls = useLS()
     const highScores = useMemo(() => ls("HIGH_SCORES"), [ls]);
     const newScore = useMemo(() => ls("NEW_SCORE"), [ls]);
@@ -35,7 +18,6 @@ export const useNewScores = (newName, setNewName) => {
         if (newHighScore) {
             const scoresWithNewScore = [...highScores, {
                 name: <InputBase
-                    inputRef={newRef => setTextField(newRef)}
                     placeholder="Enter a name"
                     value={newName}
                     onChange={e => { setNewName(e.target.value) }}
