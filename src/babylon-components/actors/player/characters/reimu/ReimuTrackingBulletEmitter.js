@@ -6,9 +6,6 @@ import { allBullets } from '../../../../gameLogic/StaticRefs';
 import { useName } from '../../../../hooks/useName';
 import { useShoot } from '../../useShoot';
 
-//15 bullets per second
-let bulletFrameSkip = 5;
-
 const makeShotInstruction = (powerClass, initialVelocity) => {
     let shotSources;
 

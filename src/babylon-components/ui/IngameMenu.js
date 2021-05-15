@@ -1,82 +1,98 @@
 import { DynamicTexture, Vector3 } from '@babylonjs/core';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useBeforeRender } from 'react-babylonjs';
 import { useKeydown } from '../../hooks/useKeydown';
+import { useWindowSize } from '../../hooks/useWindowSize';
 import { choiceSound, selectSound } from '../../sounds/SFX';
-import { mod } from '../../utils/Utils';
 import { textOnCtx } from '../BabylonUtils';
-import { PauseContext } from '../gameLogic/GeneralContainer';
-import { UIPlane } from './UIPlane';
+import { useName } from '../hooks/useName';
 
-export const IngameMenu = () => {
-    const textTexture = useMemo(
+export const IngameMenu = ({ title, optionsMap }) => {
+    const name = useName()
+    const transformNodeRef = useRef();
+    const [selectedOption, setSelectedOption] = useState(0)
+    const optionKeys = useMemo(() => Object.keys(optionsMap), [optionsMap]);
+    const textures = useMemo(
         () =>
-            new DynamicTexture('IngameMenuTexture', {
-                width: 1024,
-                height: 1024,
+            optionKeys.map((key, i) => {
+                const texture = new DynamicTexture(name + i, {
+                    width: 512,
+                    height: 64,
+                })
+                texture.hasAlpha = true;
+                return texture;
             }),
-        []
+        [name, optionKeys]
     );
 
-    const [selectedOption, setSelectedOption] = useState(0);
-    const { setPaused } = useContext(PauseContext);
-
-    useKeydown('DOWN', () => {
-        choiceSound.play();
-        setSelectedOption((selectedOption) => mod(selectedOption + 1, 2));
-    });
-
-    useKeydown('UP', () => {
-        choiceSound.play();
-        setSelectedOption((selectedOption) => mod(selectedOption - 1, 2));
-    });
-
-    useKeydown('ENTER', () => {
-        selectSound.play();
-        switch (selectedOption) {
-            case 0:
-                setPaused(false);
-                break;
-            case 1:
-                window.location.href = '/';
-                break;
-            default:
-                throw new Error('No handler for option in ingame menu: ' + selectedOption);
-        }
-    });
-
-    useEffect(() => {
-        textTexture.hasAlpha = true;
-        const ctx = textTexture.getContext();
+    const backgroundTexture = useMemo(() => {
+        const texture = new DynamicTexture(name + "background", {
+            width: 512,
+            height: 320,
+        })
+        texture.hasAlpha = true;
+        const ctx = texture.getContext();
         ctx.fillStyle = '#000000EE';
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        textOnCtx(ctx, "Paused", 0.3, 0.5, 0.3, 'black', 'white', undefined, true);
+        texture.update();
+        return texture;
+    }, [name])
 
-        textOnCtx(ctx, `*`, 0.06, 0.1, 0.3 + 0.1 * selectedOption, 'red');
+    useEffect(() => {
+        const keys = optionKeys;
+        textures.forEach((texture, i) => {
+            const ctx = texture.getContext();
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            textOnCtx(ctx, keys[i], 1, 0.3, 0.9, i === selectedOption ? 'white' : 'black', i === selectedOption ? 'black' : 'white');
+            if (i === selectedOption) {
+                textOnCtx(ctx, "*", 1, 0.15, 0.9, 'red');
+            }
+            texture.update();
+        })
+    }, [optionKeys, selectedOption, textures])
 
-        textOnCtx(ctx, `PAUSE`, 0.1, 0.3, 0.15, 'black', 'white');
-        textOnCtx(
-            ctx,
-            `Resume`,
-            0.06,
-            0.2,
-            0.3,
-            selectedOption === 0 ? 'white' : 'black',
-            selectedOption === 0 ? 'black' : 'white'
-        );
-        textOnCtx(ctx, `Quit`, 0.06, 0.2, 0.4, selectedOption === 1 ? 'white' : 'black', selectedOption === 1 ? 'black' : 'white');
+    useKeydown("SHOOT", () => {
+        selectSound.play();
+        optionsMap[optionKeys[selectedOption]]();
+    })
 
-        textTexture.update();
-    }, [selectedOption, textTexture]);
+    const windowSize = useWindowSize()
+
+    useBeforeRender((scene) => {
+        const result = scene.pick(windowSize.width / 2, windowSize.height / 2, mesh => mesh.name.startsWith(name))
+        if (result.hit) {
+            const num = parseFloat(result.pickedMesh.name.replace(name, ''));
+            if (num !== selectedOption) {
+                choiceSound.play();
+                setSelectedOption(num)
+            }
+        }
+    })
 
     return (
-        <UIPlane name="IngameMenuPlane" position={new Vector3(0, 4, -1.0)} width={8} height={8} renderingGroupId={1}>
-            <standardMaterial
-                disableLighting={true}
-                useAlphaFromDiffuseTexture
-                name="IngameMenuMaterial"
-                diffuseTexture={textTexture}
-                emissiveTexture={textTexture}
-            />
-        </UIPlane>
+        <transformNode name={name} position={new Vector3(0, 4, -1.0)} ref={transformNodeRef}>
+            <plane name={"BackgroundPlane" + name} position={new Vector3(0, 1.1, 0.2)} width={8} height={5} renderingGroupId={1}>
+                <standardMaterial
+                    disableLighting={true}
+                    useAlphaFromDiffuseTexture
+                    name={name + "material"}
+                    diffuseTexture={backgroundTexture}
+                    emissiveTexture={backgroundTexture}
+                />
+            </plane>
+            {optionKeys.map((key, i) =>
+                <plane name={name + i} key={key} position={new Vector3(0, 1 - i * 1.2, 0)} width={8} height={1} renderingGroupId={1}>
+                    <standardMaterial
+                        disableLighting={true}
+                        useAlphaFromDiffuseTexture
+                        name={name + "material"}
+                        diffuseTexture={textures[i]}
+                        emissiveTexture={textures[i]}
+                    />
+                </plane>
+            )}
+        </transformNode>
     );
-};
+}

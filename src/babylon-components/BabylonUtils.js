@@ -96,7 +96,7 @@ const getLines = (ctx, text, maxWidth) => {
     return lines;
 };
 
-export const textOnCtx = (ctx, text, size, x, y, fill, stroke = 'black', strokeWidth = 8, centered = false) => {
+export const textOnCtx = (ctx, text, size, x, y, fill = 'white', stroke = 'black', strokeWidth = 8, centered = false) => {
     ctx.font = `${size * ctx.canvas.height}px tuhu`;
     ctx.textAlign = centered ? 'center' : 'left';
 

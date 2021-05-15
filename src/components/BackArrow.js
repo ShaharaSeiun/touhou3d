@@ -24,7 +24,7 @@ export const BackArrow = ({ back }) => {
     const handleClick = useCallback(() => {
         history.push(back)
         selectSound.play();
-    }, []);
+    }, [back, history]);
 
     return (
         <span className={classes.arrow} onPointerOver={handleMouseOver} onClick={handleClick}>

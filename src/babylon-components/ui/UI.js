@@ -6,11 +6,9 @@ import { BossUI } from './BossUI';
 import { CharacterDialogueText } from './CharacterDialogueText';
 import { CharacterPortrait } from './CharacterPortrait';
 import { DeadUI } from './DeadUI';
-import { IngameMenu } from './IngameMenu';
 import { Notice } from './Notice';
+import { PauseMenu } from './PauseMenu';
 import { StageStartQuote } from './StageStartQuote';
-
-const mainCharacters = ['reimu'];
 
 export const UI = () => {
     const { isDead, setIsDead, charactersInDialogue, activeCharacter, activeCharacterEmotion, activeCharacterText, stageStartQuote, bossUI, spellCardUI } = useContext(
@@ -63,7 +61,7 @@ export const UI = () => {
             ))}
             {activeCharacter && <CharacterDialogueText character={activeCharacter} text={activeCharacterText} />}
             {stageStartQuote && <StageStartQuote text={stageStartQuote} />}
-            {paused && !isDead && <IngameMenu />}
+            {paused && !isDead && <PauseMenu />}
             {bossUI && <BossUI bossUIProps={bossUI} spellCardUIProps={spellCardUI} />}
             {isDead && <DeadUI setIsDead={setIsDead} />}
             <Notice />

@@ -6,7 +6,6 @@ import { usePrevious } from '../../hooks/usePrevious';
 import { playerPowerUp } from '../../sounds/SFX';
 import { calcPowerClass } from '../actors/player/PlayerUtils';
 import { textOnCtx } from '../BabylonUtils';
-import { UIPlane } from './UIPlane';
 
 export const Notice = () => {
     const textTexture = useMemo(
@@ -64,7 +63,7 @@ export const Notice = () => {
     });
 
     return (
-        <UIPlane name="NoticePlane" position={new Vector3(0, 10, 3)} width={4} height={2}>
+        <plane name="NoticePlane" position={new Vector3(0, 10, 3)} width={4} height={2}>
             <standardMaterial
                 ref={matRef}
                 alpha={0}
@@ -74,6 +73,6 @@ export const Notice = () => {
                 diffuseTexture={textTexture}
                 emissiveTexture={textTexture}
             />
-        </UIPlane>
+        </plane>
     );
 };

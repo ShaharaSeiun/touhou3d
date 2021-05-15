@@ -333,6 +333,8 @@ export const useLoadAssets = () => {
             "hitParticles",
             "chargeBombReimuParticles",
             "chargeBombMarisaParticles",
+            "fireflyParticles",
+            "fireflyParticles2",
             "chargeWriggleParticles",].forEach(particle => {
                 assetList.push({
                     json: particle,

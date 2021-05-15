@@ -1,10 +1,10 @@
-import { withStyles } from '@material-ui/core';
+import { makeStyles, withStyles } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import MuiTableCell from "@material-ui/core/TableCell";
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import React, { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { BackArrow } from '../components/BackArrow';
 import { ControlsContext } from '../components/ControlsContainer';
@@ -13,6 +13,7 @@ import { useBack } from '../hooks/useBack';
 import { useKeydownMenu } from '../hooks/useKeydown';
 import { useLS } from '../hooks/useLS';
 import { useNewScores } from '../hooks/useNewScores';
+import { choiceSound, selectSound } from '../sounds/SFX';
 
 const TableCell = withStyles({
     root: {
@@ -22,11 +23,32 @@ const TableCell = withStyles({
     }
 })(MuiTableCell);
 
+const ButtonCell = withStyles({
+    root: {
+        borderBottom: "none",
+        borderTop: "1px solid black",
+        fontSize: "2.5vw",
+        padding: "8px",
+    }
+})(MuiTableCell);
+
+const useStyles = makeStyles({
+    confirm: {
+        fontSize: "2.5vw",
+        cursor: 'pointer',
+        "&:hover": {
+            color: 'white',
+            WebkitTextStrokeColor: 'black',
+        }
+    }
+})
+
 export const Score = ({ active }) => {
 
     const [newName, setNewName] = useState("");
     const newScores = useNewScores(newName, setNewName);
     const { setTyping } = useContext(ControlsContext);
+    const classes = useStyles();
 
     useEffect(() => {
         setTyping(true);
@@ -43,7 +65,13 @@ export const Score = ({ active }) => {
 
 
     const history = useHistory();
-    useKeydownMenu("ENTER", () => {
+
+    const handleMouseOver = useCallback(() => {
+        choiceSound.play();
+    }, []);
+
+    const handleClick = useCallback(() => {
+        selectSound.play();
         const scoresToSave = newScores.map(score => {
             if (typeof score.name === 'string') {
                 return score
@@ -59,6 +87,11 @@ export const Score = ({ active }) => {
         ls("HIGH_SCORES", scoresToSave);
         ls("NEW_SCORE", 0);
         history.push("/menu")
+    }, [history, ls, newName, newScores]);
+
+    useKeydownMenu("ENTER", () => {
+        if (newName)
+            handleClick();
     })
 
     return <SlideBox wide active={active}>
@@ -81,8 +114,17 @@ export const Score = ({ active }) => {
                         <TableCell align="right">{score.score}</TableCell>
                     </TableRow>
                 })}
+                <TableRow>
+                    <ButtonCell component="th" scope="row">
+                        <BackArrow back="/menu" />
+                    </ButtonCell>
+                    <ButtonCell align="right">
+                        <span onClick={handleClick} onPointerOver={handleMouseOver} className={classes.confirm}>
+                            Confirm
+                        </span>
+                    </ButtonCell>
+                </TableRow>
             </TableBody>
         </Table>
-        <BackArrow back="/menu" />
     </SlideBox>
 };

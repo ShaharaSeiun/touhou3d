@@ -4,7 +4,6 @@ import { useBeforeRender, useEngine } from 'react-babylonjs';
 import { TARGET_LENGTH } from '../../../utils/Constants';
 import { useTarget } from '../../hooks/useTarget';
 import { useTexture } from '../../hooks/useTexture';
-import { UIPlane } from '../../ui/UIPlane';
 
 export const PlayerCamera = () => {
     const engine = useEngine();
@@ -56,14 +55,14 @@ export const PlayerCamera = () => {
     return (
         <transformNode ref={transformNodeRef} name="cameraTransform" position={new Vector3(0, 0, 0)}>
             <transformNode ref={targetRef} name="targetTransform" position={new Vector3(0, 0, TARGET_LENGTH)}>
-                <UIPlane position={new Vector3(0, 0, -(TARGET_LENGTH - 1))} renderingGroupId={1} width={0.03} height={0.03} name="targetPlane">
+                <plane position={new Vector3(0, 0, -(TARGET_LENGTH - 1))} renderingGroupId={1} width={0.03} height={0.03} name="targetPlane">
                     <standardMaterial
                         useAlphaFromDiffuseTexture
                         disableLighting={true}
                         name={'targetMat'}
                         diffuseTexture={texture}
                         emissiveTexture={texture} />
-                </UIPlane>
+                </plane>
             </transformNode>
             <targetCamera fov={1.0472} ref={cameraRef} name="camera" minZ={0.01} maxZ={100} position={new Vector3(0, 0, 0)} />
         </transformNode>

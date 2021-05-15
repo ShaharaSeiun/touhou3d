@@ -25,5 +25,5 @@ export const CharacterSelect = ({ back, next, active }) => {
         [choose]
     );
 
-    return <VerticleMenu active={active} slanted={active} menuMap={characterOptions}></VerticleMenu>;
+    return <VerticleMenu active={active} slanted={active} menuMap={characterOptions} back={back}></VerticleMenu>;
 };

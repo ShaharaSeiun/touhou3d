@@ -1,4 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo } from 'react';
+import { useScene } from 'react-babylonjs';
 import { ControlsContext } from '../../components/ControlsContainer';
 import { useKeydown } from '../../hooks/useKeydown';
 import { UIContext } from '../gameLogic/GeneralContainer';
@@ -15,6 +16,7 @@ export const UIExecutor = ({ currentActionList, setEpochIndex }) => {
         setStageStartQuote,
     } = useContext(UIContext);
     const { disableControl, enableControl } = useContext(ControlsContext)
+    const scene = useScene()
 
     const doUIAction = useCallback(
         (action) => {
@@ -23,7 +25,6 @@ export const UIExecutor = ({ currentActionList, setEpochIndex }) => {
                     setCharactersInDialogue(action.actors);
                     setActiveCharacter(action.actors[0]);
                     setActiveCharacterText(action.text);
-                    disableControl("SHOOT");
                     disableControl("BOMB");
                     break;
                 case 'talk':
@@ -48,7 +49,6 @@ export const UIExecutor = ({ currentActionList, setEpochIndex }) => {
                     setActiveCharacterText(false);
                     setActiveCharacterEmotion(false);
                     setEpochIndex(epochIndex => epochIndex + 1);
-                    enableControl("SHOOT");
                     enableControl("BOMB");
                     break;
                 //UTILS
@@ -74,7 +74,9 @@ export const UIExecutor = ({ currentActionList, setEpochIndex }) => {
     }, [currentActionList]);
 
     useKeydown('SHOOT', () => {
-        nextUIAction();
+        if (!scene.paused) {
+            nextUIAction();
+        }
     });
 
     return false;

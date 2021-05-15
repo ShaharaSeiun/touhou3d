@@ -2,13 +2,13 @@ import {
     BoxParticleEmitter, Color3, Color4, ConeParticleEmitter,
 
 
-    CylinderDirectedParticleEmitter, CylinderParticleEmitter, GPUParticleSystem, HemisphericParticleEmitter,
+    CylinderDirectedParticleEmitter, CylinderParticleEmitter, HemisphericParticleEmitter,
 
 
 
 
 
-    MeshParticleEmitter, PointParticleEmitter, SphereDirectedParticleEmitter, SphereParticleEmitter, ThinEngine, Vector3, _TypeStore
+    MeshParticleEmitter, ParticleSystem, PointParticleEmitter, SphereDirectedParticleEmitter, SphereParticleEmitter, ThinEngine, Vector3, _TypeStore
 } from '@babylonjs/core';
 import { makeName } from '../hooks/useName';
 
@@ -274,7 +274,7 @@ const safeParse = function (parsedParticleSystem, sceneOrEngine, rootUrl, doNotS
         doNotStart = false;
     }
     var name = parsedParticleSystem.name;
-    var particleSystem = new GPUParticleSystem(
+    var particleSystem = new ParticleSystem(
         name,
         {
             capacity: parsedParticleSystem.capacity,

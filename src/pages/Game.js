@@ -1,10 +1,11 @@
-import { DefaultLoadingScreen } from '@babylonjs/core';
+import { DefaultLoadingScreen, Vector3 } from '@babylonjs/core';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import React, { Suspense, useMemo } from 'react';
 import { Scene } from 'react-babylonjs';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Boundaries } from '../babylon-components/actors/Boundaries';
 import { FightRoot } from '../babylon-components/actors/FightRoot';
+import { Particles } from '../babylon-components/actors/Particles';
 import { Player } from '../babylon-components/actors/player/characters/Player';
 import { PlayerCamera } from '../babylon-components/actors/player/PlayerCamera';
 import { PlayerMovement } from '../babylon-components/actors/player/PlayerMovement';
@@ -69,6 +70,8 @@ export const Game = () => {
                                 <Suspense fallback={false}>
                                     <BindControls />
                                     <FightRoot>
+                                        <Particles position={new Vector3(36, 0, 0)} particleSystemName="fireflyParticles" />
+                                        <Particles position={new Vector3(-36, 0, 0)} particleSystemName="fireflyParticles2" />
                                         <UI
                                             charactersInDialogue={['reimu', 'wriggle']}
                                             activeCharacter={'reimu'}
