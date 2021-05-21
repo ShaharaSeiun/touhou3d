@@ -8,7 +8,7 @@ export const CharacterPortrait = ({ name, side, active, emotion, index }) => {
     const camelEmotion = capFirst(emotion);
     const characterTexture = useTexture((name === 'player' ? globals.character : name) + 'Character' + camelEmotion);
     const position = useMemo(
-        () => new Vector3(side === 'left' ? -5 : 4, 5, active ? 0 : index + 1),
+        () => new Vector3(side === 'left' ? -6 : 5, 5, active ? 0 : index + 1),
         //eslint-disable-next-line react-hooks/exhaustive-deps
         [side]
     );
@@ -29,6 +29,7 @@ export const CharacterPortrait = ({ name, side, active, emotion, index }) => {
         if (active) {
             const posTarget = planeRef.current.position.clone();
             posTarget.z = 0;
+            posTarget.x = side === 'left' ? -5 : 4
             Animation.CreateAndStartAnimation(
                 name + 'alphaAnim',
                 matRef.current,
@@ -51,7 +52,8 @@ export const CharacterPortrait = ({ name, side, active, emotion, index }) => {
             );
         } else {
             const posTarget = planeRef.current.position.clone();
-            posTarget.z = 2 * (index + 1);
+            posTarget.z = index + 1;
+            posTarget.x = side === 'left' ? -6 : 5
             Animation.CreateAndStartAnimation(
                 name + 'alphaAnim',
                 matRef.current,

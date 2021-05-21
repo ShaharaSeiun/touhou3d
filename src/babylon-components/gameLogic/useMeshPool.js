@@ -95,6 +95,7 @@ const fillMeshPool = (scene, assets) => {
     targetMaterial.emissiveColor = new Color3(0.8, 0, 0)
     targetMaterial.backFaceCulling = false;
     targetPlane.material = targetMaterial;
+    targetPlane.renderingGroupId = 1;
 
     for (let i = 0; i < 50; i++) {
         const targetMesh = targetPlane.createInstance(i + "targetPlane");

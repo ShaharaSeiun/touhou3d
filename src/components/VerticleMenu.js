@@ -142,7 +142,7 @@ export const VerticleMenuArray = ({ selected, menuKey, menuValue, slanted, index
     );
 };
 
-export const VerticleMenu = ({ menuMap, active = true, slanted = false, back = false, wide = false }) => {
+export const VerticleMenu = ({ menuMap, active = true, slanted = false, back = false, wide = false, medium = false }) => {
 
     const history = useHistory();
     const menuMapProc = back ? {
@@ -156,7 +156,7 @@ export const VerticleMenu = ({ menuMap, active = true, slanted = false, back = f
 
 
     return (
-        <SlideBox wide={wide} active={active}>
+        <SlideBox wide={wide} medium={medium} active={active}>
             <List>
                 {menuKeys.map((menuKey, i) => {
                     const menuValue = menuMapProc[menuKey];

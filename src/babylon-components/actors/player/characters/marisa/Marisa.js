@@ -3,10 +3,10 @@ import React from 'react';
 import { Broomstick } from './Broomstick';
 
 export const Marisa = () => {
-    
+
     return (
         <transformNode name={'Marisa'}>
-            <Broomstick position={new Vector3(0, -0.5, 0)}/>
+            <Broomstick position={new Vector3(0, -0.6, 0)} />
         </transformNode>
     );
 };

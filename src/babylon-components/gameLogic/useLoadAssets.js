@@ -199,7 +199,7 @@ export const useLoadAssets = () => {
             },
             {
                 rootUrl: '/assets/player/marisa/broomstick/',
-                sceneFilename: 'scene.gltf',
+                sceneFilename: 'broom.glb',
                 name: 'broomstick',
                 type: 'model',
             },

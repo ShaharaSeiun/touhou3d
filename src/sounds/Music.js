@@ -7,7 +7,6 @@ class MusicClass {
         this.BGMs.menuTheme = new BGM('/music/titleTheme.mp3', 0.3);
         this.BGMs.stage1Theme = new BGM('/music/stage1.mp3', 0.3);
         this.BGMs.wriggleTheme = new BGM('/music/wriggleTheme.mp3', 0.3);
-        this.isPlaying = false;
 
         this.initFunc = () => this.init();
 
@@ -33,7 +32,7 @@ class MusicClass {
     }
 
     play(activeSound) {
-        if (this.activeSound) this.stop();
+        if (this.activeSound !== activeSound && activeSound) this.stop();
         if (activeSound) this.activeSound = activeSound;
         if (SETTINGS.MUSIC === 'OFF' || !this.activeSound) return;
         if (this.pausedAt) {
@@ -43,6 +42,7 @@ class MusicClass {
             this.startedAt = Date.now();
             this.BGMs[this.activeSound].play(0);
         }
+        this.pausedAt = false;
     }
 
     pause() {

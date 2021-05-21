@@ -4,6 +4,7 @@ import { globals, GlobalsContext } from '../../components/GlobalsContainer';
 import { enemyDamage, itemGet, playerDeath, playerGraze } from '../../sounds/SFX';
 import { MAX_ENEMIES, PLAYER_INVULNERABLE_COOLDOWN } from '../../utils/Constants';
 import { makeBulletBehaviour } from '../bullets/behaviours';
+import { BULLET_TYPE } from '../bullets/behaviours/EnemyBulletBehaviour';
 import { BulletGroup } from '../bullets/BulletGroup';
 import { convertEnemyBulletCollisions, convertPlayerBulletCollisions, prepareBulletInstruction } from '../bullets/BulletUtils';
 import { makeEndTimings } from '../bullets/endTimings';
@@ -41,7 +42,7 @@ export const useBullets = (assets, environmentCollision, addEffect, isDead, setI
     const clearAllBullets = useCallback(() => {
         Object.keys(allBullets).forEach((bulletGroupIndex) => {
             const bulletGroup = allBullets[bulletGroupIndex];
-            if (bulletGroup.behaviour.isEnemyBullet) {
+            if (bulletGroup.behaviour.isEnemyBullet && bulletGroup.behaviour.bulletType === BULLET_TYPE.BULLET) {
                 bulletGroup.lifespan = 0;
             }
         });

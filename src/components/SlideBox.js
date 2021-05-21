@@ -13,15 +13,15 @@ const useStyles = makeStyles({
         flexDirection: 'column'
     },
     optionsPos1: {
-        left: props => props.wide ? '145vw' : '115vw',
+        left: props => (props.wide || props.medium) ? '145vw' : '115vw',
     },
     optionsPos2: {
         left: props => props.wide ? '40vw' : '70vw',
     },
 });
 
-export const SlideBox = ({ children, active, wide }) => {
-    const classes = useStyles({ wide });
+export const SlideBox = ({ children, active, wide, medium }) => {
+    const classes = useStyles({ wide, medium });
     const optionsPos = active ? classes.optionsPos2 : classes.optionsPos1;
 
     return (

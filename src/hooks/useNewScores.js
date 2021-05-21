@@ -9,7 +9,7 @@ export const useNewScores = (newName, setNewName) => {
     const newScore = useMemo(() => ls("NEW_SCORE"), [ls]);
     const newHighScore = useMemo(() => highScores.some(score => score.score < newScore) ? newScore : false, [highScores, newScore])
     const history = useHistory()
-    console.log(newScore)
+
     if (!newHighScore && newScore) {
         ls("NEW_SCORE", 0)
         history.push("/")

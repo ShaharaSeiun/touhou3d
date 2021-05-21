@@ -51,7 +51,7 @@ export const BossUI = ({ bossUIProps, spellCardUIProps }) => {
             const spellHealthRemaining = (bossHealth - nextBossHealth);
             const spellCarcPerc = clamp(spellHealthRemaining / spellCardHealthTotal, 0, 1)
             if (spellCarcPerc > 0) {
-                arcOnCtx(ctx, 0, (i / 8) + (spellCarcPerc / 8), `rgb(${64 * i + 127}, 0, 0)`)
+                arcOnCtx(ctx, 0, (i / 8) + (spellCarcPerc / 8), `rgb(${32 * i + 191}, 0, 0)`)
             }
         })
 

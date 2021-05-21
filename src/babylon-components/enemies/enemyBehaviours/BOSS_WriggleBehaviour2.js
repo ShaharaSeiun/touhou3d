@@ -19,14 +19,14 @@ const wriggle2StartPosition = randVectorToPosition([9, 1, 3])
 
 const lives = [
     {
-        healthStart: 15000,
-        healthEnd: 9000,
-        spellCards: [12000]
+        healthStart: 18000,
+        healthEnd: 12000,
+        spellCards: [15000]
     },
     {
-        healthStart: 9000,
+        healthStart: 12000,
         healthEnd: 3000,
-        spellCards: [6000]
+        spellCards: [9000]
     },
 ]
 

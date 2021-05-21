@@ -92,9 +92,6 @@ export const Menu = () => {
 
     const titlePos = menuOpen ? classes.titlePos2 : classes.titlePos1;
 
-
-    console.log(location);
-
     return (
         <Box
             ref={(newRef) => setHandlerDiv(newRef)}

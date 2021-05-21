@@ -16,8 +16,8 @@ export const IngameMenu = ({ title, optionsMap }) => {
         () =>
             optionKeys.map((key, i) => {
                 const texture = new DynamicTexture(name + i, {
-                    width: 512,
-                    height: 64,
+                    width: 1024,
+                    height: 128,
                 })
                 texture.hasAlpha = true;
                 return texture;
@@ -27,25 +27,25 @@ export const IngameMenu = ({ title, optionsMap }) => {
 
     const backgroundTexture = useMemo(() => {
         const texture = new DynamicTexture(name + "background", {
-            width: 512,
-            height: 320,
+            width: 1024,
+            height: 640,
         })
         texture.hasAlpha = true;
         const ctx = texture.getContext();
         ctx.fillStyle = '#000000EE';
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        textOnCtx(ctx, "Paused", 0.3, 0.5, 0.3, 'black', 'white', undefined, true);
+        textOnCtx(ctx, title, 0.25, 0.5, 0.3, 'black', 'white', undefined, true);
         texture.update();
         return texture;
-    }, [name])
+    }, [name, title])
 
     useEffect(() => {
         const keys = optionKeys;
         textures.forEach((texture, i) => {
             const ctx = texture.getContext();
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-            textOnCtx(ctx, keys[i], 1, 0.3, 0.9, i === selectedOption ? 'white' : 'black', i === selectedOption ? 'black' : 'white');
+            textOnCtx(ctx, keys[i], 0.75, 0.3, 0.9, i === selectedOption ? 'white' : 'black', i === selectedOption ? 'black' : 'white');
             if (i === selectedOption) {
                 textOnCtx(ctx, "*", 1, 0.15, 0.9, 'red');
             }
@@ -73,7 +73,7 @@ export const IngameMenu = ({ title, optionsMap }) => {
 
     return (
         <transformNode name={name} position={new Vector3(0, 4, -1.0)} ref={transformNodeRef}>
-            <plane name={"BackgroundPlane" + name} position={new Vector3(0, 1.1, 0.2)} width={8} height={5} renderingGroupId={1}>
+            <plane name={"BackgroundPlane" + name} position={new Vector3(0, 1.1, 1.0)} width={8} height={5} renderingGroupId={1}>
                 <standardMaterial
                     disableLighting={true}
                     useAlphaFromDiffuseTexture

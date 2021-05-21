@@ -62,7 +62,7 @@ export const traceReplaceArray = traceArray.map(trace => makeReplaceInstruction(
         radius: 0.2
     },
     endTimings: {
-        time: 3,
+        time: 5,
     },
     behaviourOptions: {
         behaviour: 'linear',

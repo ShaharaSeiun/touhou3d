@@ -3,7 +3,7 @@ import { times } from 'lodash';
 import React, { useMemo, useRef } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
 import { useKeydown, useKeyup } from '../../../../../hooks/useKeydown';
-import { PLAYER_BOMB_DURATION, PLAYER_INVULNERABLE_COOLDOWN } from '../../../../../utils/Constants';
+import { PLAYER_INVULNERABLE_COOLDOWN } from '../../../../../utils/Constants';
 import { useGlowLayer } from '../../../../gameLogic/useGlowLayer';
 import { useDoSequence } from '../../../../hooks/useDoSequence';
 import { useName } from '../../../../hooks/useName';
@@ -42,6 +42,7 @@ export const ReimuOrb = ({ isBombing, powerClass, side, isInvulnerable }) => {
             focusPosition,
             Animation.ANIMATIONLOOPMODE_CONSTANT
         );
+        sphereRef.current.material.alpha = 0.2;
     });
     useKeyup('SLOW', () => {
         Animation.CreateAndStartAnimation(
@@ -54,6 +55,7 @@ export const ReimuOrb = ({ isBombing, powerClass, side, isInvulnerable }) => {
             unfocusPosition,
             Animation.ANIMATIONLOOPMODE_CONSTANT
         );
+        sphereRef.current.material.alpha = 0.5;
     });
 
     //sphere blinking
@@ -76,17 +78,18 @@ export const ReimuOrb = ({ isBombing, powerClass, side, isInvulnerable }) => {
 
     useDoSequence(isInvulnerable, sphereRef, invulnerableTimings, invulnerableActions);
 
-    const bombingTimings = useMemo(() => [0, PLAYER_BOMB_DURATION], []);
+    const bombingTimings = useMemo(() => [0, 5.5], []);
 
     const bombingActions = useMemo(
         () => [
             () => {
                 trailRef.current = new TrailMesh('sphere1Trail', sphereTransformRef.current, scene, 0.25, 30, true);
                 const sourceMat = new StandardMaterial('sourceMat1', scene);
-                const color = new Color3.Red();
+                const color = sideCoefficient === 1 ? new Color3.Red() : new Color3.White();
                 sourceMat.emissiveColor = sourceMat.diffuseColor = color;
                 sourceMat.specularColor = new Color3.Black();
                 trailRef.current.material = sourceMat;
+                trailRef.current.material.alpha = 0.5
                 glowLayer.addIncludedOnlyMesh(trailRef.current)
             },
             () => {
@@ -94,7 +97,7 @@ export const ReimuOrb = ({ isBombing, powerClass, side, isInvulnerable }) => {
                 trailRef.current.dispose();
             },
         ],
-        [glowLayer, scene]
+        [glowLayer, scene, sideCoefficient]
     );
 
     useDoSequence(isBombing, sphereRef, bombingTimings, bombingActions);

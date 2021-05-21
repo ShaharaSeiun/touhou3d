@@ -15,5 +15,5 @@ export const Options = ({ active }) => {
         []
     );
 
-    return <VerticleMenu active={active} slanted={active} menuMap={optionsList} back="/menu"></VerticleMenu>;
+    return <VerticleMenu active={active} slanted={active} menuMap={optionsList} medium back="/menu"></VerticleMenu>;
 };
