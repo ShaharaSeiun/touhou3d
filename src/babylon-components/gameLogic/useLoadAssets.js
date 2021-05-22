@@ -13,7 +13,23 @@ import {
 import { useEffect, useState } from 'react';
 import { useScene } from 'react-babylonjs';
 import { nullVector } from '../../utils/Constants';
+import { SETTINGS } from '../../utils/Settings';
 import { capFirst } from '../../utils/Utils';
+
+const qualityMap = {
+    HI: {
+        segments: 10,
+        egg: "egg.glb"
+    },
+    MED: {
+        segments: 6,
+        egg: "egg_med.glb"
+    },
+    LOW: {
+        segments: 3,
+        egg: "egg_low.glb"
+    }
+}
 
 export const useLoadAssets = () => {
     const scene = useScene();
@@ -217,7 +233,7 @@ export const useLoadAssets = () => {
             },
             {
                 rootUrl: '/assets/bullets/egg/',
-                sceneFilename: 'egg.glb',
+                sceneFilename: qualityMap[SETTINGS.QUALITY].egg,
                 name: 'egg',
                 type: 'model',
             },
@@ -229,11 +245,12 @@ export const useLoadAssets = () => {
                         'sphere',
                         {
                             diameter: 2,
-                            segments: 10,
+                            segments: qualityMap[SETTINGS.QUALITY].segments,
                             updatable: false,
                         },
                         scene
                     );
+
                     mesh.isVisible = false;
                     return mesh;
                 },
@@ -263,7 +280,7 @@ export const useLoadAssets = () => {
                         'sphereWithHaloInner',
                         {
                             diameter: 1.5,
-                            segments: 10,
+                            segments: qualityMap[SETTINGS.QUALITY].segments,
                         },
                         scene
                     );
@@ -272,7 +289,7 @@ export const useLoadAssets = () => {
                         {
                             diameter: 2.0,
                             thickness: 0.1,
-                            tessellation: 20,
+                            tessellation: qualityMap[SETTINGS.QUALITY].segments * 2,
                         },
                         scene
                     );

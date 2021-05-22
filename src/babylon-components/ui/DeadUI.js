@@ -18,7 +18,9 @@ export const DeadUI = ({ setIsDead }) => {
     const optionsMap = useMemo(() => ({
         Yes: () => {
             setGlobal("CONTINUE", globals.CONTINUE + 1)
+            setGlobal("SCORE", globals.SCORE / 2);
             resetValue("PLAYER");
+            resetValue("BOMB");
             setIsDead(false);
         },
         No: () => {

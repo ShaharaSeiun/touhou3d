@@ -11,6 +11,7 @@ export const Options = ({ active }) => {
             Bomb: [1, 2, 3],
             MUSIC: ['ON', 'OFF'],
             SFX: ['ON', 'OFF'],
+            QUALITY: ["HI", "MED", "LOW"]
         }),
         []
     );

@@ -5,7 +5,7 @@ import { useAddBulletGroup } from '../../hooks/useAddBulletGroup';
 import { useDoSequence } from '../../hooks/useDoSequence';
 import { useName } from '../../hooks/useName';
 
-export const smallTowardsPlayer = (difficulty) => difficulty >= DIFFICULTY.Medium && {
+export const smallTowardsPlayer = (difficulty) => difficulty >= DIFFICULTY.Normal && {
     type: 'shoot',
     materialOptions: {
         material: 'fresnel',

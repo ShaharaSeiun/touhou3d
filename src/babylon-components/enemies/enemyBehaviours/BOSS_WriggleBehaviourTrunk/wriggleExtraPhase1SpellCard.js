@@ -14,17 +14,19 @@ export const extraSpray = {
     },
     patternOptions: {
         pattern: 'sprayStableRandBurst',
-        num: difficulty => difficulty * 100,
+        num: difficulty => difficulty * 90,
         timeLength: 7,
         speed: 8,
         thetaSpeed: 0.3,
         burstPerSecond: 24,
-        uid: 'wriggleSprayInit',
+        startY: 0.7,
+        yLength: 1.4,
+        uid: 'wriggleSprayInitExtra',
     },
     endTimings: {
         timing: 'uniform',
         time: 2,
-        uid: 'wriggleSprayInit',
+        uid: 'wriggleSprayInitExtra',
     },
     meshOptions: {
         mesh: 'sphere',
@@ -95,7 +97,7 @@ export const extraFlower1 = makeReplaceInstruction(extraSprayFreezeAndTurnYellow
 
 export const extraFlower2 = makeReplaceInstruction(extraSprayFreezeAndTurnYellow, {
     materialOptions: {
-        color: [1, 1, 0]
+        color: [0, 1, 1]
     },
     patternOptions: {
         type: 'rotateVelocity',

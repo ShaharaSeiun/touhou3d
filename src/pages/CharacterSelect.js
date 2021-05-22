@@ -19,8 +19,8 @@ export const CharacterSelect = ({ back, next, active }) => {
 
     const characterOptions = useMemo(
         () => ({
-            Marisa: () => choose('marisa'),
             Reimu: () => choose('reimu'),
+            Marisa: () => choose('marisa'),
         }),
         [choose]
     );

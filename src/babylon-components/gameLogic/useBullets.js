@@ -1,6 +1,6 @@
 import { useCallback, useContext } from 'react';
 import { useBeforeRender, useScene } from 'react-babylonjs';
-import { globals, GlobalsContext } from '../../components/GlobalsContainer';
+import { globals, GlobalsContext, resetValue } from '../../components/GlobalsContainer';
 import { enemyDamage, itemGet, playerDeath, playerGraze } from '../../sounds/SFX';
 import { MAX_ENEMIES, PLAYER_INVULNERABLE_COOLDOWN } from '../../utils/Constants';
 import { makeBulletBehaviour } from '../bullets/behaviours';
@@ -143,6 +143,7 @@ export const useBullets = (assets, environmentCollision, addEffect, isDead, setI
                         if (collision.player) {
                             if (!playerInvulnerable.current) {
                                 setGlobal('PLAYER', globals.PLAYER - 1);
+                                resetValue("BOMB")
                                 playerInvulnerable.current = true;
                                 window.setTimeout(() => {
                                     playerInvulnerable.current = false;

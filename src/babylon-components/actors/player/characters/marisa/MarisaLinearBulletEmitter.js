@@ -80,7 +80,7 @@ const makeShotInstruction = (powerClass, side) => {
         },
         behaviourOptions: {
             behaviour: 'playerShot',
-            bulletValue: DEV_OVERPOWERED ? 50 : 1,
+            bulletValue: DEV_OVERPOWERED ? 50 : 0.7,
             initialVelocities,
             shotSources,
             shotSpeed: 20,

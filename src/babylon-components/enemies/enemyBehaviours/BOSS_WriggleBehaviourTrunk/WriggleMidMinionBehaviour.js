@@ -7,7 +7,7 @@ import { useDoSequence } from '../../../hooks/useDoSequence';
 import { wriggleMidEnemyVectors } from './wriggleMidPhase1SpellCard';
 
 
-export const traceArray = wriggleMidEnemyVectors.map(vector => {
+export const traceArray = wriggleMidEnemyVectors.map((vector, i) => {
     return {
         key: {
             current: vector
@@ -30,12 +30,12 @@ export const traceArray = wriggleMidEnemyVectors.map(vector => {
         },
         endTimings: {
             timing: 'uniform',
-            time: 3,
+            time: 3 - (i * 0.1),
             uid: vector.toString()
         },
         meshOptions: {
             mesh: 'sphere',
-            radius: 0.2
+            radius: 0.3
         },
         behaviourOptions: {
             behaviour: 'linear',
@@ -59,7 +59,7 @@ export const traceReplaceArray = traceArray.map(trace => makeReplaceInstruction(
         color: [0, 0, 1]
     },
     meshOptions: {
-        radius: 0.2
+        radius: 0.3
     },
     endTimings: {
         time: 5,
@@ -69,10 +69,11 @@ export const traceReplaceArray = traceArray.map(trace => makeReplaceInstruction(
     },
 }))
 
-export const WriggleMidMinionBehaviour = ({ children, leaveScene, spawn, forward }) => {
+export const WriggleMidMinionBehaviour = ({ children, leaveScene, spawn, forward, advance }) => {
+
     const transformNodeRef = useRef();
     const startPosition = useMemo(() => spawn ? randVectorToPosition(spawn) : new Vector3(0, 0, 0), [spawn]);
-    const actionsTimings = useMemo(() => [0, 9], []);
+    const actionsTimings = useMemo(() => [0, 9 - advance], [advance]);
     const addBulletGroup = useAddBulletGroup();
 
     const actions = useMemo(

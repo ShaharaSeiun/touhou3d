@@ -26,13 +26,13 @@ export const DEV_COLLISIONS_CHANGE_POSITION = true;
 export const DEV_REHYDRATE_LS = true;
 export const DEV_RESET_LS = false;
 export const DEV_ALWAYS_FULL_POWER = false;
-export const DEV_OVERPOWERED = false;
+export const DEV_OVERPOWERED = true;
 
 export const BULLET_WARNING = 0.2;
 
 export const DIFFICULTY = {
     Easy: 1,
-    Medium: 2,
+    Normal: 2,
     Hard: 3,
     Lunatic: 4,
 }

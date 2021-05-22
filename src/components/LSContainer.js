@@ -49,7 +49,6 @@ export const LS = {
 
 const calculateLS = (inLS) => {
     inLS.HIGHEST_SCORE = max(inLS.HIGH_SCORES.map(score => score.score));
-    console.log(inLS.HIGHEST_SCORE)
     return inLS
 }
 

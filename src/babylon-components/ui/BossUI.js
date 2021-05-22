@@ -142,7 +142,7 @@ export const BossUI = ({ bossUIProps, spellCardUIProps }) => {
                     emissiveTexture={characterTexture}
                 />
             </plane>
-            <plane ref={spellCardRef} name={'spellCard'} position={spellCardPosition} width={8} height={0.5} renderingGroupId={1}>
+            <plane isVisible={!!spellCardUIProps} ref={spellCardRef} name={'spellCard'} position={spellCardPosition} width={8} height={0.5} renderingGroupId={1}>
                 <standardMaterial
                     alpha={1}
                     disableLighting={true}

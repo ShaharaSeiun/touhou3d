@@ -103,6 +103,8 @@ export const ReimuOrb = ({ isBombing, powerClass, side, isInvulnerable }) => {
     useDoSequence(isBombing, sphereRef, bombingTimings, bombingActions);
 
     useBeforeRender((scene) => {
+        if (!sphereRef.current) return;
+
         const deltaS = scene.paused ? 0 : scene.getEngine().getDeltaTime() / 1000;
         sphereRef.current.rotate(z, sideCoefficient * deltaS, Space.WORLD);
     })

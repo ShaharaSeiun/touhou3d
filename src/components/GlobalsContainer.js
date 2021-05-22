@@ -41,7 +41,7 @@ export const resetValue = (value, forceSave) => {
     if (forceSave) ls('globals', JSON.stringify(globals));
 };
 
-export const globals = JSON.parse(ls('globals')) || defaults;
+export const globals = JSON.parse(ls('globals')) || { ...defaults };
 
 export const setGlobal = (key, value, forceSave = false) => {
     globals[key] = value;

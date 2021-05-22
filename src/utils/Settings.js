@@ -5,12 +5,13 @@ import * as SOUNDS from '../sounds/SFX';
 export const SETTINGS = ls('SETTINGS')
     ? JSON.parse(ls('SETTINGS'))
     : {
-          PLAYER: 3,
-          BOMB: 2,
+        PLAYER: 3,
+        BOMB: 2,
 
-          MUSIC: 'ON',
-          SFX: 'ON',
-      };
+        MUSIC: 'ON',
+        SFX: 'ON',
+        QUALITY: "HI"
+    };
 
 export const SET_SETTINGS = () => {
     if (SETTINGS.MUSIC === 'ON') {

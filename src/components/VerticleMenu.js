@@ -125,7 +125,7 @@ export const VerticleMenuArray = ({ selected, menuKey, menuValue, slanted, index
         >
             <Box display="flex" position="relative" left="-250px">
                 <span style={{ ...styleAddin }}>{menuKey}</span>
-                <Box position="absolute" left="300px">
+                <Box position="absolute" left="350px">
                     {menuValue.map((val, i) =>
                         <MenuArrayItem
                             key={val}

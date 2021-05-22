@@ -28,7 +28,7 @@ export const spray = {
     },
     meshOptions: {
         mesh: 'sphere',
-        radius: 0.1
+        radius: 0.2
     },
     behaviourOptions: {
         behaviour: 'slowToStop',
@@ -43,7 +43,7 @@ export const sprayBigSphere = makeReplaceInstruction(spray, {
         rotation: Math.PI / 2,
     },
     meshOptions: {
-        radius: 0.2
+        radius: 0.4
     },
     behaviourOptions: {
         behaviour: 'linear',
@@ -63,7 +63,7 @@ export const sprayFreezeAndTurnYellow = makeReplaceInstruction(sprayBigSphere, {
         velocityMultiplier: 0.001,
     },
     meshOptions: {
-        radius: 0.1
+        radius: 0.2
     },
     behaviourOptions: {
         behaviour: 'linear',

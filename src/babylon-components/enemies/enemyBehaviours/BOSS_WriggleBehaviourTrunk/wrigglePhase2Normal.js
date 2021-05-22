@@ -1,5 +1,5 @@
-import { useContext, useMemo } from "react";
-import { AnimationContext } from "../../../gameLogic/GeneralContainer";
+import { useContext, useEffect, useMemo } from "react";
+import { AnimationContext, UIContext } from "../../../gameLogic/GeneralContainer";
 import { useAddBulletGroup } from "../../../hooks/useAddBulletGroup";
 import { useDoSequence } from "../../../hooks/useDoSequence";
 import { moveTo } from "../BehaviourCommon";
@@ -35,6 +35,14 @@ export const greenBurst4 = greenBurst();
 export const useWrigglePhase2Normal = (active, transformNodeRef) => {
     const addBulletGroup = useAddBulletGroup();
     const { registerAnimation } = useContext(AnimationContext);
+    const { setSpellCardUI } = useContext(UIContext)
+
+    useEffect(() => {
+        if (active) {
+            setSpellCardUI(null)
+        }
+    }, [active, setSpellCardUI])
+
     const actionsTimings = useMemo(() => [1, 2, 3, 4, 5], []);
     const actions = useMemo(() =>
         [

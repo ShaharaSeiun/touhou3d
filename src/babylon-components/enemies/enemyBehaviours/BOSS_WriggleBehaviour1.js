@@ -78,7 +78,7 @@ export const BOSS_WriggleBehaviour1 = ({ children, leaveScene, spawn }) => {
 
     useBeforeRender(() => {
         const bossHealth = globalActorRefs.enemies[0].health;
-        if (epoch === -1 || bossHealth === -510) return;
+        if (epoch === -1 || bossHealth <= -510) return;
 
         let curPhase = 0;
         for (let i = 0; i < phases.length; i++) {
@@ -93,6 +93,7 @@ export const BOSS_WriggleBehaviour1 = ({ children, leaveScene, spawn }) => {
         }
 
         if (curPhase !== epoch) {
+
             setEpoch(curPhase);
         }
     })

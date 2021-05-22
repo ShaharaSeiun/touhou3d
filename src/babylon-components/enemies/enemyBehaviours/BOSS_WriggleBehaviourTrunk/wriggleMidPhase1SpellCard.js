@@ -10,11 +10,11 @@ const enemiesInstructions = []
 
 export const wriggleMidEnemyVectors = burst(20, 0.1, undefined, undefined, 0.6, 1.2);
 
-wriggleMidEnemyVectors.forEach(vector => enemiesInstructions.push({
+wriggleMidEnemyVectors.forEach((vector, i) => enemiesInstructions.push({
     type: "enemies",
     action: 'spawn',
-    enemy: WriggleMidMinionDef({ color: [1, 1, 0], targetDist: 25, armTime: 3, spawn: vector, rotationSpeed: 0.1 }),
-    wait: 0
+    enemy: WriggleMidMinionDef({ color: [1, 1, 0], targetDist: 25, armTime: 3, spawn: vector, rotationSpeed: 0.1, advance: 0.1 * i }),
+    wait: 0.1
 }))
 
 const enemiesActionList = makeActionListTimeline(enemiesInstructions);

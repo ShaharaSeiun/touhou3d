@@ -19,13 +19,13 @@ export function burst(samples, totalRadius, startTheta = 0, thetaLength = 2 * Ma
     return points;
 }
 
-export function stableRandBurst(seed, samples, totalRadius, startTheta = 0, thetaLength = 2 * Math.PI) {
+export function stableRandBurst(seed, samples, totalRadius, startTheta = 0, thetaLength = 2 * Math.PI, startY = 1, yLength = 2) {
     const points = [];
     const phi = Math.PI * (3 - Math.sqrt(5)); //golden angle in radians
     const rng = seedRandom(seed);
 
     for (let i = 0; i < samples; i++) {
-        const y = (rng() * 2) - 1; //y goes from 1 to -1
+        const y = startY - rng() * yLength; //y goes from 1 to -1
         const radius = Math.sqrt(1 - y * y); //radius at y
 
         const theta = (phi * i % thetaLength) + startTheta; //golden angle increment

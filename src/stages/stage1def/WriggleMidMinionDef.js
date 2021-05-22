@@ -1,6 +1,6 @@
 import { Vector3 } from "@babylonjs/core";
 
-export const WriggleMidMinionDef = ({ spawn, targetDist = 10, reverse = false, armTime = 5, rotationSpeed = 1 }) => {
+export const WriggleMidMinionDef = ({ spawn, targetDist = 10, reverse = false, armTime = 5, rotationSpeed = 1, advance = 0 }) => {
     const map = {
         movementProps: {
             type: 'rotate',
@@ -17,7 +17,8 @@ export const WriggleMidMinionDef = ({ spawn, targetDist = 10, reverse = false, a
         },
         behaviourProps: {
             type: 'wriggleMidMinion',
-            forward: spawn
+            forward: spawn,
+            advance
         },
         radius: 0.6,
         health: 10,
